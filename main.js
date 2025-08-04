@@ -292,7 +292,6 @@ class IranLiveApp {
         // Navigation controls
         const refreshBtn = document.getElementById('refresh-btn');
         const fullscreenBtn = document.getElementById('fullscreen-btn');
-        const voiceBtn = document.getElementById('voice-btn');
         const settingsBtn = document.getElementById('settings-btn');
         const closeSettingsBtn = document.getElementById('close-settings');
         const weatherRefreshBtn = document.getElementById('weather-refresh');
@@ -305,13 +304,7 @@ class IranLiveApp {
             fullscreenBtn.addEventListener('click', () => this.toggleFullscreen());
         }
 
-        if (voiceBtn) {
-            voiceBtn.addEventListener('click', () => {
-                if (this.enhancedFeatures) {
-                    this.enhancedFeatures.speakTime();
-                }
-            });
-        }
+
 
         if (settingsBtn) {
             settingsBtn.addEventListener('click', () => this.toggleSettings());

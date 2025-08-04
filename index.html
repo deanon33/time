@@ -37,9 +37,7 @@
                 <button class="nav-btn" id="fullscreen-btn" title="تمام‌صفحه">
                     <i class="fas fa-expand"></i>
                 </button>
-                <button class="nav-btn" id="voice-btn" title="اعلام صوتی ساعت">
-                    <i class="fas fa-volume-up"></i>
-                </button>
+
                 <button class="nav-btn" id="settings-btn" title="تنظیمات">
                     <i class="fas fa-cog"></i>
                 </button>
@@ -83,33 +81,6 @@
 
         <!-- Cards Grid -->
         <section class="cards-grid">
-            <!-- Multi-City Clock Card -->
-            <div class="card world-clock-card">
-                <div class="card-header">
-                    <h3><i class="fas fa-globe"></i> ساعت شهرهای ایران</h3>
-                </div>
-                <div class="card-content">
-                    <div class="cities-grid">
-                        <div class="city-time" data-city="Tehran" data-offset="0">
-                            <div class="city-name">تهران</div>
-                            <div class="city-clock">00:00:00</div>
-                        </div>
-                        <div class="city-time" data-city="Isfahan" data-offset="0">
-                            <div class="city-name">اصفهان</div>
-                            <div class="city-clock">00:00:00</div>
-                        </div>
-                        <div class="city-time" data-city="Shiraz" data-offset="0">
-                            <div class="city-name">شیراز</div>
-                            <div class="city-clock">00:00:00</div>
-                        </div>
-                        <div class="city-time" data-city="Mashhad" data-offset="0">
-                            <div class="city-name">مشهد</div>
-                            <div class="city-clock">00:00:00</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
             <!-- Weather Card -->
             <div class="card weather-card">
                 <div class="card-header">
@@ -214,23 +185,27 @@
                     <div class="prayer-times" id="prayer-times">
                         <div class="prayer-time">
                             <div class="prayer-name">اذان صبح</div>
-                            <div class="prayer-clock" id="fajr-time">05:30</div>
+                            <div class="prayer-clock" id="fajr-time">--:--</div>
                         </div>
                         <div class="prayer-time">
                             <div class="prayer-name">طلوع آفتاب</div>
-                            <div class="prayer-clock" id="sunrise-time">06:45</div>
+                            <div class="prayer-clock" id="sunrise-time">--:--</div>
                         </div>
                         <div class="prayer-time">
                             <div class="prayer-name">اذان ظهر</div>
-                            <div class="prayer-clock" id="dhuhr-time">12:15</div>
+                            <div class="prayer-clock" id="dhuhr-time">--:--</div>
+                        </div>
+                        <div class="prayer-time">
+                            <div class="prayer-name">اذان عصر</div>
+                            <div class="prayer-clock" id="asr-time">--:--</div>
                         </div>
                         <div class="prayer-time">
                             <div class="prayer-name">اذان مغرب</div>
-                            <div class="prayer-clock" id="maghrib-time">18:30</div>
+                            <div class="prayer-clock" id="maghrib-time">--:--</div>
                         </div>
                         <div class="prayer-time">
                             <div class="prayer-name">اذان عشا</div>
-                            <div class="prayer-clock" id="isha-time">19:45</div>
+                            <div class="prayer-clock" id="isha-time">--:--</div>
                         </div>
                     </div>
                 </div>

@@ -30,21 +30,13 @@ class EnhancedFeatures {
             }
         ];
 
-        // Iranian cities data
-        this.iranianCities = {
-            Tehran: { name: "تهران", offset: 0 },
-            Isfahan: { name: "اصفهان", offset: 0 },
-            Shiraz: { name: "شیراز", offset: 0 },
-            Mashhad: { name: "مشهد", offset: 0 }
-        };
 
-        // Prayer times (approximate for Tehran)
-        this.prayerTimes = {
-            fajr: { hour: 5, minute: 30 },
-            sunrise: { hour: 6, minute: 45 },
-            dhuhr: { hour: 12, minute: 15 },
-            maghrib: { hour: 18, minute: 30 },
-            isha: { hour: 19, minute: 45 }
+
+        // Prayer times will be calculated dynamically
+        this.prayerTimes = {};
+        this.tehranCoordinates = {
+            latitude: 35.6892,
+            longitude: 51.3890
         };
 
         this.weatherForecast = [];
@@ -52,33 +44,66 @@ class EnhancedFeatures {
 
     // Initialize all enhanced features
     init() {
-        this.updateWorldClock();
+        this.calculatePrayerTimes();
         this.updateDailyPoetry();
         this.updatePrayerTimes();
         this.generateWeatherForecast();
         
         // Set up intervals
-        setInterval(() => this.updateWorldClock(), 1000);
         setInterval(() => this.updateDailyPoetry(), 24 * 60 * 60 * 1000); // Daily
         setInterval(() => this.updatePrayerTimes(), 60 * 1000); // Every minute
+        setInterval(() => this.calculatePrayerTimes(), 24 * 60 * 60 * 1000); // Daily recalculation
         
         console.log('✨ Enhanced features initialized');
     }
 
-    // Update world clock for Iranian cities
-    updateWorldClock() {
-        const persianCalendar = new PersianCalendar();
-        const iranTime = persianCalendar.getIranTime();
-
-        Object.keys(this.iranianCities).forEach(cityKey => {
-            const cityElement = document.querySelector(`[data-city="${cityKey}"] .city-clock`);
-            if (cityElement) {
-                const hours = iranTime.getHours().toString().padStart(2, '0');
-                const minutes = iranTime.getMinutes().toString().padStart(2, '0');
-                const seconds = iranTime.getSeconds().toString().padStart(2, '0');
-                cityElement.textContent = `${hours}:${minutes}:${seconds}`;
-            }
-        });
+    // Calculate accurate prayer times for Tehran
+    calculatePrayerTimes() {
+        const today = new Date();
+        const lat = this.tehranCoordinates.latitude;
+        const lng = this.tehranCoordinates.longitude;
+        
+        // Calculate day of year
+        const dayOfYear = Math.floor((today - new Date(today.getFullYear(), 0, 0)) / (1000 * 60 * 60 * 24));
+        
+        // Solar calculations
+        const P = Math.asin(0.39795 * Math.cos(0.98563 * (dayOfYear - 173) * Math.PI / 180));
+        const argument = -Math.tan(lat * Math.PI / 180) * Math.tan(P);
+        
+        // Ensure argument is within valid range for acos
+        const clampedArgument = Math.max(-1, Math.min(1, argument));
+        const A = 24 - (24 / Math.PI) * Math.acos(clampedArgument);
+        
+        // Calculate sunrise and sunset
+        const sunrise = 12 - A / 2 - lng / 15 + 3.5; // +3.5 for Iran timezone
+        const sunset = 12 + A / 2 - lng / 15 + 3.5;
+        
+        // Calculate prayer times
+        const fajr = sunrise - 1.5; // 1.5 hours before sunrise
+        const dhuhr = 12 - lng / 15 + 3.5 + (today.getTimezoneOffset() / 60); // Solar noon
+        const asr = dhuhr + 4; // Approximate Asr time
+        const maghrib = sunset + 0.1; // Just after sunset
+        const isha = maghrib + 1.5; // 1.5 hours after maghrib
+        
+        // Convert to hours and minutes
+        this.prayerTimes = {
+            fajr: this.decimalToTime(fajr),
+            sunrise: this.decimalToTime(sunrise),
+            dhuhr: this.decimalToTime(dhuhr),
+            asr: this.decimalToTime(asr),
+            maghrib: this.decimalToTime(maghrib),
+            isha: this.decimalToTime(isha)
+        };
+    }
+    
+    // Helper function to convert decimal hours to time object
+    decimalToTime(decimal) {
+        const hours = Math.floor(decimal);
+        const minutes = Math.floor((decimal - hours) * 60);
+        return {
+            hour: hours < 0 ? hours + 24 : hours >= 24 ? hours - 24 : hours,
+            minute: minutes
+        };
     }
 
     // Update daily poetry
@@ -181,23 +206,7 @@ class EnhancedFeatures {
         }
     }
 
-    // Add voice announcement feature
-    speakTime() {
-        if ('speechSynthesis' in window) {
-            const persianCalendar = new PersianCalendar();
-            const iranTime = persianCalendar.getIranTime();
-            const timeData = persianCalendar.getFormattedTime(iranTime);
-            
-            const timeText = `ساعت ${timeData.hours} و ${timeData.minutes} دقیقه`;
-            
-            const utterance = new SpeechSynthesisUtterance(timeText);
-            utterance.lang = 'fa-IR';
-            utterance.rate = 0.8;
-            utterance.pitch = 1;
-            
-            speechSynthesis.speak(utterance);
-        }
-    }
+
 
     // Get historical events for today (mock data)
     getTodayInHistory() {

@@ -717,43 +717,6 @@ body {
     text-align: center;
 }
 
-/* ===== WORLD CLOCK CARD ===== */
-.cities-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: var(--space-md);
-}
-
-.city-time {
-    background: rgba(255, 255, 255, 0.05);
-    border-radius: var(--radius-md);
-    padding: var(--space-md);
-    text-align: center;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    transition: all var(--transition-fast);
-}
-
-.city-time:hover {
-    background: rgba(255, 255, 255, 0.1);
-    transform: translateY(-2px);
-    box-shadow: var(--shadow-md);
-}
-
-.city-name {
-    font-size: 1rem;
-    color: var(--text-secondary);
-    margin-bottom: var(--space-xs);
-    font-weight: 500;
-}
-
-.city-clock {
-    font-size: 1.5rem;
-    font-weight: 700;
-    color: var(--text-primary);
-    font-family: 'Inter', monospace;
-    direction: ltr;
-}
-
 /* ===== WEATHER FORECAST CARD ===== */
 .forecast-grid {
     display: grid;
@@ -1681,10 +1644,6 @@ body.theme-yalda {
 
 /* ===== RESPONSIVE ENHANCEMENTS ===== */
 @media (max-width: 768px) {
-    .cities-grid {
-        grid-template-columns: 1fr;
-    }
-    
     .forecast-grid {
         grid-template-columns: repeat(3, 1fr);
     }
