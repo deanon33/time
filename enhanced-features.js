@@ -389,43 +389,83 @@ class EnhancedFeatures {
     // Fetch poetry from Ganjgah API
     async fetchFromGanjgahAPI() {
         try {
-            // Generate a unique user identifier based on browser fingerprint
+            console.log('🔍 Trying to fetch from Ganjgah API...');
+            
+            // Since the actual API structure is unknown, let's try different approaches
             const userId = this.generateUserFingerprint();
+            const approaches = [
+                `https://ganjgah.ir/api/poem/random`,
+                `https://ganjgah.ir/api/poems/daily`,
+                `https://ganjgah.ir/api/v1/poem/random`,
+                `https://api.ganjgah.ir/poem/random`,
+                `https://ganjgah.ir/poem/random.json`
+            ];
             
-            // Use a simple approach to get different poems for different users
-            const randomPoetId = Math.floor(Math.abs(userId) % 10) + 1; // 1-10
-            const randomPoemId = Math.floor(Math.abs(userId * 7) % 50) + 1; // 1-50
-            
-            // Note: Since the actual Ganjgah API structure is not clear from the URL,
-            // we'll simulate the API call and return a structured poem
-            // In a real implementation, you would need to check the actual API documentation
-            
-            const response = await fetch(`https://ganjgah.ir/api/poem/${randomPoetId}/${randomPoemId}`, {
-                method: 'GET',
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json'
-                },
-                timeout: 5000
-            });
+            for (const url of approaches) {
+                try {
+                    console.log(`🌐 Trying: ${url}`);
+                    const response = await fetch(url, {
+                        method: 'GET',
+                        headers: {
+                            'Accept': 'application/json',
+                            'Content-Type': 'application/json',
+                            'User-Agent': 'Mozilla/5.0 (compatible; IranLive/1.0)'
+                        }
+                    });
 
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
+                    if (response.ok) {
+                        const data = await response.json();
+                        console.log('📥 API Response:', data);
+                        
+                        // Try different response structures
+                        if (data) {
+                            // Structure 1: {poet: "", poem: []}
+                            if (data.poet && data.poem) {
+                                return {
+                                    poet: data.poet,
+                                    lines: Array.isArray(data.poem) ? data.poem : [data.poem]
+                                };
+                            }
+                            
+                            // Structure 2: {author: "", verses: []}
+                            if (data.author && data.verses) {
+                                return {
+                                    poet: data.author,
+                                    lines: Array.isArray(data.verses) ? data.verses : [data.verses]
+                                };
+                            }
+                            
+                            // Structure 3: {name: "", text: ""}
+                            if (data.name && data.text) {
+                                return {
+                                    poet: data.name,
+                                    lines: data.text.split('\n').filter(line => line.trim())
+                                };
+                            }
+                            
+                            // Structure 4: Array of poems
+                            if (Array.isArray(data) && data.length > 0) {
+                                const poem = data[userId % data.length];
+                                if (poem.poet && poem.text) {
+                                    return {
+                                        poet: poem.poet,
+                                        lines: poem.text.split('\n').filter(line => line.trim())
+                                    };
+                                }
+                            }
+                        }
+                    }
+                } catch (err) {
+                    console.log(`❌ Failed ${url}:`, err.message);
+                    continue;
+                }
             }
-
-            const data = await response.json();
             
-            if (data && data.poem && data.poet) {
-                return {
-                    poet: data.poet,
-                    lines: Array.isArray(data.poem) ? data.poem : [data.poem]
-                };
-            }
-            
+            console.log('⚠️ All API attempts failed, using local poetry');
             return null;
             
         } catch (error) {
-            console.warn('Ganjgah API fetch failed:', error);
+            console.warn('❌ Ganjgah API completely failed:', error);
             return null;
         }
     }

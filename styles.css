@@ -265,6 +265,7 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
+    filter: drop-shadow(0 20px 40px rgba(0, 0, 0, 0.3));
 }
 
 /* Clock Rings */
@@ -538,44 +539,208 @@ body {
     100% { transform: rotate(360deg); }
 }
 
+/* ===== BEAUTIFUL DATE CARDS ===== */
 .date-container {
     display: flex;
     justify-content: center;
     gap: var(--space-xl);
     flex-wrap: wrap;
+    margin-top: var(--space-xl);
 }
 
-.persian-date, .gregorian-date {
+.date-card {
     background: var(--glass-bg);
     backdrop-filter: var(--backdrop-blur);
     border: 1px solid var(--glass-border);
+    border-radius: var(--radius-xl);
     padding: var(--space-lg);
-    border-radius: var(--radius-lg);
-    text-align: center;
     box-shadow: var(--glass-shadow);
+    position: relative;
+    overflow: hidden;
+    transition: var(--transition-normal);
+    min-width: 280px;
+    text-align: center;
 }
 
-.persian-date {
-    min-width: 200px;
+.date-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 50px rgba(0, 0, 0, 0.2);
 }
 
-.day-name {
-    font-size: 1.2rem;
-    color: var(--text-accent);
-    margin-bottom: var(--space-xs);
-}
-
-.date-numbers {
-    font-size: 1.5rem;
-    font-weight: 600;
-}
-
-.gregorian-date {
-    font-size: 1.1rem;
-    color: var(--text-secondary);
+.date-header {
     display: flex;
     align-items: center;
     justify-content: center;
+    gap: var(--space-sm);
+    margin-bottom: var(--space-lg);
+    padding-bottom: var(--space-sm);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.calendar-icon {
+    width: 40px;
+    height: 40px;
+    background: var(--accent-gradient);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1.2rem;
+    box-shadow: 0 0 20px rgba(79, 172, 254, 0.4);
+    animation: iconPulse 3s ease-in-out infinite;
+}
+
+.date-label {
+    font-size: 1rem;
+    color: var(--text-secondary);
+    font-weight: 500;
+}
+
+/* Persian Date Card */
+.persian-date-card {
+    background: linear-gradient(135deg, 
+        rgba(102, 126, 234, 0.1) 0%, 
+        rgba(240, 147, 251, 0.05) 100%);
+    border-left: 4px solid var(--text-accent);
+}
+
+.persian-date-card .calendar-icon {
+    background: var(--primary-gradient);
+}
+
+.date-content {
+    margin-bottom: var(--space-lg);
+}
+
+.day-name {
+    font-size: 1.4rem;
+    color: var(--text-accent);
+    font-weight: 600;
+    margin-bottom: var(--space-sm);
+    text-shadow: 0 0 10px rgba(100, 255, 218, 0.3);
+}
+
+.date-numbers {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: var(--space-md);
+    background: linear-gradient(135deg, var(--text-accent), #f093fb);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.date-details {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    padding: var(--space-sm);
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: var(--radius-sm);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.season {
+    color: var(--text-accent);
+    font-weight: 600;
+}
+
+/* Gregorian Date Card */
+.gregorian-date-card {
+    background: linear-gradient(135deg, 
+        rgba(240, 147, 251, 0.1) 0%, 
+        rgba(79, 172, 254, 0.05) 100%);
+    border-left: 4px solid #f093fb;
+}
+
+.gregorian-date-card .calendar-icon {
+    background: var(--secondary-gradient);
+}
+
+.gregorian-main {
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: var(--space-md);
+    direction: ltr;
+    background: linear-gradient(135deg, #f093fb, var(--text-accent));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.gregorian-details {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    padding: var(--space-sm);
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: var(--radius-sm);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    direction: ltr;
+}
+
+.week-day {
+    color: #f093fb;
+    font-weight: 600;
+}
+
+/* Date Decorations */
+.date-decoration {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-xs);
+}
+
+.decoration-dot {
+    width: 6px;
+    height: 6px;
+    background: var(--text-accent);
+    border-radius: 50%;
+    animation: dotPulse 2s ease-in-out infinite;
+}
+
+.decoration-dot:nth-child(2) {
+    animation-delay: 0.5s;
+}
+
+.decoration-dot:nth-child(3) {
+    animation-delay: 1s;
+}
+
+.decoration-line {
+    width: 60px;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, #f093fb, transparent);
+    animation: lineGlow 3s ease-in-out infinite;
+}
+
+/* Date Animations */
+@keyframes iconPulse {
+    0%, 100% { transform: scale(1); box-shadow: 0 0 20px rgba(79, 172, 254, 0.4); }
+    50% { transform: scale(1.05); box-shadow: 0 0 30px rgba(79, 172, 254, 0.8); }
+}
+
+@keyframes dotPulse {
+    0%, 100% { opacity: 0.5; transform: scale(1); }
+    50% { opacity: 1; transform: scale(1.2); }
+}
+
+@keyframes lineGlow {
+    0%, 100% { opacity: 0.5; }
+    50% { opacity: 1; }
 }
 
 /* ===== OVERVIEW CARDS ===== */
@@ -1130,6 +1295,26 @@ body {
     .date-container {
         flex-direction: column;
         align-items: center;
+        gap: var(--space-lg);
+    }
+    
+    .date-card {
+        min-width: 250px;
+        padding: var(--space-md);
+    }
+    
+    .calendar-icon {
+        width: 35px;
+        height: 35px;
+        font-size: 1rem;
+    }
+    
+    .date-numbers {
+        font-size: 1.5rem;
+    }
+    
+    .gregorian-main {
+        font-size: 1.4rem;
     }
     
     .overview-cards,
@@ -1220,6 +1405,35 @@ body {
     
     .event-content h2 {
         font-size: 2rem;
+    }
+    
+    .date-card {
+        min-width: 220px;
+        padding: var(--space-sm);
+    }
+    
+    .date-header {
+        margin-bottom: var(--space-md);
+    }
+    
+    .calendar-icon {
+        width: 30px;
+        height: 30px;
+        font-size: 0.9rem;
+    }
+    
+    .date-numbers {
+        font-size: 1.3rem;
+    }
+    
+    .gregorian-main {
+        font-size: 1.2rem;
+    }
+    
+    .date-details, .gregorian-details {
+        flex-direction: column;
+        gap: var(--space-xs);
+        text-align: center;
     }
 }
 

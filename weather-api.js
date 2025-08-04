@@ -332,6 +332,68 @@ class WeatherAPI {
             console.error('Failed to update weather:', error);
         }
     }
+
+    // Public method for manual refresh (for refresh button)
+    async fetchWeatherData() {
+        try {
+            console.log('🌤️ Manual weather refresh requested...');
+            
+            // Force refresh by clearing cache
+            this.lastWeatherData = null;
+            this.lastUpdateTime = null;
+            
+            // Update weather
+            await this.updateWeather();
+            
+            console.log('✅ Weather refreshed successfully');
+            
+            // Show success notification
+            this.showWeatherNotification('آب‌وهوا با موفقیت بروزرسانی شد', 'success');
+            
+        } catch (error) {
+            console.error('❌ Weather refresh failed:', error);
+            this.showWeatherNotification('خطا در بروزرسانی آب‌وهوا', 'error');
+        }
+    }
+
+    // Show weather notification
+    showWeatherNotification(message, type = 'info') {
+        try {
+            const container = document.getElementById('notification-container') || document.body;
+            
+            const notification = document.createElement('div');
+            notification.className = `notification notification-${type}`;
+            notification.innerHTML = `
+                <div class="notification-header">
+                    <span class="notification-title">آب‌وهوا</span>
+                    <button class="notification-close">&times;</button>
+                </div>
+                <div class="notification-body">${message}</div>
+            `;
+            
+            container.appendChild(notification);
+            
+            // Auto remove after 3 seconds
+            setTimeout(() => {
+                if (notification.parentNode) {
+                    notification.parentNode.removeChild(notification);
+                }
+            }, 3000);
+            
+            // Close button
+            const closeBtn = notification.querySelector('.notification-close');
+            if (closeBtn) {
+                closeBtn.addEventListener('click', () => {
+                    if (notification.parentNode) {
+                        notification.parentNode.removeChild(notification);
+                    }
+                });
+            }
+            
+        } catch (error) {
+            console.error('Failed to show notification:', error);
+        }
+    }
 }
 
 // Export for use in other files

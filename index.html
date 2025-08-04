@@ -122,12 +122,47 @@
             </div>
             
             <div class="date-container">
-                <div class="persian-date" id="persian-date">
-                    <div class="day-name">شنبه</div>
-                    <div class="date-numbers">1 فروردین 1403</div>
+                <!-- Persian Date Card -->
+                <div class="date-card persian-date-card" id="persian-date">
+                    <div class="date-header">
+                        <div class="calendar-icon">
+                            <i class="fas fa-calendar-alt"></i>
+                        </div>
+                        <span class="date-label">تاریخ شمسی</span>
+                    </div>
+                    <div class="date-content">
+                        <div class="day-name">شنبه</div>
+                        <div class="date-numbers">1 فروردین 1403</div>
+                        <div class="date-details">
+                            <span class="season">بهار</span>
+                            <span class="day-of-year">روز 1 از سال</span>
+                        </div>
+                    </div>
+                    <div class="date-decoration">
+                        <div class="decoration-dot"></div>
+                        <div class="decoration-dot"></div>
+                        <div class="decoration-dot"></div>
+                    </div>
                 </div>
-                <div class="gregorian-date" id="gregorian-date">
-                    21 March 2024
+
+                <!-- Gregorian Date Card -->
+                <div class="date-card gregorian-date-card" id="gregorian-date">
+                    <div class="date-header">
+                        <div class="calendar-icon">
+                            <i class="fas fa-globe"></i>
+                        </div>
+                        <span class="date-label">تاریخ میلادی</span>
+                    </div>
+                    <div class="date-content">
+                        <div class="gregorian-main">21 March 2024</div>
+                        <div class="gregorian-details">
+                            <span class="week-day">Saturday</span>
+                            <span class="month-progress">Day 21 of March</span>
+                        </div>
+                    </div>
+                    <div class="date-decoration">
+                        <div class="decoration-line"></div>
+                    </div>
                 </div>
             </div>
         </section>
@@ -173,6 +208,14 @@
                         <div class="detail">
                             <span>رطوبت:</span>
                             <span id="humidity">45%</span>
+                        </div>
+                        <div class="detail">
+                            <span>باد:</span>
+                            <span id="wind-speed">5 کیلومتر</span>
+                        </div>
+                        <div class="detail">
+                            <span>فشار:</span>
+                            <span id="pressure">1013 hPa</span>
                         </div>
                     </div>
                 </div>

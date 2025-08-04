@@ -302,21 +302,102 @@ class IranLiveApp {
             if (!this.persianCalendar) return;
             
             const persianDate = this.persianCalendar.getCurrentPersianDate();
+            const iranTime = this.persianCalendar.getIranTime();
             
+            // Update Persian date card
+            this.updatePersianDateCard(persianDate);
+            
+            // Update Gregorian date card
+            this.updateGregorianDateCard(iranTime);
+            
+        } catch (error) {
+            console.error('❌ Date update failed:', error);
+        }
+    }
+
+    // Update Persian date card with detailed information
+    updatePersianDateCard(persianDate) {
+        try {
             // Update day name
-            const dayNameElement = document.querySelector('.persian-date .day-name');
+            const dayNameElement = document.querySelector('.day-name');
             if (dayNameElement) {
                 dayNameElement.textContent = persianDate.dayName;
             }
 
             // Update date numbers
-            const dateNumbersElement = document.querySelector('.persian-date .date-numbers');
+            const dateNumbersElement = document.querySelector('.date-numbers');
             if (dateNumbersElement) {
                 dateNumbersElement.textContent = `${persianDate.day} ${persianDate.monthName} ${persianDate.year}`;
             }
+
+            // Update season
+            const seasonElement = document.querySelector('.season');
+            if (seasonElement) {
+                const season = this.getPersianSeason(persianDate.month);
+                seasonElement.textContent = season;
+            }
+
+            // Update day of year
+            const dayOfYearElement = document.querySelector('.day-of-year');
+            if (dayOfYearElement) {
+                const dayOfYear = this.calculatePersianDayOfYear(persianDate);
+                dayOfYearElement.textContent = `روز ${dayOfYear} از سال`;
+            }
             
         } catch (error) {
-            console.error('❌ Date update failed:', error);
+            console.error('❌ Persian date card update failed:', error);
+        }
+    }
+
+    // Update Gregorian date card
+    updateGregorianDateCard(gregorianDate) {
+        try {
+            const gregorianMainElement = document.querySelector('.gregorian-main');
+            const weekDayElement = document.querySelector('.week-day');
+            const monthProgressElement = document.querySelector('.month-progress');
+            
+            if (gregorianMainElement) {
+                const options = { year: 'numeric', month: 'long', day: 'numeric' };
+                gregorianMainElement.textContent = gregorianDate.toLocaleDateString('en-US', options);
+            }
+
+            if (weekDayElement) {
+                const weekDayOptions = { weekday: 'long' };
+                weekDayElement.textContent = gregorianDate.toLocaleDateString('en-US', weekDayOptions);
+            }
+
+            if (monthProgressElement) {
+                const monthName = gregorianDate.toLocaleDateString('en-US', { month: 'long' });
+                const dayOfMonth = gregorianDate.getDate();
+                monthProgressElement.textContent = `Day ${dayOfMonth} of ${monthName}`;
+            }
+            
+        } catch (error) {
+            console.error('❌ Gregorian date card update failed:', error);
+        }
+    }
+
+    // Get Persian season based on month
+    getPersianSeason(month) {
+        if (month >= 1 && month <= 3) return 'بهار';
+        if (month >= 4 && month <= 6) return 'تابستان';
+        if (month >= 7 && month <= 9) return 'پاییز';
+        return 'زمستان';
+    }
+
+    // Calculate Persian day of year
+    calculatePersianDayOfYear(persianDate) {
+        try {
+            const monthDays = [31, 31, 31, 31, 31, 31, 30, 30, 30, 30, 30, 29]; // Persian calendar
+            let dayOfYear = persianDate.day;
+            
+            for (let i = 1; i < persianDate.month; i++) {
+                dayOfYear += monthDays[i - 1];
+            }
+            
+            return dayOfYear;
+        } catch (error) {
+            return 1;
         }
     }
 
