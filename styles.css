@@ -1,0 +1,1477 @@
+/* ===== IRAN LIVE - MODERN DESIGN ===== */
+
+/* CSS Variables */
+:root {
+    /* Color Palette */
+    --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    --secondary-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    --accent-gradient: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+    --sunset-gradient: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+    --dawn-gradient: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+    --night-gradient: linear-gradient(135deg, #2c3e50 0%, #4a6741 100%);
+    
+    /* Glass Morphism */
+    --glass-bg: rgba(255, 255, 255, 0.1);
+    --glass-border: rgba(255, 255, 255, 0.2);
+    --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    --backdrop-blur: blur(20px);
+    
+    /* Colors */
+    --text-primary: rgba(255, 255, 255, 0.95);
+    --text-secondary: rgba(255, 255, 255, 0.8);
+    --text-muted: rgba(255, 255, 255, 0.6);
+    --text-accent: #64ffda;
+    
+    /* Spacing */
+    --space-xs: 0.25rem;
+    --space-sm: 0.5rem;
+    --space-md: 1rem;
+    --space-lg: 1.5rem;
+    --space-xl: 2rem;
+    --space-xxl: 3rem;
+    
+    /* Border Radius */
+    --radius-sm: 8px;
+    --radius-md: 12px;
+    --radius-lg: 16px;
+    --radius-xl: 24px;
+    
+    /* Transitions */
+    --transition-fast: all 0.2s ease;
+    --transition-normal: all 0.3s ease;
+    --transition-slow: all 0.5s ease;
+    
+    /* Z-Index */
+    --z-background: -1;
+    --z-content: 1;
+    --z-elevated: 10;
+    --z-modal: 1000;
+    --z-tooltip: 2000;
+}
+
+/* ===== RESET & BASE ===== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+html {
+    font-size: 16px;
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: 'Vazir', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: var(--night-gradient);
+    color: var(--text-primary);
+    line-height: 1.6;
+    overflow-x: hidden;
+    min-height: 100vh;
+}
+
+/* ===== LOADING SCREEN ===== */
+.loading-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: var(--night-gradient);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: var(--z-modal);
+    opacity: 1;
+    visibility: visible;
+    transition: var(--transition-slow);
+}
+
+.loading-screen.fade-out {
+    opacity: 0;
+    visibility: hidden;
+}
+
+.loading-content {
+    text-align: center;
+    animation: pulse 2s ease-in-out infinite;
+}
+
+.loading-logo {
+    margin-bottom: var(--space-xl);
+}
+
+.loading-logo i {
+    font-size: 4rem;
+    color: var(--text-accent);
+    margin-bottom: var(--space-md);
+    animation: rotate 3s linear infinite;
+}
+
+.loading-logo h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: var(--space-sm);
+}
+
+.loading-progress {
+    width: 300px;
+    height: 4px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 2px;
+    overflow: hidden;
+    margin-bottom: var(--space-lg);
+}
+
+.progress-bar {
+    height: 100%;
+    background: var(--accent-gradient);
+    width: 0%;
+    border-radius: 2px;
+    transition: width 0.3s ease;
+}
+
+.loading-text {
+    color: var(--text-secondary);
+    font-size: 1.1rem;
+}
+
+/* ===== BACKGROUND SYSTEM ===== */
+.background-system {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: var(--z-background);
+    pointer-events: none;
+}
+
+.particle-field {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.particle {
+    position: absolute;
+    width: 2px;
+    height: 2px;
+    background: var(--text-accent);
+    border-radius: 50%;
+    opacity: 0.7;
+    animation: float 20s linear infinite;
+}
+
+.weather-effects {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+/* ===== NAVIGATION ===== */
+.main-nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: var(--z-elevated);
+    background: var(--glass-bg);
+    backdrop-filter: var(--backdrop-blur);
+    border-bottom: 1px solid var(--glass-border);
+    padding: var(--space-md) 0;
+}
+
+.nav-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 var(--space-lg);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.nav-brand {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--text-accent);
+}
+
+.nav-brand i {
+    font-size: 1.8rem;
+    animation: rotate 10s linear infinite;
+}
+
+.nav-controls {
+    display: flex;
+    gap: var(--space-sm);
+}
+
+.nav-btn {
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    color: var(--text-primary);
+    padding: var(--space-sm) var(--space-md);
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: var(--transition-fast);
+    backdrop-filter: var(--backdrop-blur);
+}
+
+.nav-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: translateY(-2px);
+    box-shadow: var(--glass-shadow);
+}
+
+/* ===== MAIN CONTENT ===== */
+.main-content {
+    padding-top: 100px;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding-left: var(--space-lg);
+    padding-right: var(--space-lg);
+}
+
+/* ===== HERO SECTION ===== */
+.hero-section {
+    text-align: center;
+    margin-bottom: var(--space-xxl);
+    padding: var(--space-xxl) 0;
+}
+
+.time-container {
+    margin-bottom: var(--space-xl);
+}
+
+/* ===== ELEGANT CLOCK DESIGN ===== */
+.elegant-clock {
+    position: relative;
+    width: 400px;
+    height: 400px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    filter: drop-shadow(0 20px 40px rgba(0, 0, 0, 0.3));
+}
+
+/* Clock Rings */
+.clock-ring {
+    position: absolute;
+    border-radius: 50%;
+    border: 2px solid rgba(255, 255, 255, 0.1);
+}
+
+.outer-ring {
+    width: 100%;
+    height: 100%;
+    background: conic-gradient(from 0deg, 
+        rgba(102, 126, 234, 0.1) 0%, 
+        rgba(240, 147, 251, 0.1) 25%, 
+        rgba(79, 172, 254, 0.1) 50%, 
+        rgba(100, 255, 218, 0.1) 75%, 
+        rgba(102, 126, 234, 0.1) 100%);
+    animation: ringRotate 60s linear infinite;
+}
+
+.middle-ring {
+    width: 85%;
+    height: 85%;
+    background: var(--glass-bg);
+    backdrop-filter: var(--backdrop-blur);
+    border: 1px solid var(--glass-border);
+    box-shadow: inset 0 0 50px rgba(100, 255, 218, 0.1);
+}
+
+/* Ring Markers */
+.ring-markers {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+.marker {
+    position: absolute;
+    width: 4px;
+    height: 20px;
+    background: var(--text-accent);
+    border-radius: 2px;
+    transform-origin: center 190px;
+}
+
+.marker-12 { transform: rotate(0deg) translateX(-50%); top: 10px; left: 50%; }
+.marker-3 { transform: rotate(90deg) translateY(-50%); right: 10px; top: 50%; }
+.marker-6 { transform: rotate(180deg) translateX(-50%); bottom: 10px; left: 50%; }
+.marker-9 { transform: rotate(270deg) translateY(-50%); left: 10px; top: 50%; }
+
+/* Hour Dots */
+.hour-dots {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+.hour-dot {
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    background: rgba(255, 255, 255, 0.4);
+    border-radius: 50%;
+    transform-origin: center 150px;
+}
+
+/* Clock Face */
+.clock-face {
+    position: relative;
+    width: 70%;
+    height: 70%;
+    background: radial-gradient(circle, 
+        rgba(255, 255, 255, 0.05) 0%, 
+        rgba(255, 255, 255, 0.02) 70%, 
+        transparent 100%);
+    border-radius: 50%;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(30px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 
+        0 0 30px rgba(100, 255, 218, 0.2),
+        inset 0 0 30px rgba(255, 255, 255, 0.05);
+}
+
+/* Analog Hands */
+.clock-hands {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+}
+
+.hand {
+    position: absolute;
+    background: var(--text-accent);
+    border-radius: 10px;
+    transform-origin: bottom center;
+    left: 50%;
+    bottom: 50%;
+    box-shadow: 0 0 10px rgba(100, 255, 218, 0.5);
+}
+
+.hour-hand {
+    width: 6px;
+    height: 60px;
+    margin-left: -3px;
+    background: linear-gradient(to top, var(--text-accent), rgba(100, 255, 218, 0.7));
+    animation: handGlow 3s ease-in-out infinite alternate;
+}
+
+.minute-hand {
+    width: 4px;
+    height: 80px;
+    margin-left: -2px;
+    background: linear-gradient(to top, #f093fb, rgba(240, 147, 251, 0.7));
+    animation: handGlow 4s ease-in-out infinite alternate;
+}
+
+.second-hand {
+    width: 2px;
+    height: 90px;
+    margin-left: -1px;
+    background: linear-gradient(to top, #4facfe, rgba(79, 172, 254, 0.7));
+    animation: secondTick 1s linear infinite;
+}
+
+.hand-center {
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    background: radial-gradient(circle, var(--text-accent) 0%, rgba(100, 255, 218, 0.8) 100%);
+    border-radius: 50%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    box-shadow: 0 0 15px rgba(100, 255, 218, 0.8);
+    z-index: 10;
+}
+
+/* Digital Display */
+.digital-display {
+    position: absolute;
+    bottom: 30%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: var(--radius-lg);
+    padding: var(--space-sm) var(--space-md);
+    direction: ltr;
+}
+
+.digital-time {
+    display: flex;
+    align-items: center;
+    gap: var(--space-xs);
+    font-family: 'Courier New', monospace;
+    font-size: 0.9rem;
+    color: var(--text-primary);
+}
+
+.digit-group {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+}
+
+.digit-group span:first-child {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--text-accent);
+    text-shadow: 0 0 10px rgba(100, 255, 218, 0.5);
+}
+
+.digit-label {
+    font-size: 0.6rem;
+    color: var(--text-muted);
+    font-weight: 400;
+}
+
+.time-separator {
+    font-size: 1.2rem;
+    color: var(--text-accent);
+    animation: blink 1s infinite;
+    margin: 0 var(--space-xs);
+}
+
+/* Time Period Elegant */
+.time-period-elegant {
+    position: absolute;
+    top: -60px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    background: var(--glass-bg);
+    backdrop-filter: var(--backdrop-blur);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-xl);
+    padding: var(--space-md) var(--space-lg);
+    box-shadow: var(--glass-shadow);
+    position: relative;
+    overflow: hidden;
+}
+
+.period-icon {
+    width: 40px;
+    height: 40px;
+    background: var(--accent-gradient);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1.2rem;
+    box-shadow: 0 0 20px rgba(79, 172, 254, 0.4);
+    animation: periodIconPulse 3s ease-in-out infinite;
+}
+
+.time-period-elegant .period-text {
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+}
+
+.period-glow {
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: conic-gradient(from 0deg, 
+        transparent 0%, 
+        rgba(100, 255, 218, 0.1) 25%, 
+        transparent 50%, 
+        rgba(240, 147, 251, 0.1) 75%, 
+        transparent 100%);
+    animation: periodGlow 8s linear infinite;
+    pointer-events: none;
+}
+
+/* Clock Animations */
+@keyframes ringRotate {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+@keyframes handGlow {
+    0% { box-shadow: 0 0 10px rgba(100, 255, 218, 0.3); }
+    100% { box-shadow: 0 0 20px rgba(100, 255, 218, 0.8); }
+}
+
+@keyframes secondTick {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(6deg); }
+}
+
+@keyframes periodIconPulse {
+    0%, 100% { transform: scale(1); box-shadow: 0 0 20px rgba(79, 172, 254, 0.4); }
+    50% { transform: scale(1.1); box-shadow: 0 0 30px rgba(79, 172, 254, 0.8); }
+}
+
+@keyframes periodGlow {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* ===== BEAUTIFUL DATE CARDS ===== */
+.date-container {
+    display: flex;
+    justify-content: center;
+    gap: var(--space-xl);
+    flex-wrap: wrap;
+    margin-top: var(--space-xl);
+}
+
+.date-card {
+    background: var(--glass-bg);
+    backdrop-filter: var(--backdrop-blur);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-xl);
+    padding: var(--space-lg);
+    box-shadow: var(--glass-shadow);
+    position: relative;
+    overflow: hidden;
+    transition: var(--transition-normal);
+    min-width: 280px;
+    text-align: center;
+}
+
+.date-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 50px rgba(0, 0, 0, 0.2);
+}
+
+.date-header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-sm);
+    margin-bottom: var(--space-lg);
+    padding-bottom: var(--space-sm);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.calendar-icon {
+    width: 40px;
+    height: 40px;
+    background: var(--accent-gradient);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1.2rem;
+    box-shadow: 0 0 20px rgba(79, 172, 254, 0.4);
+    animation: iconPulse 3s ease-in-out infinite;
+}
+
+.date-label {
+    font-size: 1rem;
+    color: var(--text-secondary);
+    font-weight: 500;
+}
+
+/* Persian Date Card */
+.persian-date-card {
+    background: linear-gradient(135deg, 
+        rgba(102, 126, 234, 0.1) 0%, 
+        rgba(240, 147, 251, 0.05) 100%);
+    border-left: 4px solid var(--text-accent);
+}
+
+.persian-date-card .calendar-icon {
+    background: var(--primary-gradient);
+}
+
+.date-content {
+    margin-bottom: var(--space-lg);
+}
+
+.day-name {
+    font-size: 1.4rem;
+    color: var(--text-accent);
+    font-weight: 600;
+    margin-bottom: var(--space-sm);
+    text-shadow: 0 0 10px rgba(100, 255, 218, 0.3);
+}
+
+.date-numbers {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: var(--space-md);
+    background: linear-gradient(135deg, var(--text-accent), #f093fb);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.date-details {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    padding: var(--space-sm);
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: var(--radius-sm);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.season {
+    color: var(--text-accent);
+    font-weight: 600;
+}
+
+/* Gregorian Date Card */
+.gregorian-date-card {
+    background: linear-gradient(135deg, 
+        rgba(240, 147, 251, 0.1) 0%, 
+        rgba(79, 172, 254, 0.05) 100%);
+    border-left: 4px solid #f093fb;
+}
+
+.gregorian-date-card .calendar-icon {
+    background: var(--secondary-gradient);
+}
+
+.gregorian-main {
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: var(--space-md);
+    direction: ltr;
+    background: linear-gradient(135deg, #f093fb, var(--text-accent));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.gregorian-details {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    padding: var(--space-sm);
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: var(--radius-sm);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    direction: ltr;
+}
+
+.week-day {
+    color: #f093fb;
+    font-weight: 600;
+}
+
+/* Date Decorations */
+.date-decoration {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-xs);
+}
+
+.decoration-dot {
+    width: 6px;
+    height: 6px;
+    background: var(--text-accent);
+    border-radius: 50%;
+    animation: dotPulse 2s ease-in-out infinite;
+}
+
+.decoration-dot:nth-child(2) {
+    animation-delay: 0.5s;
+}
+
+.decoration-dot:nth-child(3) {
+    animation-delay: 1s;
+}
+
+.decoration-line {
+    width: 60px;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, #f093fb, transparent);
+    animation: lineGlow 3s ease-in-out infinite;
+}
+
+/* Date Animations */
+@keyframes iconPulse {
+    0%, 100% { transform: scale(1); box-shadow: 0 0 20px rgba(79, 172, 254, 0.4); }
+    50% { transform: scale(1.05); box-shadow: 0 0 30px rgba(79, 172, 254, 0.8); }
+}
+
+@keyframes dotPulse {
+    0%, 100% { opacity: 0.5; transform: scale(1); }
+    50% { opacity: 1; transform: scale(1.2); }
+}
+
+@keyframes lineGlow {
+    0%, 100% { opacity: 0.5; }
+    50% { opacity: 1; }
+}
+
+/* ===== OVERVIEW CARDS ===== */
+.overview-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: var(--space-xl);
+    margin-bottom: var(--space-xxl);
+}
+
+.card {
+    background: var(--glass-bg);
+    backdrop-filter: var(--backdrop-blur);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-lg);
+    padding: var(--space-lg);
+    box-shadow: var(--glass-shadow);
+    transition: var(--transition-normal);
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+}
+
+.card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: var(--space-lg);
+}
+
+.card-header h3 {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    font-size: 1.3rem;
+    color: var(--text-primary);
+}
+
+.card-header i {
+    color: var(--text-accent);
+    font-size: 1.5rem;
+}
+
+.refresh-btn {
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    cursor: pointer;
+    padding: var(--space-xs);
+    border-radius: var(--radius-sm);
+    transition: var(--transition-fast);
+}
+
+.refresh-btn:hover {
+    color: var(--text-accent);
+    background: rgba(255, 255, 255, 0.1);
+}
+
+/* Theme Card */
+.current-theme {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--text-accent);
+    margin-bottom: var(--space-sm);
+}
+
+.theme-description {
+    color: var(--text-secondary);
+    margin-bottom: var(--space-md);
+}
+
+.theme-progress {
+    height: 6px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 3px;
+    overflow: hidden;
+    margin-bottom: var(--space-sm);
+}
+
+.progress-fill {
+    height: 100%;
+    background: var(--accent-gradient);
+    width: 60%;
+    border-radius: 3px;
+    transition: width 1s ease;
+}
+
+.theme-remaining {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+}
+
+/* Weather Card */
+.weather-main {
+    display: flex;
+    align-items: center;
+    gap: var(--space-lg);
+    margin-bottom: var(--space-lg);
+}
+
+.temperature {
+    font-size: 3rem;
+    font-weight: 700;
+    color: var(--text-accent);
+}
+
+.weather-info {
+    flex: 1;
+}
+
+.condition {
+    font-size: 1.3rem;
+    font-weight: 600;
+    margin-bottom: var(--space-xs);
+}
+
+.location {
+    color: var(--text-secondary);
+}
+
+.weather-details {
+    display: flex;
+    gap: var(--space-lg);
+}
+
+.detail {
+    display: flex;
+    justify-content: space-between;
+    flex: 1;
+    padding: var(--space-sm);
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: var(--radius-sm);
+}
+
+/* ===== INFO GRID ===== */
+.info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: var(--space-xl);
+    margin-bottom: var(--space-xxl);
+}
+
+.info-card {
+    background: var(--glass-bg);
+    backdrop-filter: var(--backdrop-blur);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-lg);
+    padding: var(--space-lg);
+    box-shadow: var(--glass-shadow);
+    transition: var(--transition-normal);
+}
+
+.info-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+}
+
+/* Forecast Card */
+.forecast-timeline {
+    display: flex;
+    gap: var(--space-md);
+    overflow-x: auto;
+    padding: var(--space-sm) 0;
+}
+
+.forecast-item {
+    min-width: 120px;
+    text-align: center;
+    padding: var(--space-md);
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: var(--radius-sm);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.forecast-day {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    margin-bottom: var(--space-sm);
+}
+
+.forecast-icon {
+    font-size: 2rem;
+    margin-bottom: var(--space-sm);
+    color: var(--text-accent);
+}
+
+.forecast-temp {
+    font-weight: 600;
+    margin-bottom: var(--space-xs);
+}
+
+.forecast-desc {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+}
+
+/* Prayer Card */
+.prayer-times {
+    margin-bottom: var(--space-lg);
+}
+
+.prayer-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--space-md);
+    margin-bottom: var(--space-sm);
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: var(--radius-sm);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: var(--transition-fast);
+}
+
+.prayer-item:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.prayer-item.active {
+    background: var(--accent-gradient);
+    color: white;
+    box-shadow: 0 4px 15px rgba(79, 172, 254, 0.3);
+}
+
+.prayer-name {
+    font-weight: 600;
+}
+
+.prayer-time {
+    font-family: 'Courier New', monospace;
+    font-size: 1.1rem;
+    color: var(--text-accent);
+}
+
+.prayer-item.active .prayer-time {
+    color: white;
+}
+
+.next-prayer {
+    text-align: center;
+    padding: var(--space-md);
+    background: var(--primary-gradient);
+    border-radius: var(--radius-sm);
+    color: white;
+    font-weight: 600;
+}
+
+/* Poetry Card */
+.poem-verses {
+    margin-bottom: var(--space-lg);
+    line-height: 2;
+}
+
+.verse {
+    padding: var(--space-sm) 0;
+    font-size: 1.1rem;
+    color: var(--text-secondary);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.verse:last-child {
+    border-bottom: none;
+}
+
+.poet-name {
+    text-align: center;
+    padding: var(--space-md);
+    background: var(--secondary-gradient);
+    border-radius: var(--radius-sm);
+    color: white;
+    font-weight: 600;
+}
+
+
+
+/* ===== SPECIAL EVENTS ===== */
+.special-events {
+    display: none;
+    margin-bottom: var(--space-xxl);
+}
+
+.special-events.active {
+    display: block;
+}
+
+.event-container {
+    background: var(--sunset-gradient);
+    border-radius: var(--radius-xl);
+    padding: var(--space-xxl);
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+}
+
+.event-content h2 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: var(--space-md);
+    color: white;
+}
+
+.event-content p {
+    font-size: 1.3rem;
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.event-decorations {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+}
+
+.decoration {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    animation: float 6s ease-in-out infinite;
+}
+
+.decoration:nth-child(1) {
+    top: 20%;
+    left: 10%;
+    animation-delay: 0s;
+}
+
+.decoration:nth-child(2) {
+    top: 50%;
+    right: 15%;
+    animation-delay: 2s;
+}
+
+.decoration:nth-child(3) {
+    bottom: 30%;
+    left: 20%;
+    animation-delay: 4s;
+}
+
+/* ===== SETTINGS PANEL ===== */
+.settings-panel {
+    position: fixed;
+    top: 0;
+    right: -400px;
+    width: 400px;
+    height: 100%;
+    background: var(--glass-bg);
+    backdrop-filter: var(--backdrop-blur);
+    border-left: 1px solid var(--glass-border);
+    z-index: var(--z-modal);
+    transition: var(--transition-normal);
+    overflow-y: auto;
+}
+
+.settings-panel.active {
+    right: 0;
+}
+
+.settings-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--space-lg);
+    border-bottom: 1px solid var(--glass-border);
+}
+
+.settings-header h3 {
+    font-size: 1.5rem;
+    color: var(--text-primary);
+}
+
+.close-btn {
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    font-size: 1.5rem;
+    cursor: pointer;
+    padding: var(--space-xs);
+    border-radius: var(--radius-sm);
+    transition: var(--transition-fast);
+}
+
+.close-btn:hover {
+    color: var(--text-accent);
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.settings-content {
+    padding: var(--space-lg);
+}
+
+.setting-group {
+    margin-bottom: var(--space-xl);
+}
+
+.setting-group h4 {
+    color: var(--text-accent);
+    margin-bottom: var(--space-lg);
+    font-size: 1.2rem;
+}
+
+.setting-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--space-md);
+    margin-bottom: var(--space-sm);
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: var(--radius-sm);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.setting-item label {
+    color: var(--text-primary);
+    cursor: pointer;
+}
+
+.setting-item input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+}
+
+/* ===== NOTIFICATIONS ===== */
+.notification-container {
+    position: fixed;
+    top: 100px;
+    right: var(--space-lg);
+    z-index: var(--z-tooltip);
+    max-width: 400px;
+}
+
+.notification {
+    background: var(--glass-bg);
+    backdrop-filter: var(--backdrop-blur);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-lg);
+    margin-bottom: var(--space-md);
+    box-shadow: var(--glass-shadow);
+    animation: slideIn 0.3s ease;
+}
+
+.notification-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--space-sm);
+}
+
+.notification-title {
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.notification-close {
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    cursor: pointer;
+    font-size: 1.2rem;
+}
+
+.notification-body {
+    color: var(--text-secondary);
+}
+
+.notification-success {
+    border-left: 4px solid #4caf50;
+}
+
+.notification-error {
+    border-left: 4px solid #f44336;
+}
+
+.notification-info {
+    border-left: 4px solid var(--text-accent);
+}
+
+/* ===== ANIMATIONS ===== */
+@keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.8; transform: scale(1.05); }
+}
+
+@keyframes rotate {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+@keyframes blink {
+    0%, 50% { opacity: 1; }
+    51%, 100% { opacity: 0.3; }
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0px) translateX(0px); }
+    25% { transform: translateY(-20px) translateX(10px); }
+    50% { transform: translateY(-40px) translateX(-5px); }
+    75% { transform: translateY(-20px) translateX(-10px); }
+}
+
+@keyframes slideIn {
+    from { transform: translateX(100%); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+}
+
+/* ===== RESPONSIVE DESIGN ===== */
+@media (max-width: 768px) {
+    .main-content {
+        padding-left: var(--space-md);
+        padding-right: var(--space-md);
+    }
+    
+    .elegant-clock {
+        width: 300px;
+        height: 300px;
+    }
+    
+    .digital-display {
+        bottom: 25%;
+    }
+    
+    .digital-time {
+        font-size: 0.8rem;
+    }
+    
+    .digit-group span:first-child {
+        font-size: 1rem;
+    }
+    
+    .time-period-elegant {
+        top: -50px;
+        padding: var(--space-sm) var(--space-md);
+    }
+    
+    .period-icon {
+        width: 35px;
+        height: 35px;
+        font-size: 1rem;
+    }
+    
+    .time-period-elegant .period-text {
+        font-size: 1.1rem;
+    }
+    
+    .date-container {
+        flex-direction: column;
+        align-items: center;
+        gap: var(--space-lg);
+    }
+    
+    .date-card {
+        min-width: 250px;
+        padding: var(--space-md);
+    }
+    
+    .calendar-icon {
+        width: 35px;
+        height: 35px;
+        font-size: 1rem;
+    }
+    
+    .date-numbers {
+        font-size: 1.5rem;
+    }
+    
+    .gregorian-main {
+        font-size: 1.4rem;
+    }
+    
+    .overview-cards,
+    .info-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .weather-main {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .weather-details {
+        flex-direction: column;
+    }
+    
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .settings-panel {
+        width: 100%;
+        right: -100%;
+    }
+    
+    .notification-container {
+        right: var(--space-sm);
+        left: var(--space-sm);
+        max-width: none;
+    }
+}
+
+@media (max-width: 480px) {
+    .nav-container {
+        padding: 0 var(--space-md);
+    }
+    
+    .nav-brand {
+        font-size: 1.2rem;
+    }
+    
+    .elegant-clock {
+        width: 250px;
+        height: 250px;
+    }
+    
+    .digital-display {
+        bottom: 20%;
+        padding: var(--space-xs) var(--space-sm);
+    }
+    
+    .digital-time {
+        font-size: 0.7rem;
+        gap: 2px;
+    }
+    
+    .digit-group span:first-child {
+        font-size: 0.9rem;
+    }
+    
+    .digit-label {
+        font-size: 0.5rem;
+    }
+    
+    .time-period-elegant {
+        top: -40px;
+        padding: var(--space-xs) var(--space-sm);
+        gap: var(--space-xs);
+    }
+    
+    .period-icon {
+        width: 30px;
+        height: 30px;
+        font-size: 0.9rem;
+    }
+    
+    .time-period-elegant .period-text {
+        font-size: 1rem;
+    }
+    
+    .hero-section {
+        padding: var(--space-xl) 0;
+    }
+    
+    .event-container {
+        padding: var(--space-xl);
+    }
+    
+    .event-content h2 {
+        font-size: 2rem;
+    }
+    
+    .date-card {
+        min-width: 220px;
+        padding: var(--space-sm);
+    }
+    
+    .date-header {
+        margin-bottom: var(--space-md);
+    }
+    
+    .calendar-icon {
+        width: 30px;
+        height: 30px;
+        font-size: 0.9rem;
+    }
+    
+    .date-numbers {
+        font-size: 1.3rem;
+    }
+    
+    .gregorian-main {
+        font-size: 1.2rem;
+    }
+    
+    .date-details, .gregorian-details {
+        flex-direction: column;
+        gap: var(--space-xs);
+        text-align: center;
+    }
+}
+
+/* ===== THEME VARIATIONS ===== */
+.theme-dawn {
+    background: var(--dawn-gradient);
+}
+
+.theme-day {
+    background: var(--primary-gradient);
+}
+
+.theme-sunset {
+    background: var(--sunset-gradient);
+}
+
+.theme-night {
+    background: var(--night-gradient);
+}
+
+.theme-midnight {
+    background: linear-gradient(135deg, #1a202c 0%, #2d3748 100%);
+}
+
+/* ===== ACCESSIBILITY ===== */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+@media (prefers-contrast: high) {
+    :root {
+        --text-primary: #ffffff;
+        --text-secondary: #f0f0f0;
+        --text-muted: #e0e0e0;
+        --glass-border: rgba(255, 255, 255, 0.5);
+    }
+}
