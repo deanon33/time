@@ -717,6 +717,190 @@ body {
     text-align: center;
 }
 
+/* ===== WORLD CLOCK CARD ===== */
+.cities-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-md);
+}
+
+.city-time {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: var(--radius-md);
+    padding: var(--space-md);
+    text-align: center;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: all var(--transition-fast);
+}
+
+.city-time:hover {
+    background: rgba(255, 255, 255, 0.1);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+.city-name {
+    font-size: 1rem;
+    color: var(--text-secondary);
+    margin-bottom: var(--space-xs);
+    font-weight: 500;
+}
+
+.city-clock {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    font-family: 'Inter', monospace;
+    direction: ltr;
+}
+
+/* ===== WEATHER FORECAST CARD ===== */
+.forecast-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: var(--space-sm);
+    overflow-x: auto;
+    padding-bottom: var(--space-xs);
+}
+
+.forecast-item {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: var(--radius-md);
+    padding: var(--space-md);
+    text-align: center;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    min-width: 120px;
+    transition: all var(--transition-fast);
+}
+
+.forecast-item:hover {
+    background: rgba(255, 255, 255, 0.1);
+    transform: translateY(-2px);
+}
+
+.forecast-day {
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+    margin-bottom: var(--space-xs);
+}
+
+.forecast-icon {
+    font-size: 2rem;
+    margin: var(--space-xs) 0;
+    color: var(--text-primary);
+}
+
+.forecast-temp {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: var(--space-xs);
+}
+
+.forecast-desc {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+}
+
+/* ===== PRAYER TIMES CARD ===== */
+.prayer-times {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+}
+
+.prayer-time {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--space-sm);
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: var(--radius-sm);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: all var(--transition-fast);
+}
+
+.prayer-time:hover {
+    background: rgba(255, 255, 255, 0.1);
+    transform: translateX(-2px);
+}
+
+.prayer-time.active {
+    background: var(--success-gradient);
+    color: white;
+    box-shadow: var(--shadow-md);
+}
+
+.prayer-name {
+    font-size: 1rem;
+    color: var(--text-primary);
+    font-weight: 500;
+}
+
+.prayer-clock {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    font-family: 'Inter', monospace;
+    direction: ltr;
+}
+
+.prayer-time.active .prayer-name,
+.prayer-time.active .prayer-clock {
+    color: white;
+}
+
+/* ===== POETRY CARD ===== */
+.poetry-content {
+    text-align: center;
+}
+
+.poem-text {
+    margin-bottom: var(--space-lg);
+    line-height: 1.8;
+}
+
+.poem-line {
+    font-size: 1.25rem;
+    color: var(--text-primary);
+    margin-bottom: var(--space-sm);
+    font-style: italic;
+    position: relative;
+}
+
+.poem-line::before {
+    content: '"';
+    font-size: 2rem;
+    color: var(--text-secondary);
+    position: absolute;
+    right: -15px;
+    top: -5px;
+}
+
+.poem-line:last-child::after {
+    content: '"';
+    font-size: 2rem;
+    color: var(--text-secondary);
+    position: absolute;
+    left: -15px;
+    bottom: -10px;
+}
+
+.poet-name {
+    font-size: 1rem;
+    color: var(--text-secondary);
+    font-weight: 600;
+    padding: var(--space-sm);
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: var(--radius-sm);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.poet-name::before {
+    content: '— ';
+    color: var(--text-muted);
+}
+
 /* ===== STATISTICS CARD ===== */
 .stats-grid {
     display: grid;
@@ -1424,6 +1608,105 @@ body.theme-yalda {
     }
 }
 
+/* ===== NOTIFICATION SYSTEM ===== */
+.notification {
+    position: fixed;
+    top: 100px;
+    right: 20px;
+    width: 350px;
+    background: var(--glass-bg);
+    backdrop-filter: var(--glass-backdrop);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-xl);
+    z-index: var(--z-modal);
+    animation: notification-slide-in 0.3s ease-out;
+}
+
+@keyframes notification-slide-in {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+.notification-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--space-md);
+    border-bottom: 1px solid var(--glass-border);
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.notification-header i {
+    color: var(--text-secondary);
+    margin-left: var(--space-xs);
+}
+
+.notification-close {
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    cursor: pointer;
+    padding: var(--space-xs);
+    border-radius: var(--radius-sm);
+    transition: all var(--transition-fast);
+}
+
+.notification-close:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--text-primary);
+}
+
+.notification-body {
+    padding: var(--space-md);
+    color: var(--text-secondary);
+    line-height: 1.5;
+}
+
+.notification-prayer {
+    border-right: 4px solid var(--success-gradient);
+}
+
+.notification-prayer .notification-header {
+    background: var(--success-gradient);
+    color: white;
+}
+
+/* ===== RESPONSIVE ENHANCEMENTS ===== */
+@media (max-width: 768px) {
+    .cities-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .forecast-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+    
+    .notification {
+        width: calc(100% - 40px);
+        right: 20px;
+        left: 20px;
+    }
+}
+
+@media (max-width: 480px) {
+    .forecast-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .poem-line::before,
+    .poem-line:last-child::after {
+        display: none;
+    }
+}
+
 /* ===== PRINT STYLES ===== */
 @media print {
     .navbar,
@@ -1431,7 +1714,8 @@ body.theme-yalda {
     .settings-panel,
     #weather-effects,
     #particle-system,
-    #gradient-orbs {
+    #gradient-orbs,
+    .notification {
         display: none !important;
     }
     

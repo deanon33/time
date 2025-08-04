@@ -6,6 +6,7 @@ class IranLiveApp {
         this.weatherAPI = null;
         this.specialEvents = null;
         this.themeManager = null;
+        this.enhancedFeatures = null;
         
         this.isInitialized = false;
         this.updateInterval = 1000; // Update every second
@@ -78,6 +79,11 @@ class IranLiveApp {
         this.themeManager = new ThemeManager();
         this.themeManager.init(this.persianCalendar, this.weatherAPI, this.specialEvents);
         console.log('🎨 Theme Manager initialized');
+
+        // Initialize Enhanced Features
+        this.enhancedFeatures = new EnhancedFeatures();
+        this.enhancedFeatures.init();
+        console.log('✨ Enhanced Features initialized');
     }
 
     // Start real-time updates
@@ -286,6 +292,7 @@ class IranLiveApp {
         // Navigation controls
         const refreshBtn = document.getElementById('refresh-btn');
         const fullscreenBtn = document.getElementById('fullscreen-btn');
+        const voiceBtn = document.getElementById('voice-btn');
         const settingsBtn = document.getElementById('settings-btn');
         const closeSettingsBtn = document.getElementById('close-settings');
         const weatherRefreshBtn = document.getElementById('weather-refresh');
@@ -296,6 +303,14 @@ class IranLiveApp {
 
         if (fullscreenBtn) {
             fullscreenBtn.addEventListener('click', () => this.toggleFullscreen());
+        }
+
+        if (voiceBtn) {
+            voiceBtn.addEventListener('click', () => {
+                if (this.enhancedFeatures) {
+                    this.enhancedFeatures.speakTime();
+                }
+            });
         }
 
         if (settingsBtn) {
