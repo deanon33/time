@@ -253,16 +253,16 @@ class WeatherAPI {
 
     // Update weather display in the UI
     updateWeatherDisplay(weatherData) {
-        // Update temperature
-        const tempElement = document.getElementById('temperature');
-        if (tempElement) {
-            tempElement.textContent = `${weatherData.temperature}°`;
+        // Update main temperature in overview card
+        const mainTempElement = document.getElementById('main-temperature');
+        if (mainTempElement) {
+            mainTempElement.textContent = `${weatherData.temperature}°`;
         }
 
-        // Update description
-        const descElement = document.getElementById('weather-description');
-        if (descElement) {
-            descElement.textContent = weatherData.description;
+        // Update condition
+        const conditionElement = document.getElementById('main-condition');
+        if (conditionElement) {
+            conditionElement.textContent = weatherData.description;
         }
 
         // Update icon
@@ -290,9 +290,15 @@ class WeatherAPI {
         }
 
         // Update location
-        const locationElement = document.querySelector('.location-modern span');
+        const locationElement = document.getElementById('main-location');
         if (locationElement) {
             locationElement.textContent = `${weatherData.location}، ایران`;
+        }
+        
+        // Update feels like temperature
+        const feelsLikeElement = document.getElementById('feels-like');
+        if (feelsLikeElement) {
+            feelsLikeElement.textContent = `${weatherData.feelsLike || weatherData.temperature + 2}°`;
         }
     }
 

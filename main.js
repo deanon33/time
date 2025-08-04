@@ -14,7 +14,7 @@ class IranLiveApp {
         
         // Performance monitoring
         this.startTime = Date.now();
-        this.loadingElement = document.getElementById('loading');
+        this.loadingElement = document.getElementById('loading-screen');
         
         // Error handling
         this.errorCount = 0;
@@ -126,13 +126,16 @@ class IranLiveApp {
 
     // Update time display elements
     updateTimeDisplay(timeData) {
-        const hoursElement = document.getElementById('hours');
-        const minutesElement = document.getElementById('minutes');
-        const secondsElement = document.getElementById('seconds');
-
-        if (hoursElement) hoursElement.textContent = timeData.hours;
-        if (minutesElement) minutesElement.textContent = timeData.minutes;
-        if (secondsElement) secondsElement.textContent = timeData.seconds;
+        const timeDisplay = document.getElementById('time-display');
+        if (timeDisplay) {
+            const hoursSpan = timeDisplay.querySelector('.hours');
+            const minutesSpan = timeDisplay.querySelector('.minutes');
+            const secondsSpan = timeDisplay.querySelector('.seconds');
+            
+            if (hoursSpan) hoursSpan.textContent = timeData.hours;
+            if (minutesSpan) minutesSpan.textContent = timeData.minutes;
+            if (secondsSpan) secondsSpan.textContent = timeData.seconds;
+        }
         
         // Update statistics
         this.updateStatistics();
@@ -142,7 +145,10 @@ class IranLiveApp {
     updateTimePeriod(timePeriod) {
         const timePeriodElement = document.getElementById('time-period');
         if (timePeriodElement) {
-            timePeriodElement.textContent = timePeriod;
+            const periodText = timePeriodElement.querySelector('.period-text');
+            if (periodText) {
+                periodText.textContent = timePeriod;
+            }
         }
     }
 
@@ -166,15 +172,16 @@ class IranLiveApp {
 
     // Update Persian date display
     updatePersianDate(persianDate) {
-        const dayNameElement = document.getElementById('day-name');
-        const dayElement = document.getElementById('day');
-        const monthElement = document.getElementById('month');
-        const yearElement = document.getElementById('year');
-
-        if (dayNameElement) dayNameElement.textContent = persianDate.dayName;
-        if (dayElement) dayElement.textContent = persianDate.day;
-        if (monthElement) monthElement.textContent = persianDate.month;
-        if (yearElement) yearElement.textContent = persianDate.year;
+        const persianDateElement = document.getElementById('persian-date');
+        if (persianDateElement) {
+            const dayNameSpan = persianDateElement.querySelector('.day-name');
+            const dateNumbersSpan = persianDateElement.querySelector('.date-numbers');
+            
+            if (dayNameSpan) dayNameSpan.textContent = persianDate.dayName;
+            if (dateNumbersSpan) {
+                dateNumbersSpan.textContent = `${persianDate.day} ${persianDate.month} ${persianDate.year}`;
+            }
+        }
     }
     
     // Update statistics display
@@ -217,7 +224,7 @@ class IranLiveApp {
     
     // Create particle system
     createParticleSystem() {
-        const particleContainer = document.getElementById('particle-system');
+        const particleContainer = document.getElementById('particle-field');
         if (!particleContainer) return;
         
         // Create particles
@@ -344,10 +351,15 @@ class IranLiveApp {
         console.log('👂 Event listeners set up');
     }
 
-    // Show loading screen
+    // Show loading screen with progress
     showLoading() {
         if (this.loadingElement) {
             this.loadingElement.style.display = 'flex';
+            this.loadingElement.style.opacity = '1';
+            this.loadingElement.style.visibility = 'visible';
+            
+            // Animate progress bar
+            this.animateLoadingProgress();
         }
     }
 
@@ -356,10 +368,32 @@ class IranLiveApp {
         if (this.loadingElement) {
             setTimeout(() => {
                 this.loadingElement.style.opacity = '0';
+                this.loadingElement.style.visibility = 'hidden';
                 setTimeout(() => {
                     this.loadingElement.style.display = 'none';
                 }, 500);
             }, 1000); // Show loading for at least 1 second
+        }
+    }
+    
+    // Animate loading progress
+    animateLoadingProgress() {
+        const progressFill = document.getElementById('loading-progress');
+        const progressPercentage = document.querySelector('.loading-percentage');
+        
+        if (progressFill && progressPercentage) {
+            let progress = 0;
+            const interval = setInterval(() => {
+                progress += Math.random() * 15 + 5; // Random increment between 5-20
+                if (progress > 100) progress = 100;
+                
+                progressFill.style.width = progress + '%';
+                progressPercentage.textContent = Math.floor(progress) + '%';
+                
+                if (progress >= 100) {
+                    clearInterval(interval);
+                }
+            }, 200);
         }
     }
 

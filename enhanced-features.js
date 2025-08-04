@@ -113,12 +113,12 @@ class EnhancedFeatures {
         const poemIndex = dayOfYear % this.persianPoetry.length;
         const selectedPoem = this.persianPoetry[poemIndex];
 
-        const poemTextElement = document.querySelector('.poem-text');
-        const poetNameElement = document.querySelector('.poet-name');
+        const poemVersesElement = document.querySelector('.poem-verses');
+        const poetNameElement = document.getElementById('poet-name');
 
-        if (poemTextElement && poetNameElement) {
-            poemTextElement.innerHTML = selectedPoem.lines
-                .map(line => `<p class="poem-line">${line}</p>`)
+        if (poemVersesElement && poetNameElement) {
+            poemVersesElement.innerHTML = selectedPoem.lines
+                .map((line, index) => `<div class="verse" id="verse-${index + 1}">${line}</div>`)
                 .join('');
             poetNameElement.textContent = selectedPoem.poet;
         }
@@ -164,7 +164,7 @@ class EnhancedFeatures {
         }
 
         if (currentPrayer) {
-            const currentElement = document.querySelector(`#${currentPrayer}-time`).closest('.prayer-time');
+            const currentElement = document.querySelector(`#${currentPrayer}-time`).closest('.prayer-item');
             if (currentElement) {
                 currentElement.classList.add('active');
             }
@@ -182,7 +182,7 @@ class EnhancedFeatures {
             { icon: 'fas fa-cloud-sun', desc: 'نیمه ابری', temp: [22, 32] }
         ];
 
-        const forecastContainer = document.getElementById('weather-forecast');
+        const forecastContainer = document.getElementById('forecast-timeline');
         if (forecastContainer) {
             forecastContainer.innerHTML = '';
             

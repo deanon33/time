@@ -212,16 +212,16 @@ class ThemeManager {
         return this.getTimeBasedTheme(iranTime);
     }
 
-    // Update theme indicator in UI
+        // Update theme indicator in UI
     updateThemeIndicator(theme) {
-        const themeNameElement = document.getElementById('theme-name');
+        const currentThemeElement = document.getElementById('current-theme');
         const themeDescElement = document.getElementById('theme-description');
-        
-        if (themeNameElement && themeDescElement) {
-            themeNameElement.textContent = theme.name;
+
+        if (currentThemeElement && themeDescElement) {
+            currentThemeElement.textContent = theme.name;
             themeDescElement.textContent = theme.description;
         }
-        
+
         // Update theme progress
         this.updateThemeProgress(theme);
     }
@@ -272,8 +272,8 @@ class ThemeManager {
             }
         }
         
-        const progressFill = document.getElementById('theme-progress');
-        const progressText = document.getElementById('theme-time-remaining');
+        const progressFill = document.getElementById('theme-progress-fill');
+        const progressText = document.getElementById('theme-remaining');
         
         if (progressFill) {
             progressFill.style.width = progress + '%';

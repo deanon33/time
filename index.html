@@ -3,244 +3,306 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ایران زنده - Iran Live</title>
-    <link rel="stylesheet" href="styles.css">
+    <title>ایران زنده | Iran Live - زمان، آب‌وهوا و فرهنگ</title>
+    <meta name="description" content="نمایش زنده زمان ایران، تقویم فارسی، آب‌وهوا و اطلاعات فرهنگی">
+    
+    <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Vazir:wght@100;200;300;400;500;600;700;800;900&family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <!-- Dynamic Background System -->
-    <div id="background-container">
-        <div id="background-overlay"></div>
-        <div id="particle-system"></div>
-        <div id="gradient-orbs">
-            <div class="orb orb-1"></div>
-            <div class="orb orb-2"></div>
-            <div class="orb orb-3"></div>
+    <!-- Advanced Loading Screen -->
+    <div class="loading-screen" id="loading-screen">
+        <div class="loading-container">
+            <div class="loading-logo">
+                <div class="logo-circle">
+                    <i class="fas fa-sun"></i>
+                </div>
+                <div class="loading-rings">
+                    <div class="ring ring-1"></div>
+                    <div class="ring ring-2"></div>
+                    <div class="ring ring-3"></div>
+                </div>
+            </div>
+            <div class="loading-text">
+                <h2>ایران زنده</h2>
+                <p>در حال بارگذاری...</p>
+            </div>
+            <div class="loading-progress">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="loading-progress"></div>
+                </div>
+                <div class="loading-percentage">0%</div>
+            </div>
         </div>
     </div>
-    
-    <!-- Weather Effects Container -->
-    <div id="weather-effects"></div>
-    
-    <!-- Navigation Bar -->
-    <nav class="navbar">
+
+    <!-- Dynamic Background -->
+    <div class="background-system">
+        <div class="background-gradient"></div>
+        <div class="floating-shapes">
+            <div class="shape shape-1"></div>
+            <div class="shape shape-2"></div>
+            <div class="shape shape-3"></div>
+            <div class="shape shape-4"></div>
+            <div class="shape shape-5"></div>
+        </div>
+        <div class="particle-field" id="particle-field"></div>
+        <div class="weather-effects" id="weather-effects"></div>
+    </div>
+
+    <!-- Premium Navigation -->
+    <nav class="premium-nav">
         <div class="nav-container">
             <div class="nav-brand">
-                <i class="fas fa-globe-asia"></i>
-                <span>ایران زنده</span>
+                <div class="brand-icon">
+                    <i class="fas fa-star-and-crescent"></i>
+                </div>
+                <div class="brand-text">
+                    <h1>ایران زنده</h1>
+                    <span>Iran Live</span>
+                </div>
             </div>
+            
             <div class="nav-controls">
-                <button class="nav-btn" id="refresh-btn" title="تازه‌سازی">
+                <button class="nav-control" id="refresh-btn" title="بروزرسانی">
                     <i class="fas fa-sync-alt"></i>
+                    <span>بروزرسانی</span>
                 </button>
-                <button class="nav-btn" id="fullscreen-btn" title="تمام‌صفحه">
+                <button class="nav-control" id="fullscreen-btn" title="تمام‌صفحه">
                     <i class="fas fa-expand"></i>
+                    <span>تمام‌صفحه</span>
                 </button>
-
-                <button class="nav-btn" id="settings-btn" title="تنظیمات">
+                <button class="nav-control" id="settings-btn" title="تنظیمات">
                     <i class="fas fa-cog"></i>
+                    <span>تنظیمات</span>
                 </button>
             </div>
         </div>
     </nav>
 
-    <!-- Main Dashboard -->
-    <main class="dashboard">
-        <!-- Hero Section with Time -->
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Hero Section -->
         <section class="hero-section">
-            <div class="hero-content">
-                <div class="time-display-modern">
-                    <div class="time-wrapper">
-                        <div class="digital-clock">
-                            <span id="hours" class="time-digit">00</span>
-                            <span class="time-separator">:</span>
-                            <span id="minutes" class="time-digit">00</span>
-                            <span class="time-separator">:</span>
-                            <span id="seconds" class="time-digit">00</span>
+            <div class="hero-container">
+                <!-- Primary Time Display -->
+                <div class="time-showcase">
+                    <div class="time-main">
+                        <div class="digital-display">
+                            <div class="time-digits" id="time-display">
+                                <span class="hours">00</span>
+                                <span class="separator">:</span>
+                                <span class="minutes">00</span>
+                                <span class="separator">:</span>
+                                <span class="seconds">00</span>
+                            </div>
+                            <div class="time-period" id="time-period">
+                                <span class="period-text">صبح</span>
+                                <div class="period-indicator"></div>
+                            </div>
                         </div>
-                        <div id="time-period" class="time-period-modern"></div>
+                        <div class="time-zone">
+                            <i class="fas fa-globe-asia"></i>
+                            <span>زمان ایران (IRST)</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Persian Date -->
+                    <div class="date-showcase">
+                        <div class="persian-date">
+                            <div class="date-main" id="persian-date">
+                                <span class="day-name">شنبه</span>
+                                <span class="date-numbers">۱ فروردین ۱۴۰۳</span>
+                            </div>
+                            <div class="gregorian-date" id="gregorian-date">
+                                Saturday, March 20, 2024
+                            </div>
+                        </div>
+                        <div class="calendar-icon">
+                            <i class="fas fa-calendar-alt"></i>
+                        </div>
                     </div>
                 </div>
-                
-                <div class="date-display-modern">
-                    <div class="persian-date-card">
-                        <div class="date-primary">
-                            <span id="day-name" class="day-name"></span>
-                            <span class="date-numbers">
-                                <span id="day"></span>
-                                <span id="month"></span>
-                                <span id="year"></span>
-                            </span>
+
+                <!-- Theme & Weather Overview -->
+                <div class="overview-cards">
+                    <div class="overview-card theme-overview">
+                        <div class="card-icon">
+                            <i class="fas fa-palette"></i>
                         </div>
-                        <div id="gregorian-date" class="date-secondary"></div>
+                        <div class="card-content">
+                            <h3 id="current-theme">روز</h3>
+                            <p id="theme-description">نور روز درخشان</p>
+                            <div class="theme-progress">
+                                <div class="progress-track">
+                                    <div class="progress-fill" id="theme-progress-fill"></div>
+                                </div>
+                                <span class="progress-text" id="theme-remaining">۵ ساعت باقی‌مانده</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="overview-card weather-overview">
+                        <div class="card-icon" id="weather-icon">
+                            <i class="fas fa-sun"></i>
+                        </div>
+                        <div class="card-content">
+                            <div class="weather-main">
+                                <span class="temperature" id="main-temperature">25°</span>
+                                <span class="condition" id="main-condition">آفتابی</span>
+                            </div>
+                            <div class="weather-details">
+                                <span class="location" id="main-location">تهران، ایران</span>
+                                <span class="feels-like">احساس دما: <span id="feels-like">27°</span></span>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- Cards Grid -->
-        <section class="cards-grid">
-            <!-- Weather Card -->
-            <div class="card weather-card">
+        <!-- Information Grid -->
+        <section class="info-grid">
+            <!-- Weather Forecast -->
+            <div class="info-card forecast-card">
                 <div class="card-header">
-                    <h3><i class="fas fa-cloud-sun"></i> آب و هوا</h3>
-                    <div class="card-actions">
-                        <button class="card-btn" id="weather-refresh">
-                            <i class="fas fa-redo"></i>
-                        </button>
+                    <div class="header-icon">
+                        <i class="fas fa-cloud-sun"></i>
+                    </div>
+                    <div class="header-text">
+                        <h3>پیش‌بینی ۵ روزه</h3>
+                        <p>وضعیت آب‌وهوای آینده</p>
+                    </div>
+                    <button class="card-action" id="weather-refresh">
+                        <i class="fas fa-sync-alt"></i>
+                    </button>
+                </div>
+                <div class="card-body">
+                    <div class="forecast-timeline" id="forecast-timeline">
+                        <!-- Forecast items populated by JS -->
                     </div>
                 </div>
-                <div class="card-content">
-                    <div class="weather-main-display">
-                        <div class="weather-icon-container">
-                            <div id="weather-icon" class="weather-icon-modern">
-                                <i class="fas fa-sun"></i>
-                            </div>
-                        </div>
-                        <div class="weather-info-modern">
-                            <div id="temperature" class="temperature-modern">--°</div>
-                            <div id="weather-description" class="weather-desc-modern">در حال بارگذاری...</div>
-                            <div id="location" class="location-modern">
-                                <i class="fas fa-map-marker-alt"></i>
-                                <span>تهران، ایران</span>
-                            </div>
-                        </div>
+            </div>
+
+            <!-- Prayer Times -->
+            <div class="info-card prayer-card">
+                <div class="card-header">
+                    <div class="header-icon">
+                        <i class="fas fa-mosque"></i>
                     </div>
-                    
-                    <div class="weather-metrics">
-                        <div class="metric">
-                            <div class="metric-icon">
-                                <i class="fas fa-eye"></i>
+                    <div class="header-text">
+                        <h3>اوقات شرعی</h3>
+                        <p>مواقیت نماز برای تهران</p>
+                    </div>
+                    <div class="prayer-indicator">
+                        <div class="indicator-dot"></div>
+                        <span id="next-prayer">تا اذان ظهر</span>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="prayer-timeline" id="prayer-timeline">
+                        <div class="prayer-item" data-prayer="fajr">
+                            <div class="prayer-info">
+                                <div class="prayer-name">اذان صبح</div>
+                                <div class="prayer-time" id="fajr-time">--:--</div>
                             </div>
-                            <div class="metric-info">
-                                <span class="metric-label">دید</span>
-                                <span id="visibility" class="metric-value">-- کیلومتر</span>
-                            </div>
+                            <div class="prayer-status"></div>
                         </div>
-                        <div class="metric">
-                            <div class="metric-icon">
-                                <i class="fas fa-tint"></i>
+                        <div class="prayer-item" data-prayer="sunrise">
+                            <div class="prayer-info">
+                                <div class="prayer-name">طلوع آفتاب</div>
+                                <div class="prayer-time" id="sunrise-time">--:--</div>
                             </div>
-                            <div class="metric-info">
-                                <span class="metric-label">رطوبت</span>
-                                <span id="humidity" class="metric-value">--%</span>
-                            </div>
+                            <div class="prayer-status"></div>
                         </div>
-                        <div class="metric">
-                            <div class="metric-icon">
-                                <i class="fas fa-wind"></i>
+                        <div class="prayer-item" data-prayer="dhuhr">
+                            <div class="prayer-info">
+                                <div class="prayer-name">اذان ظهر</div>
+                                <div class="prayer-time" id="dhuhr-time">--:--</div>
                             </div>
-                            <div class="metric-info">
-                                <span class="metric-label">باد</span>
-                                <span id="wind-speed" class="metric-value">-- کیلومتر/ساعت</span>
+                            <div class="prayer-status"></div>
+                        </div>
+                        <div class="prayer-item" data-prayer="asr">
+                            <div class="prayer-info">
+                                <div class="prayer-name">اذان عصر</div>
+                                <div class="prayer-time" id="asr-time">--:--</div>
                             </div>
+                            <div class="prayer-status"></div>
+                        </div>
+                        <div class="prayer-item" data-prayer="maghrib">
+                            <div class="prayer-info">
+                                <div class="prayer-name">اذان مغرب</div>
+                                <div class="prayer-time" id="maghrib-time">--:--</div>
+                            </div>
+                            <div class="prayer-status"></div>
+                        </div>
+                        <div class="prayer-item" data-prayer="isha">
+                            <div class="prayer-info">
+                                <div class="prayer-name">اذان عشا</div>
+                                <div class="prayer-time" id="isha-time">--:--</div>
+                            </div>
+                            <div class="prayer-status"></div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Theme Info Card -->
-            <div class="card theme-card">
+            <!-- Daily Poetry -->
+            <div class="info-card poetry-card">
                 <div class="card-header">
-                    <h3><i class="fas fa-palette"></i> تم فعلی</h3>
-                </div>
-                <div class="card-content">
-                    <div class="theme-display">
-                        <div class="theme-preview">
-                            <div class="theme-color-indicator"></div>
-                        </div>
-                        <div class="theme-info">
-                            <div id="theme-name" class="theme-name-modern">روز</div>
-                            <div id="theme-description" class="theme-desc-modern">آسمان صاف و آفتابی</div>
-                        </div>
+                    <div class="header-icon">
+                        <i class="fas fa-feather-alt"></i>
                     </div>
-                    <div class="theme-progress">
-                        <div class="progress-bar">
-                            <div class="progress-fill" id="theme-progress"></div>
-                        </div>
-                        <span class="progress-text" id="theme-time-remaining">تا تغییر تم بعدی</span>
+                    <div class="header-text">
+                        <h3>شعر روز</h3>
+                        <p>از گنجینه ادبیات فارسی</p>
+                    </div>
+                    <div class="poetry-ornament">
+                        <i class="fas fa-quote-right"></i>
                     </div>
                 </div>
-            </div>
-
-            <!-- Weather Forecast Card -->
-            <div class="card forecast-card">
-                <div class="card-header">
-                    <h3><i class="fas fa-calendar-week"></i> پیش‌بینی ۵ روزه</h3>
-                </div>
-                <div class="card-content">
-                    <div class="forecast-grid" id="weather-forecast">
-                        <!-- Forecast items will be populated by JavaScript -->
-                    </div>
-                </div>
-            </div>
-
-            <!-- Prayer Times Card -->
-            <div class="card prayer-card">
-                <div class="card-header">
-                    <h3><i class="fas fa-mosque"></i> اوقات شرعی</h3>
-                </div>
-                <div class="card-content">
-                    <div class="prayer-times" id="prayer-times">
-                        <div class="prayer-time">
-                            <div class="prayer-name">اذان صبح</div>
-                            <div class="prayer-clock" id="fajr-time">--:--</div>
+                <div class="card-body">
+                    <div class="poetry-content" id="poetry-content">
+                        <div class="poem-verses">
+                            <div class="verse" id="verse-1">دوش از مسجد سوی میخانه آمد پیر ما</div>
+                            <div class="verse" id="verse-2">کیست این عاشق که از معشوق آگاه آمد</div>
                         </div>
-                        <div class="prayer-time">
-                            <div class="prayer-name">طلوع آفتاب</div>
-                            <div class="prayer-clock" id="sunrise-time">--:--</div>
-                        </div>
-                        <div class="prayer-time">
-                            <div class="prayer-name">اذان ظهر</div>
-                            <div class="prayer-clock" id="dhuhr-time">--:--</div>
-                        </div>
-                        <div class="prayer-time">
-                            <div class="prayer-name">اذان عصر</div>
-                            <div class="prayer-clock" id="asr-time">--:--</div>
-                        </div>
-                        <div class="prayer-time">
-                            <div class="prayer-name">اذان مغرب</div>
-                            <div class="prayer-clock" id="maghrib-time">--:--</div>
-                        </div>
-                        <div class="prayer-time">
-                            <div class="prayer-name">اذان عشا</div>
-                            <div class="prayer-clock" id="isha-time">--:--</div>
+                        <div class="poet-signature">
+                            <div class="poet-name" id="poet-name">حافظ شیرازی</div>
+                            <div class="poem-ornament"></div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Daily Poetry Card -->
-            <div class="card poetry-card">
+            <!-- Statistics & Info -->
+            <div class="info-card stats-card">
                 <div class="card-header">
-                    <h3><i class="fas fa-feather-alt"></i> شعر روز</h3>
-                </div>
-                <div class="card-content">
-                    <div class="poetry-content" id="daily-poetry">
-                        <div class="poem-text">
-                            <p class="poem-line">دوش از مسجد سوی میخانه آمد پیر ما</p>
-                            <p class="poem-line">کیست این عاشق که از معشوق آگاه آمد</p>
-                        </div>
-                        <div class="poet-name">حافظ شیرازی</div>
+                    <div class="header-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <div class="header-text">
+                        <h3>آمار سیستم</h3>
+                        <p>وضعیت عملکرد برنامه</p>
+                    </div>
+                    <div class="status-indicator online">
+                        <div class="status-dot"></div>
+                        <span>آنلاین</span>
                     </div>
                 </div>
-            </div>
-
-            <!-- Statistics Card -->
-            <div class="card stats-card">
-                <div class="card-header">
-                    <h3><i class="fas fa-chart-line"></i> آمار</h3>
-                </div>
-                <div class="card-content">
+                <div class="card-body">
                     <div class="stats-grid">
                         <div class="stat-item">
                             <div class="stat-icon">
                                 <i class="fas fa-clock"></i>
                             </div>
                             <div class="stat-info">
-                                <span class="stat-value" id="uptime">00:00:00</span>
-                                <span class="stat-label">مدت فعالیت</span>
+                                <div class="stat-value" id="uptime">00:00:00</div>
+                                <div class="stat-label">مدت فعالیت</div>
                             </div>
                         </div>
                         <div class="stat-item">
@@ -248,17 +310,17 @@
                                 <i class="fas fa-sync"></i>
                             </div>
                             <div class="stat-info">
-                                <span class="stat-value" id="update-count">0</span>
-                                <span class="stat-label">به‌روزرسانی</span>
+                                <div class="stat-value" id="update-count">0</div>
+                                <div class="stat-label">بروزرسانی‌ها</div>
                             </div>
                         </div>
                         <div class="stat-item">
                             <div class="stat-icon">
-                                <i class="fas fa-thermometer-half"></i>
+                                <i class="fas fa-cloud"></i>
                             </div>
                             <div class="stat-info">
-                                <span class="stat-value" id="weather-updates">0</span>
-                                <span class="stat-label">آب‌وهوا</span>
+                                <div class="stat-value" id="weather-updates">0</div>
+                                <div class="stat-label">بروزرسانی آب‌وهوا</div>
                             </div>
                         </div>
                         <div class="stat-item">
@@ -266,8 +328,8 @@
                                 <i class="fas fa-palette"></i>
                             </div>
                             <div class="stat-info">
-                                <span class="stat-value" id="theme-changes">0</span>
-                                <span class="stat-label">تغییر تم</span>
+                                <div class="stat-value" id="theme-changes">0</div>
+                                <div class="stat-label">تغییر تم</div>
                             </div>
                         </div>
                     </div>
@@ -276,98 +338,90 @@
         </section>
 
         <!-- Special Events Section -->
-        <section id="special-events" class="special-events-modern" style="display: none;">
-            <div class="event-card">
-                <div class="event-header">
-                    <div class="event-icon">
-                        <i class="fas fa-star"></i>
-                    </div>
-                    <div class="event-badge">رویداد ویژه</div>
+        <section class="special-events" id="special-events" style="display: none;">
+            <div class="event-container">
+                <div class="event-decoration">
+                    <div class="decoration-element"></div>
                 </div>
                 <div class="event-content">
-                    <h2 id="event-title" class="event-title-modern"></h2>
-                    <div id="event-description" class="event-description-modern"></div>
-                    <div id="event-countdown" class="event-countdown-modern"></div>
+                    <div class="event-icon" id="event-icon">
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <div class="event-text">
+                        <h2 id="event-title">مناسبت ویژه</h2>
+                        <p id="event-description">توضیحات مناسبت</p>
+                    </div>
                 </div>
-                <div class="event-decorations">
-                    <div class="decoration decoration-1"></div>
-                    <div class="decoration decoration-2"></div>
-                    <div class="decoration decoration-3"></div>
+                <div class="event-decoration">
+                    <div class="decoration-element"></div>
                 </div>
             </div>
         </section>
     </main>
 
-    <!-- Settings Panel -->
-    <div id="settings-panel" class="settings-panel">
-        <div class="settings-content">
+    <!-- Premium Settings Panel -->
+    <div class="settings-panel" id="settings-panel">
+        <div class="settings-container">
             <div class="settings-header">
-                <h3><i class="fas fa-cog"></i> تنظیمات</h3>
+                <h3>تنظیمات</h3>
                 <button class="close-btn" id="close-settings">
                     <i class="fas fa-times"></i>
                 </button>
             </div>
-            <div class="settings-body">
+            <div class="settings-content">
                 <div class="setting-group">
-                    <label>انیمیشن‌ها</label>
-                    <div class="toggle-switch">
-                        <input type="checkbox" id="animations-toggle" checked>
-                        <span class="slider"></span>
+                    <h4>نمایش</h4>
+                    <div class="setting-item">
+                        <label class="setting-label">
+                            <span>انیمیشن‌ها</span>
+                            <div class="toggle-switch">
+                                <input type="checkbox" id="animations-toggle" checked>
+                                <div class="toggle-slider"></div>
+                            </div>
+                        </label>
+                    </div>
+                    <div class="setting-item">
+                        <label class="setting-label">
+                            <span>ذرات پس‌زمینه</span>
+                            <div class="toggle-switch">
+                                <input type="checkbox" id="particles-toggle" checked>
+                                <div class="toggle-slider"></div>
+                            </div>
+                        </label>
                     </div>
                 </div>
                 <div class="setting-group">
-                    <label>صداهای محیطی</label>
-                    <div class="toggle-switch">
-                        <input type="checkbox" id="sounds-toggle" checked>
-                        <span class="slider"></span>
+                    <h4>آب‌وهوا</h4>
+                    <div class="setting-item">
+                        <label class="setting-label">
+                            <span>جلوه‌های آب‌وهوایی</span>
+                            <div class="toggle-switch">
+                                <input type="checkbox" id="weather-effects-toggle" checked>
+                                <div class="toggle-slider"></div>
+                            </div>
+                        </label>
                     </div>
                 </div>
                 <div class="setting-group">
-                    <label>اثرات آب‌وهوا</label>
-                    <div class="toggle-switch">
-                        <input type="checkbox" id="weather-effects-toggle" checked>
-                        <span class="slider"></span>
-                    </div>
-                </div>
-                <div class="setting-group">
-                    <label>ذرات پس‌زمینه</label>
-                    <div class="toggle-switch">
-                        <input type="checkbox" id="particles-toggle" checked>
-                        <span class="slider"></span>
+                    <h4>صدا</h4>
+                    <div class="setting-item">
+                        <label class="setting-label">
+                            <span>صداهای محیطی</span>
+                            <div class="toggle-switch">
+                                <input type="checkbox" id="sounds-toggle" checked>
+                                <div class="toggle-slider"></div>
+                            </div>
+                        </label>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Audio for ambient sounds -->
-    <audio id="ambient-audio" loop>
-        <source id="ambient-source" src="" type="audio/mpeg">
-    </audio>
+    <!-- Notification System -->
+    <div class="notification-container" id="notification-container"></div>
 
-    <!-- Advanced Loading Screen -->
-    <div id="loading" class="loading-overlay-modern">
-        <div class="loading-content">
-            <div class="loading-logo">
-                <i class="fas fa-globe-asia"></i>
-            </div>
-            <div class="loading-spinner">
-                <div class="spinner-ring"></div>
-                <div class="spinner-ring"></div>
-                <div class="spinner-ring"></div>
-            </div>
-            <div class="loading-text">
-                <h3>ایران زنده</h3>
-                <p>در حال بارگذاری...</p>
-            </div>
-            <div class="loading-progress">
-                <div class="progress-bar-loading">
-                    <div class="progress-fill-loading"></div>
-                </div>
-            </div>
-        </div>
-    </div>
-
+    <!-- Scripts -->
     <script src="persian-calendar.js"></script>
     <script src="weather-api.js"></script>
     <script src="themes.js"></script>
