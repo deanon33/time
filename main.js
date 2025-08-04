@@ -190,17 +190,69 @@ class IranLiveApp {
             const minutes = String(time.getMinutes()).padStart(2, '0');
             const seconds = String(time.getSeconds()).padStart(2, '0');
 
-            // Update individual time elements
-            const hoursElement = document.querySelector('.time-display .hours');
-            const minutesElement = document.querySelector('.time-display .minutes');
-            const secondsElement = document.querySelector('.time-display .seconds');
+            // Update digital display
+            const hoursElement = document.querySelector('.digital-time .hours');
+            const minutesElement = document.querySelector('.digital-time .minutes');
+            const secondsElement = document.querySelector('.digital-time .seconds');
 
             if (hoursElement) hoursElement.textContent = hours;
             if (minutesElement) minutesElement.textContent = minutes;
             if (secondsElement) secondsElement.textContent = seconds;
+
+            // Update analog hands
+            this.updateAnalogHands(time);
             
         } catch (error) {
             console.error('❌ Time display update failed:', error);
+        }
+    }
+
+    // Update analog clock hands
+    updateAnalogHands(time) {
+        try {
+            const hourHand = document.getElementById('hour-hand');
+            const minuteHand = document.getElementById('minute-hand');
+            const secondHand = document.getElementById('second-hand');
+            
+            if (hourHand && minuteHand && secondHand) {
+                // Calculate angles
+                const hours = time.getHours() % 12;
+                const minutes = time.getMinutes();
+                const seconds = time.getSeconds();
+                
+                const hourAngle = (hours * 30) + (minutes * 0.5); // 30 degrees per hour + minute adjustment
+                const minuteAngle = minutes * 6; // 6 degrees per minute
+                const secondAngle = seconds * 6; // 6 degrees per second
+                
+                // Apply rotations
+                hourHand.style.transform = `rotate(${hourAngle}deg)`;
+                minuteHand.style.transform = `rotate(${minuteAngle}deg)`;
+                secondHand.style.transform = `rotate(${secondAngle}deg)`;
+            }
+            
+            // Generate hour dots if not exists
+            this.generateHourDots();
+            
+        } catch (error) {
+            console.error('❌ Analog hands update failed:', error);
+        }
+    }
+
+    // Generate hour dots on clock face
+    generateHourDots() {
+        try {
+            const hourDotsContainer = document.querySelector('.hour-dots');
+            if (hourDotsContainer && hourDotsContainer.children.length === 0) {
+                for (let i = 0; i < 12; i++) {
+                    const dot = document.createElement('div');
+                    dot.className = 'hour-dot';
+                    const angle = i * 30; // 30 degrees per hour
+                    dot.style.transform = `rotate(${angle}deg) translateY(-130px)`;
+                    hourDotsContainer.appendChild(dot);
+                }
+            }
+        } catch (error) {
+            console.error('❌ Hour dots generation failed:', error);
         }
     }
 
@@ -209,16 +261,34 @@ class IranLiveApp {
         try {
             const hour = time.getHours();
             let period = '';
+            let icon = 'fas fa-sun';
             
-            if (hour >= 5 && hour < 8) period = 'سپیده‌دم';
-            else if (hour >= 8 && hour < 17) period = 'روز';
-            else if (hour >= 17 && hour < 20) period = 'غروب';
-            else if (hour >= 20 || hour < 1) period = 'شب';
-            else period = 'نیمه‌شب';
+            if (hour >= 5 && hour < 8) {
+                period = 'سپیده‌دم';
+                icon = 'fas fa-cloud-sun';
+            } else if (hour >= 8 && hour < 17) {
+                period = 'روز';
+                icon = 'fas fa-sun';
+            } else if (hour >= 17 && hour < 20) {
+                period = 'غروب';
+                icon = 'fas fa-sun-o';
+            } else if (hour >= 20 || hour < 1) {
+                period = 'شب';
+                icon = 'fas fa-moon';
+            } else {
+                period = 'نیمه‌شب';
+                icon = 'fas fa-moon';
+            }
 
-            const periodElement = document.querySelector('.time-period .period-text');
+            const periodElement = document.querySelector('.time-period-elegant .period-text');
+            const iconElement = document.querySelector('.period-icon i');
+            
             if (periodElement) {
                 periodElement.textContent = period;
+            }
+            
+            if (iconElement) {
+                iconElement.className = icon;
             }
             
         } catch (error) {

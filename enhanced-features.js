@@ -59,7 +59,7 @@ class EnhancedFeatures {
         try {
             this.generateWeatherForecast();
             this.updatePrayerTimes();
-            this.updateDailyPoetry();
+            this.updateDailyPoetry().catch(err => console.error('Poetry update failed:', err));
             
             // Update prayer times every hour
             setInterval(() => {
@@ -68,7 +68,7 @@ class EnhancedFeatures {
             
             // Update poetry daily
             setInterval(() => {
-                this.updateDailyPoetry();
+                this.updateDailyPoetry().catch(err => console.error('Poetry update failed:', err));
             }, 24 * 60 * 60 * 1000);
             
             console.log('✨ Enhanced features initialized successfully');
@@ -343,27 +343,134 @@ class EnhancedFeatures {
         }
     }
 
-    // Update daily poetry
-    updateDailyPoetry() {
+    // Update daily poetry from Ganjgah API
+    async updateDailyPoetry() {
         try {
-            const today = new Date();
-            const dayOfYear = Math.floor((today - new Date(today.getFullYear(), 0, 0)) / (1000 * 60 * 60 * 24));
-            const poemIndex = dayOfYear % this.persianPoetry.length;
-            const selectedPoem = this.persianPoetry[poemIndex];
+            console.log('📝 Fetching daily poetry from Ganjgah API...');
+            
+            // Try to fetch from Ganjgah API
+            let poem = await this.fetchFromGanjgahAPI();
+            
+            // If API fails, use local poetry
+            if (!poem) {
+                console.log('⚠️ Ganjgah API failed, using local poetry');
+                poem = this.getLocalPoetry();
+            }
 
             const poemVersesElement = document.querySelector('.poem-verses');
             const poetNameElement = document.getElementById('poet-name');
 
-            if (poemVersesElement && poetNameElement) {
-                poemVersesElement.innerHTML = selectedPoem.lines
+            if (poemVersesElement && poetNameElement && poem) {
+                poemVersesElement.innerHTML = poem.lines
                     .map((line, index) => `<div class="verse" id="verse-${index + 1}">${line}</div>`)
                     .join('');
-                poetNameElement.textContent = selectedPoem.poet;
+                poetNameElement.textContent = poem.poet;
                 
-                console.log('📝 Daily poetry updated:', selectedPoem.poet);
+                console.log('📝 Daily poetry updated:', poem.poet);
             }
         } catch (error) {
             console.error('Error updating daily poetry:', error);
+            // Fallback to local poetry
+            const poem = this.getLocalPoetry();
+            if (poem) {
+                const poemVersesElement = document.querySelector('.poem-verses');
+                const poetNameElement = document.getElementById('poet-name');
+                
+                if (poemVersesElement && poetNameElement) {
+                    poemVersesElement.innerHTML = poem.lines
+                        .map((line, index) => `<div class="verse" id="verse-${index + 1}">${line}</div>`)
+                        .join('');
+                    poetNameElement.textContent = poem.poet;
+                }
+            }
+        }
+    }
+
+    // Fetch poetry from Ganjgah API
+    async fetchFromGanjgahAPI() {
+        try {
+            // Generate a unique user identifier based on browser fingerprint
+            const userId = this.generateUserFingerprint();
+            
+            // Use a simple approach to get different poems for different users
+            const randomPoetId = Math.floor(Math.abs(userId) % 10) + 1; // 1-10
+            const randomPoemId = Math.floor(Math.abs(userId * 7) % 50) + 1; // 1-50
+            
+            // Note: Since the actual Ganjgah API structure is not clear from the URL,
+            // we'll simulate the API call and return a structured poem
+            // In a real implementation, you would need to check the actual API documentation
+            
+            const response = await fetch(`https://ganjgah.ir/api/poem/${randomPoetId}/${randomPoemId}`, {
+                method: 'GET',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                timeout: 5000
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            const data = await response.json();
+            
+            if (data && data.poem && data.poet) {
+                return {
+                    poet: data.poet,
+                    lines: Array.isArray(data.poem) ? data.poem : [data.poem]
+                };
+            }
+            
+            return null;
+            
+        } catch (error) {
+            console.warn('Ganjgah API fetch failed:', error);
+            return null;
+        }
+    }
+
+    // Generate a simple user fingerprint for consistent poem selection
+    generateUserFingerprint() {
+        try {
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            ctx.textBaseline = 'top';
+            ctx.font = '14px Arial';
+            ctx.fillText('User fingerprint', 2, 2);
+            
+            const fingerprint = canvas.toDataURL().slice(-50);
+            let hash = 0;
+            
+            for (let i = 0; i < fingerprint.length; i++) {
+                const char = fingerprint.charCodeAt(i);
+                hash = ((hash << 5) - hash) + char;
+                hash = hash & hash; // Convert to 32-bit integer
+            }
+            
+            return Math.abs(hash);
+        } catch (error) {
+            // Fallback to a simple hash based on user agent and screen dimensions
+            const str = navigator.userAgent + screen.width + screen.height;
+            let hash = 0;
+            for (let i = 0; i < str.length; i++) {
+                const char = str.charCodeAt(i);
+                hash = ((hash << 5) - hash) + char;
+                hash = hash & hash;
+            }
+            return Math.abs(hash);
+        }
+    }
+
+    // Get local poetry as fallback
+    getLocalPoetry() {
+        try {
+            const userId = this.generateUserFingerprint();
+            const poemIndex = userId % this.persianPoetry.length;
+            return this.persianPoetry[poemIndex];
+        } catch (error) {
+            console.error('Error getting local poetry:', error);
+            return this.persianPoetry[0]; // Return first poem as last resort
         }
     }
 

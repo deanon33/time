@@ -256,30 +256,286 @@ body {
     margin-bottom: var(--space-xl);
 }
 
-.time-display {
-    font-size: 4rem;
-    font-weight: 700;
-    color: var(--text-primary);
-    margin-bottom: var(--space-md);
-    font-family: 'Courier New', monospace;
-    direction: ltr;
-    display: inline-block;
+/* ===== ELEGANT CLOCK DESIGN ===== */
+.elegant-clock {
+    position: relative;
+    width: 400px;
+    height: 400px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
-.time-display .separator {
-    animation: blink 1s infinite;
-    color: var(--text-accent);
+/* Clock Rings */
+.clock-ring {
+    position: absolute;
+    border-radius: 50%;
+    border: 2px solid rgba(255, 255, 255, 0.1);
 }
 
-.time-period {
-    font-size: 1.5rem;
-    color: var(--text-secondary);
+.outer-ring {
+    width: 100%;
+    height: 100%;
+    background: conic-gradient(from 0deg, 
+        rgba(102, 126, 234, 0.1) 0%, 
+        rgba(240, 147, 251, 0.1) 25%, 
+        rgba(79, 172, 254, 0.1) 50%, 
+        rgba(100, 255, 218, 0.1) 75%, 
+        rgba(102, 126, 234, 0.1) 100%);
+    animation: ringRotate 60s linear infinite;
+}
+
+.middle-ring {
+    width: 85%;
+    height: 85%;
     background: var(--glass-bg);
     backdrop-filter: var(--backdrop-blur);
     border: 1px solid var(--glass-border);
-    padding: var(--space-sm) var(--space-lg);
+    box-shadow: inset 0 0 50px rgba(100, 255, 218, 0.1);
+}
+
+/* Ring Markers */
+.ring-markers {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+.marker {
+    position: absolute;
+    width: 4px;
+    height: 20px;
+    background: var(--text-accent);
+    border-radius: 2px;
+    transform-origin: center 190px;
+}
+
+.marker-12 { transform: rotate(0deg) translateX(-50%); top: 10px; left: 50%; }
+.marker-3 { transform: rotate(90deg) translateY(-50%); right: 10px; top: 50%; }
+.marker-6 { transform: rotate(180deg) translateX(-50%); bottom: 10px; left: 50%; }
+.marker-9 { transform: rotate(270deg) translateY(-50%); left: 10px; top: 50%; }
+
+/* Hour Dots */
+.hour-dots {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+.hour-dot {
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    background: rgba(255, 255, 255, 0.4);
+    border-radius: 50%;
+    transform-origin: center 150px;
+}
+
+/* Clock Face */
+.clock-face {
+    position: relative;
+    width: 70%;
+    height: 70%;
+    background: radial-gradient(circle, 
+        rgba(255, 255, 255, 0.05) 0%, 
+        rgba(255, 255, 255, 0.02) 70%, 
+        transparent 100%);
+    border-radius: 50%;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(30px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 
+        0 0 30px rgba(100, 255, 218, 0.2),
+        inset 0 0 30px rgba(255, 255, 255, 0.05);
+}
+
+/* Analog Hands */
+.clock-hands {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+}
+
+.hand {
+    position: absolute;
+    background: var(--text-accent);
+    border-radius: 10px;
+    transform-origin: bottom center;
+    left: 50%;
+    bottom: 50%;
+    box-shadow: 0 0 10px rgba(100, 255, 218, 0.5);
+}
+
+.hour-hand {
+    width: 6px;
+    height: 60px;
+    margin-left: -3px;
+    background: linear-gradient(to top, var(--text-accent), rgba(100, 255, 218, 0.7));
+    animation: handGlow 3s ease-in-out infinite alternate;
+}
+
+.minute-hand {
+    width: 4px;
+    height: 80px;
+    margin-left: -2px;
+    background: linear-gradient(to top, #f093fb, rgba(240, 147, 251, 0.7));
+    animation: handGlow 4s ease-in-out infinite alternate;
+}
+
+.second-hand {
+    width: 2px;
+    height: 90px;
+    margin-left: -1px;
+    background: linear-gradient(to top, #4facfe, rgba(79, 172, 254, 0.7));
+    animation: secondTick 1s linear infinite;
+}
+
+.hand-center {
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    background: radial-gradient(circle, var(--text-accent) 0%, rgba(100, 255, 218, 0.8) 100%);
+    border-radius: 50%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    box-shadow: 0 0 15px rgba(100, 255, 218, 0.8);
+    z-index: 10;
+}
+
+/* Digital Display */
+.digital-display {
+    position: absolute;
+    bottom: 30%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
     border-radius: var(--radius-lg);
-    display: inline-block;
+    padding: var(--space-sm) var(--space-md);
+    direction: ltr;
+}
+
+.digital-time {
+    display: flex;
+    align-items: center;
+    gap: var(--space-xs);
+    font-family: 'Courier New', monospace;
+    font-size: 0.9rem;
+    color: var(--text-primary);
+}
+
+.digit-group {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+}
+
+.digit-group span:first-child {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--text-accent);
+    text-shadow: 0 0 10px rgba(100, 255, 218, 0.5);
+}
+
+.digit-label {
+    font-size: 0.6rem;
+    color: var(--text-muted);
+    font-weight: 400;
+}
+
+.time-separator {
+    font-size: 1.2rem;
+    color: var(--text-accent);
+    animation: blink 1s infinite;
+    margin: 0 var(--space-xs);
+}
+
+/* Time Period Elegant */
+.time-period-elegant {
+    position: absolute;
+    top: -60px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    background: var(--glass-bg);
+    backdrop-filter: var(--backdrop-blur);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-xl);
+    padding: var(--space-md) var(--space-lg);
+    box-shadow: var(--glass-shadow);
+    position: relative;
+    overflow: hidden;
+}
+
+.period-icon {
+    width: 40px;
+    height: 40px;
+    background: var(--accent-gradient);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1.2rem;
+    box-shadow: 0 0 20px rgba(79, 172, 254, 0.4);
+    animation: periodIconPulse 3s ease-in-out infinite;
+}
+
+.time-period-elegant .period-text {
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+}
+
+.period-glow {
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: conic-gradient(from 0deg, 
+        transparent 0%, 
+        rgba(100, 255, 218, 0.1) 25%, 
+        transparent 50%, 
+        rgba(240, 147, 251, 0.1) 75%, 
+        transparent 100%);
+    animation: periodGlow 8s linear infinite;
+    pointer-events: none;
+}
+
+/* Clock Animations */
+@keyframes ringRotate {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+@keyframes handGlow {
+    0% { box-shadow: 0 0 10px rgba(100, 255, 218, 0.3); }
+    100% { box-shadow: 0 0 20px rgba(100, 255, 218, 0.8); }
+}
+
+@keyframes secondTick {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(6deg); }
+}
+
+@keyframes periodIconPulse {
+    0%, 100% { transform: scale(1); box-shadow: 0 0 20px rgba(79, 172, 254, 0.4); }
+    50% { transform: scale(1.1); box-shadow: 0 0 30px rgba(79, 172, 254, 0.8); }
+}
+
+@keyframes periodGlow {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
 }
 
 .date-container {
@@ -594,33 +850,7 @@ body {
     font-weight: 600;
 }
 
-/* Stats Card */
-.stats-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: var(--space-md);
-}
 
-.stat-item {
-    text-align: center;
-    padding: var(--space-md);
-    background: rgba(255, 255, 255, 0.05);
-    border-radius: var(--radius-sm);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.stat-label {
-    font-size: 0.9rem;
-    color: var(--text-secondary);
-    margin-bottom: var(--space-xs);
-}
-
-.stat-value {
-    font-size: 1.5rem;
-    font-weight: 700;
-    color: var(--text-accent);
-    font-family: 'Courier New', monospace;
-}
 
 /* ===== SPECIAL EVENTS ===== */
 .special-events {
@@ -865,8 +1095,36 @@ body {
         padding-right: var(--space-md);
     }
     
-    .time-display {
-        font-size: 2.5rem;
+    .elegant-clock {
+        width: 300px;
+        height: 300px;
+    }
+    
+    .digital-display {
+        bottom: 25%;
+    }
+    
+    .digital-time {
+        font-size: 0.8rem;
+    }
+    
+    .digit-group span:first-child {
+        font-size: 1rem;
+    }
+    
+    .time-period-elegant {
+        top: -50px;
+        padding: var(--space-sm) var(--space-md);
+    }
+    
+    .period-icon {
+        width: 35px;
+        height: 35px;
+        font-size: 1rem;
+    }
+    
+    .time-period-elegant .period-text {
+        font-size: 1.1rem;
     }
     
     .date-container {
@@ -913,8 +1171,43 @@ body {
         font-size: 1.2rem;
     }
     
-    .time-display {
-        font-size: 2rem;
+    .elegant-clock {
+        width: 250px;
+        height: 250px;
+    }
+    
+    .digital-display {
+        bottom: 20%;
+        padding: var(--space-xs) var(--space-sm);
+    }
+    
+    .digital-time {
+        font-size: 0.7rem;
+        gap: 2px;
+    }
+    
+    .digit-group span:first-child {
+        font-size: 0.9rem;
+    }
+    
+    .digit-label {
+        font-size: 0.5rem;
+    }
+    
+    .time-period-elegant {
+        top: -40px;
+        padding: var(--space-xs) var(--space-sm);
+        gap: var(--space-xs);
+    }
+    
+    .period-icon {
+        width: 30px;
+        height: 30px;
+        font-size: 0.9rem;
+    }
+    
+    .time-period-elegant .period-text {
+        font-size: 1rem;
     }
     
     .hero-section {
