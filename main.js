@@ -311,26 +311,21 @@ class IranLiveApp {
     animateLoadingProgress(percentage) {
         try {
             const progressBar = document.getElementById('loading-progress');
-            const progressText = document.querySelector('.progress-percentage');
+            const loadingText = document.querySelector('.loading-text');
             
             if (progressBar) {
                 progressBar.style.width = percentage + '%';
             }
             
-            if (progressText) {
-                progressText.textContent = percentage + '%';
-            }
-            
             // Update status text
-            let statusText = 'آماده‌سازی...';
+            let statusText = 'در حال بارگذاری...';
             if (percentage >= 40) statusText = 'بارگذاری اجزا...';
             if (percentage >= 70) statusText = 'راه‌اندازی سیستم‌ها...';
             if (percentage >= 90) statusText = 'نهایی‌سازی...';
             if (percentage >= 100) statusText = 'آماده!';
             
-            const statusElement = document.querySelector('.progress-status');
-            if (statusElement) {
-                statusElement.textContent = statusText;
+            if (loadingText) {
+                loadingText.textContent = statusText;
             }
             
         } catch (error) {
