@@ -292,6 +292,7 @@ body {
 }
 
 /* Modern Time Display */
+/* Note: Time display uses LTR direction for proper clock format (HH:MM:SS) */
 .time-display-modern {
     position: relative;
 }
@@ -305,6 +306,7 @@ body {
     box-shadow: var(--shadow-xl);
     position: relative;
     overflow: hidden;
+    direction: ltr; /* Ensure the container is LTR for proper time display */
 }
 
 .time-wrapper::before {
@@ -327,6 +329,7 @@ body {
     font-size: clamp(3rem, 8vw, 6rem);
     line-height: 1;
     margin-bottom: var(--space-sm);
+    direction: ltr; /* Force left-to-right for clock display */
 }
 
 .time-digit {
