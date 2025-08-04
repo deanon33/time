@@ -16,6 +16,11 @@ class IranLiveApp {
         this.startTime = Date.now();
         this.loadingElement = document.getElementById('loading-screen');
         
+        // Revolutionary UI elements
+        this.particleCanvas = null;
+        this.weatherCanvas = null;
+        this.quantumTooltip = document.getElementById('quantum-tooltip');
+        
         // Error handling
         this.errorCount = 0;
         this.maxErrors = 5;

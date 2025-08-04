@@ -568,4 +568,1945 @@ body {
     100% { transform: translateY(20px) scaleY(0.9); opacity: 0.5; }
 }
 
-/* Continue with more revolutionary CSS... */
+.time-period-crystal {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: var(--space-galactic);
+    position: relative;
+    transform: translateZ(15px);
+}
+
+.period-core {
+    background: var(--glass-ultra);
+    backdrop-filter: var(--glass-backdrop);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-galactic);
+    padding: var(--space-dimensional) var(--space-universal);
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: var(--text-stellar);
+    text-shadow: 0 0 10px rgba(240, 147, 251, 0.3);
+}
+
+.period-energy {
+    position: absolute;
+    top: -5px;
+    left: -5px;
+    right: -5px;
+    bottom: -5px;
+    background: linear-gradient(45deg, rgba(240, 147, 251, 0.2), rgba(100, 255, 218, 0.2));
+    border-radius: var(--radius-galactic);
+    animation: periodEnergy 3s ease-in-out infinite alternate;
+    transform: translateZ(-2px);
+}
+
+@keyframes periodEnergy {
+    0% { opacity: 0.3; transform: translateZ(-2px) scale(0.95); }
+    100% { opacity: 0.6; transform: translateZ(-2px) scale(1.05); }
+}
+
+.time-zone-info {
+    text-align: center;
+    margin-top: var(--space-universal);
+    position: relative;
+}
+
+.zone-indicator {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-stellar);
+    color: var(--text-cosmic);
+    font-size: 1rem;
+    font-weight: 500;
+}
+
+.zone-pulse {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 100px;
+    height: 20px;
+    margin: -10px 0 0 -50px;
+    background: radial-gradient(ellipse, rgba(79, 172, 254, 0.2) 0%, transparent 70%);
+    animation: zonePulse 4s ease-in-out infinite;
+}
+
+@keyframes zonePulse {
+    0%, 100% { transform: scale(1); opacity: 0.3; }
+    50% { transform: scale(1.5); opacity: 0.6; }
+}
+
+/* ===== DATE CONSTELLATION ===== */
+.date-constellation {
+    position: relative;
+    transform-style: preserve-3d;
+}
+
+.constellation-map {
+    position: absolute;
+    top: -30px;
+    left: -30px;
+    right: -30px;
+    bottom: -30px;
+    pointer-events: none;
+}
+
+.star-connections {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: 
+        linear-gradient(45deg, transparent 48%, rgba(100, 255, 218, 0.3) 49%, rgba(100, 255, 218, 0.3) 51%, transparent 52%),
+        linear-gradient(-45deg, transparent 48%, rgba(240, 147, 251, 0.2) 49%, rgba(240, 147, 251, 0.2) 51%, transparent 52%);
+    animation: starConnections 8s ease-in-out infinite alternate;
+}
+
+@keyframes starConnections {
+    0% { opacity: 0.2; transform: rotate(0deg); }
+    100% { opacity: 0.5; transform: rotate(2deg); }
+}
+
+.constellation-glow {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(ellipse, rgba(102, 126, 234, 0.1) 0%, transparent 70%);
+    animation: constellationGlow 6s ease-in-out infinite alternate;
+}
+
+@keyframes constellationGlow {
+    0% { transform: scale(0.9); opacity: 0.3; }
+    100% { transform: scale(1.1); opacity: 0.6; }
+}
+
+.date-crystal {
+    background: var(--glass-ultra);
+    backdrop-filter: var(--glass-backdrop);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-universal);
+    padding: var(--space-universal);
+    box-shadow: var(--shadow-stellar);
+    transform: translateZ(10px);
+    position: relative;
+    margin-bottom: var(--space-galactic);
+}
+
+.crystal-core {
+    text-align: center;
+}
+
+.date-primary {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-stellar);
+}
+
+.stellar-text {
+    font-size: 1.4rem;
+    font-weight: 600;
+    color: var(--text-quantum);
+    text-shadow: var(--glow-quantum);
+}
+
+.cosmic-text {
+    font-size: 1.8rem;
+    font-weight: 700;
+    background: var(--quantum-accent);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.crystal-aura {
+    position: absolute;
+    top: -10px;
+    left: -10px;
+    right: -10px;
+    bottom: -10px;
+    background: radial-gradient(ellipse, rgba(79, 172, 254, 0.2) 0%, transparent 70%);
+    border-radius: var(--radius-universal);
+    animation: crystalAura 5s ease-in-out infinite alternate;
+    transform: translateZ(-5px);
+}
+
+@keyframes crystalAura {
+    0% { transform: translateZ(-5px) scale(0.9); opacity: 0.3; }
+    100% { transform: translateZ(-5px) scale(1.1); opacity: 0.6; }
+}
+
+.gregorian-display {
+    text-align: center;
+    margin-bottom: var(--space-galactic);
+    position: relative;
+}
+
+.gregorian-text {
+    font-size: 1rem;
+    color: var(--text-cosmic);
+    font-weight: 400;
+    direction: ltr;
+}
+
+.gregorian-glow {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 200px;
+    height: 20px;
+    margin: -10px 0 0 -100px;
+    background: radial-gradient(ellipse, rgba(240, 147, 251, 0.1) 0%, transparent 70%);
+    animation: gregorianGlow 4s ease-in-out infinite alternate;
+}
+
+@keyframes gregorianGlow {
+    0% { transform: scale(0.8); opacity: 0.2; }
+    100% { transform: scale(1.2); opacity: 0.4; }
+}
+
+.calendar-portal {
+    text-align: center;
+    position: relative;
+}
+
+.portal-icon {
+    width: 60px;
+    height: 60px;
+    background: var(--quantum-secondary);
+    border-radius: var(--radius-dimensional);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto;
+    transform: translateZ(5px);
+    animation: portalIcon 4s ease-in-out infinite alternate;
+}
+
+@keyframes portalIcon {
+    0% { transform: translateZ(5px) rotateY(0deg); }
+    100% { transform: translateZ(5px) rotateY(180deg); }
+}
+
+.portal-icon i {
+    font-size: 1.5rem;
+    color: white;
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+}
+
+.portal-vortex {
+    position: absolute;
+    top: -15px;
+    left: 50%;
+    width: 90px;
+    height: 90px;
+    margin-left: -45px;
+    background: conic-gradient(from 0deg, transparent, rgba(240, 147, 251, 0.3), transparent);
+    border-radius: var(--radius-transcendent);
+    animation: portalVortex 6s linear infinite;
+    transform: translateZ(-3px);
+}
+
+@keyframes portalVortex {
+    0% { transform: translateZ(-3px) rotate(0deg); }
+    100% { transform: translateZ(-3px) rotate(360deg); }
+}
+
+/* ===== STATUS ORBS ===== */
+.status-orbs {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-universal);
+    position: relative;
+}
+
+.status-orb {
+    background: var(--glass-ultra);
+    backdrop-filter: var(--glass-backdrop);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-universal);
+    padding: var(--space-universal);
+    box-shadow: var(--shadow-stellar);
+    position: relative;
+    transform-style: preserve-3d;
+    animation: orbFloat 8s ease-in-out infinite alternate;
+}
+
+@keyframes orbFloat {
+    0% { transform: translateY(0px) rotateX(0deg); }
+    100% { transform: translateY(-8px) rotateX(3deg); }
+}
+
+.orb-core {
+    width: 60px;
+    height: 60px;
+    background: var(--quantum-accent);
+    border-radius: var(--radius-transcendent);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto var(--space-dimensional);
+    transform: translateZ(10px);
+    animation: orbCore 6s ease-in-out infinite alternate;
+}
+
+@keyframes orbCore {
+    0% { transform: translateZ(10px) scale(1); box-shadow: var(--glow-quantum); }
+    100% { transform: translateZ(10px) scale(1.1); box-shadow: var(--glow-stellar); }
+}
+
+.orb-icon i {
+    font-size: 1.5rem;
+    color: white;
+    text-shadow: 0 0 15px rgba(255, 255, 255, 0.8);
+}
+
+.orb-info {
+    text-align: center;
+}
+
+.orb-title {
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: var(--text-hologram);
+    margin-bottom: var(--space-stellar);
+}
+
+.orb-desc {
+    font-size: 0.9rem;
+    color: var(--text-stellar);
+    margin-bottom: var(--space-dimensional);
+}
+
+.orb-progress {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-dimensional);
+}
+
+.progress-ring {
+    position: relative;
+    width: 60px;
+    height: 60px;
+}
+
+.progress-svg {
+    width: 60px;
+    height: 60px;
+    transform: rotate(-90deg);
+}
+
+.progress-circle {
+    fill: none;
+    stroke: rgba(255, 255, 255, 0.1);
+    stroke-width: 3;
+}
+
+.progress-fill {
+    fill: none;
+    stroke: url(#progressGradient);
+    stroke-width: 3;
+    stroke-linecap: round;
+    stroke-dasharray: 157;
+    stroke-dashoffset: 157;
+    animation: progressRing 2s ease-in-out forwards;
+}
+
+@keyframes progressRing {
+    to { stroke-dashoffset: 78.5; }
+}
+
+.progress-text {
+    font-size: 0.9rem;
+    color: var(--text-quantum);
+    font-weight: 600;
+}
+
+.orb-energy {
+    position: absolute;
+    top: -10px;
+    left: -10px;
+    right: -10px;
+    bottom: -10px;
+    background: radial-gradient(ellipse, rgba(100, 255, 218, 0.1) 0%, transparent 70%);
+    border-radius: var(--radius-universal);
+    animation: orbEnergy 7s ease-in-out infinite alternate;
+    transform: translateZ(-5px);
+}
+
+@keyframes orbEnergy {
+    0% { transform: translateZ(-5px) scale(0.9); opacity: 0.3; }
+    100% { transform: translateZ(-5px) scale(1.2); opacity: 0.6; }
+}
+
+.weather-energy {
+    background: radial-gradient(ellipse, rgba(240, 147, 251, 0.1) 0%, transparent 70%);
+}
+
+.weather-primary {
+    display: flex;
+    align-items: baseline;
+    justify-content: center;
+    gap: var(--space-stellar);
+    margin-bottom: var(--space-stellar);
+}
+
+.temperature-3d {
+    font-size: 2.5rem;
+    font-weight: 900;
+    background: var(--quantum-accent);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    direction: ltr;
+    text-shadow: 0 0 20px rgba(100, 255, 218, 0.3);
+}
+
+.condition-text {
+    font-size: 1.1rem;
+    color: var(--text-stellar);
+    font-weight: 500;
+}
+
+.weather-details {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-quantum);
+    font-size: 0.9rem;
+    color: var(--text-cosmic);
+}
+
+/* ===== INFO UNIVERSE ===== */
+.info-universe {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+    gap: var(--space-transcendent);
+    margin-bottom: var(--space-beyond);
+    perspective: 1500px;
+    transform-style: preserve-3d;
+}
+
+.info-portal {
+    background: var(--glass-ultra);
+    backdrop-filter: var(--glass-backdrop);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-universal);
+    box-shadow: var(--shadow-cosmic);
+    overflow: hidden;
+    position: relative;
+    transform-style: preserve-3d;
+    animation: portalHover 10s ease-in-out infinite alternate;
+}
+
+@keyframes portalHover {
+    0% { transform: translateY(0px) rotateX(0deg); }
+    100% { transform: translateY(-5px) rotateX(1deg); }
+}
+
+.portal-header {
+    padding: var(--space-universal);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    align-items: center;
+    gap: var(--space-dimensional);
+    position: relative;
+}
+
+.header-crystal {
+    position: relative;
+    width: 50px;
+    height: 50px;
+    transform-style: preserve-3d;
+}
+
+.crystal-icon {
+    width: 50px;
+    height: 50px;
+    background: var(--quantum-accent);
+    border-radius: var(--radius-dimensional);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transform: translateZ(5px);
+    animation: crystalIcon 5s ease-in-out infinite alternate;
+}
+
+@keyframes crystalIcon {
+    0% { transform: translateZ(5px) rotateY(0deg); }
+    100% { transform: translateZ(5px) rotateY(15deg); }
+}
+
+.crystal-icon i {
+    font-size: 1.3rem;
+    color: white;
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+}
+
+.crystal-energy {
+    position: absolute;
+    top: -5px;
+    left: -5px;
+    right: -5px;
+    bottom: -5px;
+    background: radial-gradient(circle, rgba(100, 255, 218, 0.2) 0%, transparent 70%);
+    border-radius: var(--radius-dimensional);
+    animation: crystalEnergy 4s ease-in-out infinite alternate;
+    transform: translateZ(-2px);
+}
+
+@keyframes crystalEnergy {
+    0% { transform: translateZ(-2px) scale(0.9); opacity: 0.3; }
+    100% { transform: translateZ(-2px) scale(1.1); opacity: 0.6; }
+}
+
+.header-content {
+    flex: 1;
+}
+
+.portal-title {
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: var(--text-hologram);
+    margin-bottom: var(--space-quantum);
+}
+
+.portal-subtitle {
+    font-size: 0.9rem;
+    color: var(--text-stellar);
+}
+
+.portal-action {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: var(--radius-dimensional);
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-hologram);
+    cursor: pointer;
+    transition: var(--transition-stellar);
+    position: relative;
+    overflow: hidden;
+}
+
+.portal-action:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: scale(1.1) rotate(180deg);
+    box-shadow: var(--glow-quantum);
+}
+
+.action-ripple {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    background: radial-gradient(circle, rgba(100, 255, 218, 0.5) 0%, transparent 70%);
+    border-radius: var(--radius-transcendent);
+    transition: var(--transition-stellar);
+}
+
+.portal-action:hover .action-ripple {
+    width: 80px;
+    height: 80px;
+    margin: -40px 0 0 -40px;
+}
+
+.portal-content {
+    padding: var(--space-universal);
+    position: relative;
+}
+
+/* ===== FORECAST PORTAL ===== */
+.forecast-timeline-3d {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: var(--space-dimensional);
+    position: relative;
+}
+
+.timeline-glow {
+    position: absolute;
+    top: -10px;
+    left: -10px;
+    right: -10px;
+    bottom: -10px;
+    background: radial-gradient(ellipse, rgba(79, 172, 254, 0.1) 0%, transparent 70%);
+    border-radius: var(--radius-dimensional);
+    animation: timelineGlow 6s ease-in-out infinite alternate;
+    pointer-events: none;
+}
+
+@keyframes timelineGlow {
+    0% { opacity: 0.3; transform: scale(0.95); }
+    100% { opacity: 0.6; transform: scale(1.05); }
+}
+
+.forecast-item {
+    text-align: center;
+    padding: var(--space-dimensional);
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: var(--radius-dimensional);
+    transition: var(--transition-stellar);
+    transform-style: preserve-3d;
+}
+
+.forecast-item:hover {
+    background: rgba(255, 255, 255, 0.1);
+    transform: translateY(-3px) translateZ(5px);
+    box-shadow: var(--glow-quantum);
+}
+
+.forecast-day {
+    font-size: 0.8rem;
+    color: var(--text-stellar);
+    margin-bottom: var(--space-stellar);
+    font-weight: 500;
+}
+
+.forecast-icon {
+    font-size: 1.8rem;
+    margin: var(--space-stellar) 0;
+    color: var(--text-quantum);
+    text-shadow: var(--glow-quantum);
+    animation: forecastIcon 4s ease-in-out infinite alternate;
+}
+
+@keyframes forecastIcon {
+    0% { transform: scale(1) rotate(0deg); }
+    100% { transform: scale(1.1) rotate(5deg); }
+}
+
+.forecast-temp {
+    font-weight: 700;
+    color: var(--text-hologram);
+    margin-bottom: var(--space-stellar);
+    direction: ltr;
+    font-size: 1.1rem;
+}
+
+.forecast-desc {
+    font-size: 0.7rem;
+    color: var(--text-cosmic);
+    font-weight: 400;
+}
+
+/* ===== PRAYER PORTAL ===== */
+.prayer-indicator {
+    display: flex;
+    align-items: center;
+    gap: var(--space-stellar);
+    font-size: 0.9rem;
+    color: var(--text-quantum);
+    font-weight: 500;
+}
+
+.indicator-pulse {
+    width: 10px;
+    height: 10px;
+    background: var(--text-quantum);
+    border-radius: var(--radius-transcendent);
+    animation: indicatorPulse 2s ease-in-out infinite;
+    box-shadow: var(--glow-quantum);
+}
+
+@keyframes indicatorPulse {
+    0%, 100% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.5); opacity: 0.6; }
+}
+
+.prayer-constellation {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-dimensional);
+    position: relative;
+}
+
+.constellation-glow {
+    position: absolute;
+    top: -15px;
+    left: -15px;
+    right: -15px;
+    bottom: -15px;
+    background: radial-gradient(ellipse, rgba(102, 126, 234, 0.1) 0%, transparent 70%);
+    border-radius: var(--radius-dimensional);
+    animation: constellationGlow 8s ease-in-out infinite alternate;
+    pointer-events: none;
+}
+
+.prayer-node {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--space-dimensional);
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: var(--radius-dimensional);
+    transition: var(--transition-stellar);
+    position: relative;
+    transform-style: preserve-3d;
+}
+
+.prayer-node:hover {
+    background: rgba(255, 255, 255, 0.1);
+    transform: translateX(-3px) translateZ(3px);
+}
+
+.prayer-node.active {
+    background: var(--quantum-accent);
+    border-color: transparent;
+    box-shadow: var(--glow-quantum);
+    transform: translateX(-5px) translateZ(5px);
+}
+
+.prayer-node.active .prayer-name,
+.prayer-node.active .prayer-time {
+    color: white;
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+}
+
+.node-core {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.prayer-info {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.prayer-name {
+    font-weight: 500;
+    color: var(--text-hologram);
+    font-size: 1rem;
+}
+
+.prayer-time {
+    font-family: 'Inter', monospace;
+    font-weight: 600;
+    color: var(--text-quantum);
+    direction: ltr;
+    font-size: 1rem;
+}
+
+.node-energy {
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    background: linear-gradient(45deg, rgba(102, 126, 234, 0.1), rgba(240, 147, 251, 0.1));
+    border-radius: var(--radius-dimensional);
+    opacity: 0;
+    transition: var(--transition-stellar);
+    transform: translateZ(-1px);
+}
+
+.prayer-node:hover .node-energy,
+.prayer-node.active .node-energy {
+    opacity: 1;
+}
+
+.node-connection {
+    position: absolute;
+    right: -15px;
+    top: 50%;
+    width: 30px;
+    height: 2px;
+    background: linear-gradient(90deg, rgba(100, 255, 218, 0.5), transparent);
+    transform: translateY(-50%);
+}
+
+.prayer-node:last-child .node-connection {
+    display: none;
+}
+
+/* ===== POETRY PORTAL ===== */
+.poetry-ornament {
+    color: var(--text-quantum);
+    font-size: 1.8rem;
+    opacity: 0.7;
+    position: relative;
+}
+
+.ornament-glow {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 40px;
+    height: 40px;
+    margin: -20px 0 0 -20px;
+    background: radial-gradient(circle, rgba(100, 255, 218, 0.2) 0%, transparent 70%);
+    border-radius: var(--radius-transcendent);
+    animation: ornamentGlow 4s ease-in-out infinite alternate;
+}
+
+@keyframes ornamentGlow {
+    0% { transform: scale(0.8); opacity: 0.3; }
+    100% { transform: scale(1.2); opacity: 0.6; }
+}
+
+.poetry-hologram {
+    text-align: center;
+    position: relative;
+    transform-style: preserve-3d;
+}
+
+.hologram-glow {
+    position: absolute;
+    top: -20px;
+    left: -20px;
+    right: -20px;
+    bottom: -20px;
+    background: radial-gradient(ellipse, rgba(240, 147, 251, 0.1) 0%, transparent 70%);
+    border-radius: var(--radius-dimensional);
+    animation: hologramGlow 7s ease-in-out infinite alternate;
+    pointer-events: none;
+    transform: translateZ(-5px);
+}
+
+@keyframes hologramGlow {
+    0% { opacity: 0.3; transform: translateZ(-5px) scale(0.95); }
+    100% { opacity: 0.6; transform: translateZ(-5px) scale(1.05); }
+}
+
+.poem-verses-3d {
+    margin-bottom: var(--space-universal);
+    position: relative;
+    transform: translateZ(5px);
+}
+
+.verse-3d {
+    font-size: 1.2rem;
+    line-height: 1.9;
+    color: var(--text-hologram);
+    margin-bottom: var(--space-dimensional);
+    position: relative;
+    font-style: italic;
+    font-weight: 400;
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+}
+
+.verse-3d::before {
+    content: '"';
+    font-size: 2.5rem;
+    color: var(--text-quantum);
+    position: absolute;
+    right: -25px;
+    top: -15px;
+    opacity: 0.6;
+    text-shadow: var(--glow-quantum);
+}
+
+.verse-3d:last-child::after {
+    content: '"';
+    font-size: 2.5rem;
+    color: var(--text-quantum);
+    position: absolute;
+    left: -25px;
+    bottom: -15px;
+    opacity: 0.6;
+    text-shadow: var(--glow-quantum);
+}
+
+.poet-signature-3d {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-dimensional);
+    position: relative;
+    transform: translateZ(3px);
+}
+
+.poet-name-crystal {
+    font-size: 1.1rem;
+    color: var(--text-quantum);
+    font-weight: 600;
+    background: var(--glass-ultra);
+    backdrop-filter: var(--glass-backdrop);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-dimensional);
+    padding: var(--space-stellar) var(--space-dimensional);
+    text-shadow: var(--glow-quantum);
+}
+
+.signature-ornament {
+    width: 50px;
+    height: 3px;
+    background: var(--quantum-accent);
+    border-radius: var(--radius-stellar);
+    position: relative;
+    overflow: hidden;
+}
+
+.signature-ornament::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.6), transparent);
+    animation: signatureShine 3s linear infinite;
+}
+
+@keyframes signatureShine {
+    0% { left: -100%; }
+    100% { left: 100%; }
+}
+
+/* ===== STATISTICS MATRIX ===== */
+.stats-matrix {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-dimensional);
+    position: relative;
+}
+
+.matrix-glow {
+    position: absolute;
+    top: -15px;
+    left: -15px;
+    right: -15px;
+    bottom: -15px;
+    background: radial-gradient(ellipse, rgba(79, 172, 254, 0.1) 0%, transparent 70%);
+    border-radius: var(--radius-dimensional);
+    animation: matrixGlow 9s ease-in-out infinite alternate;
+    pointer-events: none;
+}
+
+@keyframes matrixGlow {
+    0% { opacity: 0.3; transform: scale(0.95); }
+    100% { opacity: 0.6; transform: scale(1.05); }
+}
+
+.matrix-node {
+    display: flex;
+    align-items: center;
+    gap: var(--space-dimensional);
+    padding: var(--space-dimensional);
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: var(--radius-dimensional);
+    transition: var(--transition-stellar);
+    position: relative;
+    transform-style: preserve-3d;
+}
+
+.matrix-node:hover {
+    background: rgba(255, 255, 255, 0.1);
+    transform: translateY(-2px) translateZ(3px);
+    box-shadow: var(--glow-quantum);
+}
+
+.node-icon {
+    width: 40px;
+    height: 40px;
+    background: var(--quantum-accent);
+    border-radius: var(--radius-dimensional);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transform: translateZ(2px);
+}
+
+.node-icon i {
+    font-size: 1rem;
+    color: white;
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+}
+
+.node-data {
+    flex: 1;
+}
+
+.data-value {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--text-hologram);
+    margin-bottom: var(--space-quantum);
+    direction: ltr;
+    text-shadow: 0 0 10px rgba(100, 255, 218, 0.3);
+}
+
+.data-label {
+    font-size: 0.8rem;
+    color: var(--text-stellar);
+    font-weight: 400;
+}
+
+.node-pulse {
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    background: linear-gradient(45deg, rgba(100, 255, 218, 0.1), rgba(240, 147, 251, 0.1));
+    border-radius: var(--radius-dimensional);
+    animation: nodePulse 3s ease-in-out infinite alternate;
+    transform: translateZ(-1px);
+}
+
+@keyframes nodePulse {
+    0% { opacity: 0.3; transform: translateZ(-1px) scale(0.98); }
+    100% { opacity: 0.6; transform: translateZ(-1px) scale(1.02); }
+}
+
+.status-indicator-3d {
+    display: flex;
+    align-items: center;
+    gap: var(--space-stellar);
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.status-indicator-3d.online {
+    color: #4ade80;
+}
+
+.status-core {
+    width: 10px;
+    height: 10px;
+    background: currentColor;
+    border-radius: var(--radius-transcendent);
+    animation: statusPulse 2s ease-in-out infinite;
+    box-shadow: 0 0 10px currentColor;
+}
+
+@keyframes statusPulse {
+    0%, 100% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.3); opacity: 0.7; }
+}
+
+/* ===== SPECIAL DIMENSION ===== */
+.special-dimension {
+    margin-bottom: var(--space-beyond);
+    padding: var(--space-transcendent);
+    background: var(--glass-ultra);
+    backdrop-filter: var(--glass-backdrop);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-infinite);
+    box-shadow: var(--shadow-dimensional);
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    transform-style: preserve-3d;
+}
+
+.dimension-portal {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-transcendent);
+    transform-style: preserve-3d;
+}
+
+.portal-vortex {
+    position: absolute;
+    top: -100px;
+    left: -100px;
+    right: -100px;
+    bottom: -100px;
+    pointer-events: none;
+}
+
+.vortex-rings {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.vortex-rings::before,
+.vortex-rings::after {
+    content: '';
+    position: absolute;
+    border: 2px solid transparent;
+    border-radius: var(--radius-transcendent);
+    animation: vortexSpin 8s linear infinite;
+}
+
+.vortex-rings::before {
+    width: 200px;
+    height: 200px;
+    margin: -100px 0 0 -100px;
+    border-color: rgba(250, 112, 154, 0.3);
+    animation-direction: normal;
+}
+
+.vortex-rings::after {
+    width: 300px;
+    height: 300px;
+    margin: -150px 0 0 -150px;
+    border-color: rgba(254, 225, 64, 0.2);
+    animation-direction: reverse;
+    animation-duration: 12s;
+}
+
+@keyframes vortexSpin {
+    0% { transform: rotate(0deg) scale(1); }
+    50% { transform: rotate(180deg) scale(1.1); }
+    100% { transform: rotate(360deg) scale(1); }
+}
+
+.vortex-energy {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: conic-gradient(from 0deg, 
+        transparent 0deg, 
+        rgba(250, 112, 154, 0.1) 90deg, 
+        transparent 180deg, 
+        rgba(254, 225, 64, 0.1) 270deg, 
+        transparent 360deg);
+    animation: vortexEnergy 15s linear infinite;
+    border-radius: var(--radius-transcendent);
+}
+
+@keyframes vortexEnergy {
+    0% { transform: rotate(0deg); opacity: 0.5; }
+    100% { transform: rotate(360deg); opacity: 0.8; }
+}
+
+.event-manifestation {
+    text-align: center;
+    position: relative;
+    transform: translateZ(10px);
+}
+
+.event-crystal {
+    width: 100px;
+    height: 100px;
+    background: var(--quantum-sunset);
+    border-radius: var(--radius-transcendent);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto var(--space-galactic);
+    animation: eventCrystal 4s ease-in-out infinite alternate;
+    position: relative;
+    transform-style: preserve-3d;
+}
+
+@keyframes eventCrystal {
+    0% { 
+        transform: translateZ(5px) scale(1) rotateY(0deg);
+        box-shadow: var(--glow-energy);
+    }
+    100% { 
+        transform: translateZ(5px) scale(1.1) rotateY(10deg);
+        box-shadow: var(--glow-stellar);
+    }
+}
+
+.crystal-core i {
+    font-size: 2.5rem;
+    color: white;
+    text-shadow: 0 0 20px rgba(255, 255, 255, 0.8);
+}
+
+.crystal-radiance {
+    position: absolute;
+    top: -20px;
+    left: -20px;
+    right: -20px;
+    bottom: -20px;
+    background: radial-gradient(circle, rgba(250, 112, 154, 0.3) 0%, transparent 70%);
+    border-radius: var(--radius-transcendent);
+    animation: crystalRadiance 5s ease-in-out infinite alternate;
+    transform: translateZ(-5px);
+}
+
+@keyframes crystalRadiance {
+    0% { transform: translateZ(-5px) scale(0.8); opacity: 0.4; }
+    100% { transform: translateZ(-5px) scale(1.3); opacity: 0.7; }
+}
+
+.event-hologram {
+    position: relative;
+    transform: translateZ(5px);
+}
+
+.event-title-3d {
+    font-size: 2.5rem;
+    font-weight: 900;
+    background: var(--quantum-sunset);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: var(--space-dimensional);
+    text-shadow: 0 0 30px rgba(250, 112, 154, 0.5);
+    font-family: 'Playfair Display', serif;
+}
+
+.event-description-3d {
+    font-size: 1.2rem;
+    color: var(--text-stellar);
+    text-shadow: 0 0 15px rgba(254, 225, 64, 0.3);
+}
+
+.dimension-decorations {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+}
+
+.decoration-particles {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: 
+        radial-gradient(2px 2px at 20% 30%, rgba(250, 112, 154, 0.4), transparent),
+        radial-gradient(1px 1px at 60% 70%, rgba(254, 225, 64, 0.3), transparent),
+        radial-gradient(1px 1px at 80% 40%, rgba(250, 112, 154, 0.2), transparent);
+    background-size: 150px 150px;
+    animation: decorationParticles 20s linear infinite;
+}
+
+@keyframes decorationParticles {
+    0% { transform: translateY(0px) rotate(0deg); }
+    100% { transform: translateY(-50px) rotate(360deg); }
+}
+
+.decoration-waves {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: 
+        linear-gradient(45deg, transparent 30%, rgba(250, 112, 154, 0.05) 50%, transparent 70%),
+        linear-gradient(-45deg, transparent 30%, rgba(254, 225, 64, 0.03) 50%, transparent 70%);
+    animation: decorationWaves 12s ease-in-out infinite alternate;
+}
+
+@keyframes decorationWaves {
+    0% { transform: scale(1) rotate(0deg); opacity: 0.5; }
+    100% { transform: scale(1.1) rotate(5deg); opacity: 0.8; }
+}
+
+/* ===== QUANTUM SETTINGS DIMENSION ===== */
+.settings-dimension {
+    position: fixed;
+    top: 0;
+    right: -500px;
+    width: 500px;
+    height: 100%;
+    z-index: var(--z-dimensional);
+    transition: var(--transition-dimensional);
+    perspective: 1000px;
+}
+
+.settings-dimension.active {
+    right: 0;
+}
+
+.dimension-backdrop {
+    position: absolute;
+    top: 0;
+    left: -100vw;
+    width: 100vw;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(10px);
+    opacity: 0;
+    transition: var(--transition-stellar);
+}
+
+.settings-dimension.active .dimension-backdrop {
+    opacity: 1;
+}
+
+.settings-portal {
+    width: 100%;
+    height: 100%;
+    background: var(--glass-ultra);
+    backdrop-filter: var(--glass-backdrop);
+    border-left: 1px solid var(--glass-border);
+    box-shadow: var(--shadow-dimensional);
+    position: relative;
+    transform-style: preserve-3d;
+    display: flex;
+    flex-direction: column;
+}
+
+.portal-frame-3d {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+}
+
+.frame-energy {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(180deg, 
+        rgba(102, 126, 234, 0.1) 0%, 
+        rgba(240, 147, 251, 0.05) 50%, 
+        rgba(79, 172, 254, 0.1) 100%);
+    animation: frameEnergyFlow 8s ease-in-out infinite alternate;
+}
+
+@keyframes frameEnergyFlow {
+    0% { opacity: 0.3; }
+    100% { opacity: 0.6; }
+}
+
+.frame-particles {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: 
+        radial-gradient(1px 1px at 20% 20%, rgba(100, 255, 218, 0.3), transparent),
+        radial-gradient(1px 1px at 50% 60%, rgba(240, 147, 251, 0.2), transparent),
+        radial-gradient(1px 1px at 80% 80%, rgba(79, 172, 254, 0.3), transparent);
+    background-size: 100px 100px;
+    animation: frameParticlesMove 15s linear infinite;
+}
+
+@keyframes frameParticlesMove {
+    0% { transform: translateY(0px); }
+    100% { transform: translateY(-100px); }
+}
+
+.portal-header {
+    padding: var(--space-universal);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: relative;
+    z-index: 1;
+}
+
+.portal-title-3d {
+    font-size: 1.5rem;
+    font-weight: 700;
+    background: var(--quantum-cosmic);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-shadow: 0 0 20px rgba(100, 255, 218, 0.3);
+    font-family: 'Playfair Display', serif;
+}
+
+.close-portal {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: var(--radius-dimensional);
+    width: 45px;
+    height: 45px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-hologram);
+    cursor: pointer;
+    transition: var(--transition-stellar);
+    position: relative;
+    overflow: hidden;
+}
+
+.close-portal:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: scale(1.1) rotate(90deg);
+    box-shadow: var(--glow-quantum);
+}
+
+.close-energy {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    background: radial-gradient(circle, rgba(255, 100, 100, 0.5) 0%, transparent 70%);
+    border-radius: var(--radius-transcendent);
+    transition: var(--transition-stellar);
+}
+
+.close-portal:hover .close-energy {
+    width: 60px;
+    height: 60px;
+    margin: -30px 0 0 -30px;
+}
+
+.portal-content-3d {
+    flex: 1;
+    padding: var(--space-universal);
+    overflow-y: auto;
+    position: relative;
+    z-index: 1;
+}
+
+.control-group {
+    margin-bottom: var(--space-universal);
+}
+
+.group-title {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: var(--text-hologram);
+    margin-bottom: var(--space-galactic);
+    padding-bottom: var(--space-dimensional);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    position: relative;
+}
+
+.group-title::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    width: 50px;
+    height: 2px;
+    background: var(--quantum-accent);
+    border-radius: var(--radius-quantum);
+}
+
+.control-matrix {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-dimensional);
+}
+
+.control-node {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: var(--radius-dimensional);
+    padding: var(--space-dimensional);
+    transition: var(--transition-stellar);
+    position: relative;
+    transform-style: preserve-3d;
+}
+
+.control-node:hover {
+    background: rgba(255, 255, 255, 0.1);
+    transform: translateX(-3px) translateZ(2px);
+    box-shadow: var(--glow-quantum);
+}
+
+.quantum-switch {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+    width: 100%;
+}
+
+.switch-label {
+    font-size: 1rem;
+    color: var(--text-hologram);
+    font-weight: 500;
+}
+
+.switch-core {
+    position: relative;
+    width: 60px;
+    height: 30px;
+}
+
+.switch-core input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.switch-track {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 30px;
+    transition: var(--transition-stellar);
+    overflow: hidden;
+}
+
+.switch-thumb {
+    position: absolute;
+    content: "";
+    height: 24px;
+    width: 24px;
+    left: 3px;
+    bottom: 3px;
+    background: white;
+    border-radius: var(--radius-transcendent);
+    transition: var(--transition-stellar);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.switch-energy {
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: var(--quantum-accent);
+    border-radius: 30px;
+    transition: var(--transition-stellar);
+}
+
+input:checked + .switch-track {
+    background: var(--quantum-accent);
+}
+
+input:checked + .switch-track .switch-thumb {
+    transform: translateX(30px);
+}
+
+input:checked + .switch-track .switch-energy {
+    left: 0;
+}
+
+/* ===== QUANTUM NOTIFICATION SYSTEM ===== */
+.notification-dimension {
+    position: fixed;
+    top: 120px;
+    right: var(--space-galactic);
+    z-index: var(--z-tooltip);
+    max-width: 400px;
+    pointer-events: none;
+}
+
+.notification {
+    background: var(--glass-ultra);
+    backdrop-filter: var(--glass-backdrop);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-galactic);
+    box-shadow: var(--shadow-cosmic);
+    margin-bottom: var(--space-dimensional);
+    overflow: hidden;
+    animation: notificationSlide 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    transform-origin: top right;
+    pointer-events: auto;
+    position: relative;
+    transform-style: preserve-3d;
+}
+
+@keyframes notificationSlide {
+    0% { 
+        transform: translateX(100%) scale(0.8) rotateY(90deg); 
+        opacity: 0; 
+    }
+    100% { 
+        transform: translateX(0) scale(1) rotateY(0deg); 
+        opacity: 1; 
+    }
+}
+
+.notification-header {
+    padding: var(--space-dimensional);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.notification-title {
+    font-weight: 600;
+    color: var(--text-hologram);
+    font-size: 1rem;
+}
+
+.notification-close {
+    background: none;
+    border: none;
+    color: var(--text-stellar);
+    cursor: pointer;
+    font-size: 1.2rem;
+    transition: var(--transition-quantum);
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--radius-quantum);
+}
+
+.notification-close:hover {
+    color: var(--text-hologram);
+    background: rgba(255, 255, 255, 0.1);
+    transform: rotate(90deg);
+}
+
+.notification-body {
+    padding: var(--space-dimensional);
+    color: var(--text-stellar);
+    font-size: 0.9rem;
+    line-height: 1.5;
+}
+
+/* ===== QUANTUM TOOLTIP SYSTEM ===== */
+.quantum-tooltip {
+    position: absolute;
+    background: var(--glass-ultra);
+    backdrop-filter: var(--glass-backdrop);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-dimensional);
+    padding: var(--space-stellar) var(--space-dimensional);
+    font-size: 0.8rem;
+    color: var(--text-hologram);
+    z-index: var(--z-tooltip);
+    opacity: 0;
+    pointer-events: none;
+    transition: var(--transition-quantum);
+    transform: translateY(10px);
+    box-shadow: var(--shadow-stellar);
+}
+
+.quantum-tooltip.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.tooltip-content {
+    position: relative;
+    z-index: 1;
+}
+
+.tooltip-energy {
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    background: linear-gradient(45deg, rgba(100, 255, 218, 0.2), rgba(240, 147, 251, 0.2));
+    border-radius: var(--radius-dimensional);
+    animation: tooltipEnergy 2s ease-in-out infinite alternate;
+    transform: translateZ(-1px);
+}
+
+@keyframes tooltipEnergy {
+    0% { opacity: 0.3; transform: translateZ(-1px) scale(0.98); }
+    100% { opacity: 0.6; transform: translateZ(-1px) scale(1.02); }
+}
+
+/* ===== RESPONSIVE DESIGN ===== */
+@media (max-width: 1400px) {
+    .dimension-container {
+        grid-template-columns: 1fr;
+        gap: var(--space-universal);
+    }
+    
+    .status-orbs {
+        flex-direction: row;
+        justify-content: space-between;
+    }
+    
+    .status-orb {
+        flex: 1;
+        max-width: calc(50% - var(--space-dimensional));
+    }
+}
+
+@media (max-width: 1024px) {
+    .immersive-content {
+        padding: var(--space-universal) var(--space-dimensional);
+    }
+    
+    .nav-container {
+        padding: 0 var(--space-dimensional);
+    }
+    
+    .quantum-btn span {
+        display: none;
+    }
+    
+    .digit-3d {
+        font-size: clamp(3rem, 12vw, 6rem);
+    }
+    
+    .separator-3d {
+        font-size: clamp(2rem, 10vw, 4rem);
+    }
+    
+    .info-universe {
+        grid-template-columns: 1fr;
+        gap: var(--space-universal);
+    }
+    
+    .stats-matrix {
+        grid-template-columns: 1fr;
+    }
+    
+    .forecast-timeline-3d {
+        grid-template-columns: repeat(3, 1fr);
+        gap: var(--space-stellar);
+    }
+    
+    .settings-dimension {
+        width: 100%;
+        right: -100%;
+    }
+}
+
+@media (max-width: 768px) {
+    .brand-title {
+        font-size: 1.4rem;
+    }
+    
+    .nav-controls {
+        gap: var(--space-stellar);
+    }
+    
+    .quantum-btn {
+        padding: var(--space-stellar);
+        min-width: 40px;
+    }
+    
+    .quantum-time-portal {
+        padding: var(--space-universal);
+    }
+    
+    .portal-header {
+        padding: var(--space-dimensional);
+    }
+    
+    .portal-content {
+        padding: var(--space-dimensional);
+    }
+    
+    .forecast-timeline-3d {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .holographic-text {
+        font-size: clamp(2rem, 8vw, 3rem);
+    }
+    
+    .event-title-3d {
+        font-size: 2rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .immersive-content {
+        padding: var(--space-dimensional);
+    }
+    
+    .status-orbs {
+        flex-direction: column;
+    }
+    
+    .status-orb {
+        max-width: none;
+    }
+    
+    .forecast-timeline-3d {
+        grid-template-columns: 1fr;
+    }
+    
+    .stats-matrix {
+        grid-template-columns: 1fr;
+    }
+    
+    .notification-dimension {
+        right: var(--space-dimensional);
+        max-width: calc(100vw - var(--space-universal));
+    }
+}
+
+/* ===== ACCESSIBILITY ===== */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+    
+    .loading-crystal,
+    .portal-rings,
+    .brand-crystal,
+    .time-display-3d,
+    .orb-core {
+        animation: none !important;
+    }
+}
+
+@media (prefers-contrast: high) {
+    :root {
+        --text-hologram: #ffffff;
+        --text-stellar: #f0f0f0;
+        --glass-border: rgba(255, 255, 255, 0.4);
+        --glass-ultra: rgba(255, 255, 255, 0.1);
+    }
+}
+
+/* ===== THEME VARIATIONS ===== */
+body.dawn-theme {
+    --quantum-primary: var(--quantum-dawn);
+}
+
+body.dawn-theme .sky-gradient {
+    background: var(--quantum-dawn);
+}
+
+body.day-theme {
+    --quantum-primary: var(--quantum-primary);
+}
+
+body.day-theme .sky-gradient {
+    background: var(--quantum-primary);
+}
+
+body.sunset-theme {
+    --quantum-primary: var(--quantum-sunset);
+}
+
+body.sunset-theme .sky-gradient {
+    background: var(--quantum-sunset);
+}
+
+body.night-theme {
+    --quantum-primary: var(--quantum-night);
+}
+
+body.night-theme .sky-gradient {
+    background: var(--quantum-night);
+}
+
+body.midnight-theme {
+    --quantum-primary: linear-gradient(135deg, #0c0c0c 0%, #1a1a2e 50%, #16213e 100%);
+}
+
+body.midnight-theme .sky-gradient {
+    background: var(--quantum-primary);
+}
+
+/* ===== WEATHER EFFECTS ===== */
+.weather-canvas {
+    pointer-events: none;
+}
+
+.rain-drop {
+    position: absolute;
+    width: 2px;
+    height: 15px;
+    background: linear-gradient(to bottom, transparent, rgba(173, 216, 230, 0.8));
+    border-radius: 0 0 2px 2px;
+    animation: rainFall 1s linear infinite;
+}
+
+.snow-flake {
+    position: absolute;
+    color: white;
+    font-size: 1rem;
+    animation: snowFall 3s linear infinite;
+    text-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
+}
+
+@keyframes rainFall {
+    0% { 
+        transform: translateY(-100px) rotate(10deg); 
+        opacity: 0; 
+    }
+    10% { opacity: 1; }
+    90% { opacity: 1; }
+    100% { 
+        transform: translateY(100vh) rotate(10deg); 
+        opacity: 0; 
+    }
+}
+
+@keyframes snowFall {
+    0% { 
+        transform: translateY(-100px) rotate(0deg); 
+        opacity: 0; 
+    }
+    10% { opacity: 1; }
+    90% { opacity: 1; }
+    100% { 
+        transform: translateY(100vh) rotate(360deg); 
+        opacity: 0; 
+    }
+}
+
+/* ===== FINAL REVOLUTIONARY TOUCHES ===== */
+.immersive-content::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle at 50% 50%, rgba(102, 126, 234, 0.03) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: var(--z-background);
+    animation: ambientGlow 20s ease-in-out infinite alternate;
+}
+
+@keyframes ambientGlow {
+    0% { opacity: 0.3; transform: scale(1); }
+    100% { opacity: 0.6; transform: scale(1.1); }
+}
+
+/* Add SVG gradient definitions */
+body::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 0;
+    overflow: hidden;
+}
+
+/* SVG Gradients for progress rings */
+svg defs {
+    position: absolute;
+    width: 0;
+    height: 0;
+}
+
+/* Ensure proper stacking context */
+.quantum-time-portal,
+.status-orbs,
+.info-portal,
+.special-dimension {
+    isolation: isolate;
+}
+
+/* Final performance optimizations */
+.particle-canvas,
+.weather-canvas {
+    will-change: transform;
+    transform: translateZ(0);
+}
+
+.loading-crystal,
+.brand-crystal,
+.orb-core {
+    will-change: transform;
+    transform: translateZ(0);
+}
+
+/* End of Revolutionary CSS */

@@ -113,12 +113,12 @@ class EnhancedFeatures {
         const poemIndex = dayOfYear % this.persianPoetry.length;
         const selectedPoem = this.persianPoetry[poemIndex];
 
-        const poemVersesElement = document.querySelector('.poem-verses');
+        const poemVersesElement = document.querySelector('.poem-verses-3d');
         const poetNameElement = document.getElementById('poet-name');
 
         if (poemVersesElement && poetNameElement) {
             poemVersesElement.innerHTML = selectedPoem.lines
-                .map((line, index) => `<div class="verse" id="verse-${index + 1}">${line}</div>`)
+                .map((line, index) => `<div class="verse-3d" id="verse-${index + 1}">${line}</div>`)
                 .join('');
             poetNameElement.textContent = selectedPoem.poet;
         }
