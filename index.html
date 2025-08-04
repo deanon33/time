@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ایران زنده - Iran Live</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Vazir:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div id="background-overlay"></div>
+    <div id="weather-effects"></div>
+    
+    <header>
+        <h1 id="site-title">ایران زنده</h1>
+        <p id="site-subtitle">وب‌سایت پویا بر اساس زمان، تاریخ و آب‌وهوای ایران</p>
+    </header>
+
+    <main>
+        <!-- Time and Date Section -->
+        <section id="time-section" class="main-section">
+            <div class="time-container">
+                <div id="current-time" class="time-display">
+                    <span id="hours">00</span>:<span id="minutes">00</span>:<span id="seconds">00</span>
+                </div>
+                <div id="time-period" class="time-period"></div>
+            </div>
+            
+            <div class="date-container">
+                <div id="persian-date" class="date-display">
+                    <span id="day-name"></span>، <span id="day"></span> <span id="month"></span> <span id="year"></span>
+                </div>
+                <div id="gregorian-date" class="secondary-date"></div>
+            </div>
+        </section>
+
+        <!-- Weather Section -->
+        <section id="weather-section" class="main-section">
+            <div class="weather-container">
+                <div class="weather-main">
+                    <div id="weather-icon" class="weather-icon">
+                        <i class="fas fa-sun"></i>
+                    </div>
+                    <div class="weather-info">
+                        <div id="temperature" class="temperature">--°C</div>
+                        <div id="weather-description" class="weather-desc">در حال بارگذاری...</div>
+                    </div>
+                </div>
+                <div class="weather-details">
+                    <div class="weather-detail">
+                        <i class="fas fa-eye"></i>
+                        <span>دید: </span>
+                        <span id="visibility">-- کیلومتر</span>
+                    </div>
+                    <div class="weather-detail">
+                        <i class="fas fa-tint"></i>
+                        <span>رطوبت: </span>
+                        <span id="humidity">--%</span>
+                    </div>
+                    <div class="weather-detail">
+                        <i class="fas fa-wind"></i>
+                        <span>باد: </span>
+                        <span id="wind-speed">-- کیلومتر/ساعت</span>
+                    </div>
+                </div>
+                <div id="location" class="location">تهران، ایران</div>
+            </div>
+        </section>
+
+        <!-- Special Events Section -->
+        <section id="special-events" class="main-section" style="display: none;">
+            <div class="event-container">
+                <div id="event-title" class="event-title"></div>
+                <div id="event-description" class="event-description"></div>
+                <div id="event-countdown" class="event-countdown"></div>
+            </div>
+        </section>
+
+        <!-- Theme Indicator -->
+        <div id="theme-indicator" class="theme-indicator">
+            <div id="theme-name" class="theme-name">روز</div>
+            <div id="theme-description" class="theme-description">آسمان صاف و آفتابی</div>
+        </div>
+    </main>
+
+    <!-- Audio for ambient sounds -->
+    <audio id="ambient-audio" loop>
+        <source id="ambient-source" src="" type="audio/mpeg">
+    </audio>
+
+    <!-- Loading Spinner -->
+    <div id="loading" class="loading-overlay">
+        <div class="spinner"></div>
+        <p>در حال بارگذاری...</p>
+    </div>
+
+    <script src="persian-calendar.js"></script>
+    <script src="weather-api.js"></script>
+    <script src="themes.js"></script>
+    <script src="special-events.js"></script>
+    <script src="main.js"></script>
+</body>
+</html>
