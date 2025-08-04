@@ -221,6 +221,67 @@ class ThemeManager {
             themeNameElement.textContent = theme.name;
             themeDescElement.textContent = theme.description;
         }
+        
+        // Update theme progress
+        this.updateThemeProgress(theme);
+    }
+    
+    // Update theme progress bar
+    updateThemeProgress(theme) {
+        const persianCalendar = new PersianCalendar();
+        const iranTime = persianCalendar.getIranTime();
+        const currentHour = iranTime.getHours();
+        const currentMinute = iranTime.getMinutes();
+        
+        // Calculate progress within current theme
+        let progress = 0;
+        let timeRemaining = '';
+        
+        if (theme.startHour < theme.endHour) {
+            // Normal range
+            const totalMinutes = (theme.endHour - theme.startHour) * 60;
+            const elapsedMinutes = ((currentHour - theme.startHour) * 60) + currentMinute;
+            progress = Math.max(0, Math.min(100, (elapsedMinutes / totalMinutes) * 100));
+            
+            const remainingMinutes = totalMinutes - elapsedMinutes;
+            const remainingHours = Math.floor(remainingMinutes / 60);
+            const remainingMins = remainingMinutes % 60;
+            timeRemaining = `${remainingHours}:${remainingMins.toString().padStart(2, '0')} تا تغییر تم`;
+        } else {
+            // Overnight range
+            if (currentHour >= theme.startHour) {
+                // Same day
+                const totalMinutes = ((24 - theme.startHour) + theme.endHour) * 60;
+                const elapsedMinutes = ((currentHour - theme.startHour) * 60) + currentMinute;
+                progress = Math.max(0, Math.min(100, (elapsedMinutes / totalMinutes) * 100));
+                
+                const remainingMinutes = totalMinutes - elapsedMinutes;
+                const remainingHours = Math.floor(remainingMinutes / 60);
+                const remainingMins = remainingMinutes % 60;
+                timeRemaining = `${remainingHours}:${remainingMins.toString().padStart(2, '0')} تا تغییر تم`;
+            } else {
+                // Next day
+                const totalMinutes = theme.endHour * 60;
+                const elapsedMinutes = (currentHour * 60) + currentMinute;
+                progress = Math.max(0, Math.min(100, (elapsedMinutes / totalMinutes) * 100));
+                
+                const remainingMinutes = totalMinutes - elapsedMinutes;
+                const remainingHours = Math.floor(remainingMinutes / 60);
+                const remainingMins = remainingMinutes % 60;
+                timeRemaining = `${remainingHours}:${remainingMins.toString().padStart(2, '0')} تا تغییر تم`;
+            }
+        }
+        
+        const progressFill = document.getElementById('theme-progress');
+        const progressText = document.getElementById('theme-time-remaining');
+        
+        if (progressFill) {
+            progressFill.style.width = progress + '%';
+        }
+        
+        if (progressText) {
+            progressText.textContent = timeRemaining;
+        }
     }
 
     // Update weather indicator

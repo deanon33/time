@@ -18,6 +18,11 @@ class IranLiveApp {
         // Error handling
         this.errorCount = 0;
         this.maxErrors = 5;
+        
+        // Statistics counters
+        this.updateCounter = 0;
+        this.weatherUpdateCounter = 0;
+        this.themeChangeCounter = 0;
     }
 
     // Initialize all application components
@@ -85,6 +90,7 @@ class IranLiveApp {
         // Initial updates
         this.updateClock();
         this.updateDate();
+        this.createParticleSystem();
         
         console.log('⏰ Real-time updates started');
     }
@@ -121,6 +127,9 @@ class IranLiveApp {
         if (hoursElement) hoursElement.textContent = timeData.hours;
         if (minutesElement) minutesElement.textContent = timeData.minutes;
         if (secondsElement) secondsElement.textContent = timeData.seconds;
+        
+        // Update statistics
+        this.updateStatistics();
     }
 
     // Update time period display
@@ -160,6 +169,60 @@ class IranLiveApp {
         if (dayElement) dayElement.textContent = persianDate.day;
         if (monthElement) monthElement.textContent = persianDate.month;
         if (yearElement) yearElement.textContent = persianDate.year;
+    }
+    
+    // Update statistics display
+    updateStatistics() {
+        const uptime = Date.now() - this.startTime;
+        const hours = Math.floor(uptime / (1000 * 60 * 60));
+        const minutes = Math.floor((uptime % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((uptime % (1000 * 60)) / 1000);
+        
+        const uptimeElement = document.getElementById('uptime');
+        if (uptimeElement) {
+            uptimeElement.textContent = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        }
+        
+        // Update counters
+        this.updateCounter++;
+        const updateCountElement = document.getElementById('update-count');
+        if (updateCountElement) {
+            updateCountElement.textContent = this.updateCounter.toString();
+        }
+    }
+    
+    // Update weather statistics
+    updateWeatherStats() {
+        this.weatherUpdateCounter++;
+        const weatherUpdatesElement = document.getElementById('weather-updates');
+        if (weatherUpdatesElement) {
+            weatherUpdatesElement.textContent = this.weatherUpdateCounter.toString();
+        }
+    }
+    
+    // Update theme statistics
+    updateThemeStats() {
+        this.themeChangeCounter++;
+        const themeChangesElement = document.getElementById('theme-changes');
+        if (themeChangesElement) {
+            themeChangesElement.textContent = this.themeChangeCounter.toString();
+        }
+    }
+    
+    // Create particle system
+    createParticleSystem() {
+        const particleContainer = document.getElementById('particle-system');
+        if (!particleContainer) return;
+        
+        // Create particles
+        for (let i = 0; i < 50; i++) {
+            const particle = document.createElement('div');
+            particle.className = 'particle';
+            particle.style.left = Math.random() * 100 + '%';
+            particle.style.animationDuration = (Math.random() * 20 + 10) + 's';
+            particle.style.animationDelay = Math.random() * 20 + 's';
+            particleContainer.appendChild(particle);
+        }
     }
 
     // Update Gregorian date display
@@ -203,10 +266,12 @@ class IranLiveApp {
         // Custom events
         document.addEventListener('weatherUpdate', (event) => {
             console.log('🌦️ Weather updated:', event.detail.weatherData.description);
+            this.updateWeatherStats();
         });
 
         document.addEventListener('timeThemeChange', (event) => {
             console.log('🎨 Time theme changed:', event.detail.name);
+            this.updateThemeStats();
         });
 
         document.addEventListener('specialEventUpdate', (event) => {
@@ -217,6 +282,36 @@ class IranLiveApp {
         window.addEventListener('error', (event) => {
             this.handleError('JavaScript Error', event.error);
         });
+
+        // Navigation controls
+        const refreshBtn = document.getElementById('refresh-btn');
+        const fullscreenBtn = document.getElementById('fullscreen-btn');
+        const settingsBtn = document.getElementById('settings-btn');
+        const closeSettingsBtn = document.getElementById('close-settings');
+        const weatherRefreshBtn = document.getElementById('weather-refresh');
+
+        if (refreshBtn) {
+            refreshBtn.addEventListener('click', () => this.refreshData());
+        }
+
+        if (fullscreenBtn) {
+            fullscreenBtn.addEventListener('click', () => this.toggleFullscreen());
+        }
+
+        if (settingsBtn) {
+            settingsBtn.addEventListener('click', () => this.toggleSettings());
+        }
+
+        if (closeSettingsBtn) {
+            closeSettingsBtn.addEventListener('click', () => this.toggleSettings());
+        }
+
+        if (weatherRefreshBtn) {
+            weatherRefreshBtn.addEventListener('click', () => this.weatherAPI.updateWeather());
+        }
+
+        // Settings toggles
+        this.setupSettingsToggles();
 
         // Keyboard shortcuts (for debugging)
         document.addEventListener('keydown', (event) => {
@@ -390,12 +485,79 @@ class IranLiveApp {
         console.log('🧹 Application cleaned up');
     }
 
+    // Setup settings toggles
+    setupSettingsToggles() {
+        const animationsToggle = document.getElementById('animations-toggle');
+        const soundsToggle = document.getElementById('sounds-toggle');
+        const weatherEffectsToggle = document.getElementById('weather-effects-toggle');
+        const particlesToggle = document.getElementById('particles-toggle');
+
+        if (animationsToggle) {
+            animationsToggle.addEventListener('change', (e) => {
+                document.body.style.setProperty('--animation-state', e.target.checked ? 'running' : 'paused');
+            });
+        }
+
+        if (soundsToggle) {
+            soundsToggle.addEventListener('change', (e) => {
+                const audio = document.getElementById('ambient-audio');
+                if (audio) {
+                    if (e.target.checked) {
+                        audio.play().catch(() => {});
+                    } else {
+                        audio.pause();
+                    }
+                }
+            });
+        }
+
+        if (weatherEffectsToggle) {
+            weatherEffectsToggle.addEventListener('change', (e) => {
+                const weatherEffects = document.getElementById('weather-effects');
+                if (weatherEffects) {
+                    weatherEffects.style.display = e.target.checked ? 'block' : 'none';
+                }
+            });
+        }
+
+        if (particlesToggle) {
+            particlesToggle.addEventListener('change', (e) => {
+                const particles = document.getElementById('particle-system');
+                if (particles) {
+                    particles.style.display = e.target.checked ? 'block' : 'none';
+                }
+            });
+        }
+    }
+
+    // Toggle fullscreen
+    toggleFullscreen() {
+        if (!document.fullscreenElement) {
+            document.documentElement.requestFullscreen().catch(err => {
+                console.log('Fullscreen failed:', err);
+            });
+        } else {
+            document.exitFullscreen();
+        }
+    }
+
+    // Toggle settings panel
+    toggleSettings() {
+        const settingsPanel = document.getElementById('settings-panel');
+        if (settingsPanel) {
+            settingsPanel.classList.toggle('active');
+        }
+    }
+
     // Get application status
     getStatus() {
         return {
             initialized: this.isInitialized,
             uptime: Date.now() - this.startTime,
             errorCount: this.errorCount,
+            updateCounter: this.updateCounter,
+            weatherUpdateCounter: this.weatherUpdateCounter,
+            themeChangeCounter: this.themeChangeCounter,
             components: {
                 persianCalendar: !!this.persianCalendar,
                 weatherAPI: !!this.weatherAPI,

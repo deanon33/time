@@ -256,7 +256,7 @@ class WeatherAPI {
         // Update temperature
         const tempElement = document.getElementById('temperature');
         if (tempElement) {
-            tempElement.textContent = `${weatherData.temperature}°C`;
+            tempElement.textContent = `${weatherData.temperature}°`;
         }
 
         // Update description
@@ -290,7 +290,7 @@ class WeatherAPI {
         }
 
         // Update location
-        const locationElement = document.getElementById('location');
+        const locationElement = document.querySelector('.location-modern span');
         if (locationElement) {
             locationElement.textContent = `${weatherData.location}، ایران`;
         }
