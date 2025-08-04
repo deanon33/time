@@ -910,12 +910,16 @@ body {
 
 .progress-fill {
     fill: none;
-    stroke: url(#progressGradient);
+    stroke: url(#themeGradient);
     stroke-width: 3;
     stroke-linecap: round;
     stroke-dasharray: 157;
     stroke-dashoffset: 157;
     animation: progressRing 2s ease-in-out forwards;
+}
+
+.weather-orb .progress-fill {
+    stroke: url(#weatherGradient);
 }
 
 @keyframes progressRing {
@@ -2352,6 +2356,32 @@ input:checked + .switch-track .switch-energy {
     .orb-core {
         animation: none !important;
     }
+}
+
+/* Settings-based classes */
+body.reduced-motion * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+}
+
+body.no-3d .time-display-3d,
+body.no-3d .orb-core,
+body.no-3d .crystal-icon {
+    transform: none !important;
+    transform-style: flat;
+}
+
+body.no-weather-effects .weather-effects,
+body.no-weather-effects .rain-drop,
+body.no-weather-effects .snow-flake {
+    display: none !important;
+}
+
+body.static-environment .cloud-layers,
+body.static-environment .atmospheric-effects,
+body.static-environment .aurora-borealis {
+    animation: none !important;
 }
 
 @media (prefers-contrast: high) {

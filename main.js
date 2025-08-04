@@ -89,6 +89,10 @@ class IranLiveApp {
         this.enhancedFeatures = new EnhancedFeatures();
         this.enhancedFeatures.init();
         console.log('✨ Enhanced Features initialized');
+        
+        // Initialize interactive features
+        this.initializeInteractiveFeatures();
+        console.log('🎮 Interactive features initialized');
     }
 
     // Start real-time updates
@@ -612,6 +616,212 @@ class IranLiveApp {
                 themeManager: !!this.themeManager
             }
         };
+    }
+    
+    // Initialize interactive features
+    initializeInteractiveFeatures() {
+        try {
+            // Initialize tooltips
+            this.initializeTooltips();
+            
+            // Initialize settings panel
+            this.initializeSettingsPanel();
+            
+            // Initialize navigation controls
+            this.initializeNavigationControls();
+            
+            // Initialize refresh buttons
+            this.initializeRefreshButtons();
+            
+        } catch (error) {
+            console.error('Error initializing interactive features:', error);
+        }
+    }
+    
+    // Initialize tooltip system
+    initializeTooltips() {
+        const tooltip = document.getElementById('quantum-tooltip');
+        if (!tooltip) return;
+        
+        const tooltipContent = tooltip.querySelector('.tooltip-content');
+        
+        // Add tooltips to elements with data-tooltip attribute
+        document.querySelectorAll('[data-tooltip]').forEach(element => {
+            element.addEventListener('mouseenter', (e) => {
+                const text = e.target.getAttribute('data-tooltip');
+                if (text && tooltipContent) {
+                    tooltipContent.textContent = text;
+                    tooltip.classList.add('show');
+                    
+                    // Position tooltip
+                    const rect = e.target.getBoundingClientRect();
+                    tooltip.style.left = rect.left + (rect.width / 2) - (tooltip.offsetWidth / 2) + 'px';
+                    tooltip.style.top = rect.top - tooltip.offsetHeight - 10 + 'px';
+                }
+            });
+            
+            element.addEventListener('mouseleave', () => {
+                tooltip.classList.remove('show');
+            });
+        });
+    }
+    
+    // Initialize settings panel
+    initializeSettingsPanel() {
+        const settingsBtn = document.getElementById('settings-btn');
+        const settingsPanel = document.getElementById('settings-panel');
+        const closeBtn = document.getElementById('close-settings');
+        
+        if (settingsBtn && settingsPanel) {
+            settingsBtn.addEventListener('click', () => {
+                settingsPanel.classList.add('active');
+            });
+        }
+        
+        if (closeBtn && settingsPanel) {
+            closeBtn.addEventListener('click', () => {
+                settingsPanel.classList.remove('active');
+            });
+        }
+        
+        // Close on backdrop click
+        if (settingsPanel) {
+            settingsPanel.addEventListener('click', (e) => {
+                if (e.target === settingsPanel || e.target.classList.contains('dimension-backdrop')) {
+                    settingsPanel.classList.remove('active');
+                }
+            });
+        }
+        
+        // Initialize toggle switches
+        document.querySelectorAll('.quantum-switch input').forEach(toggle => {
+            toggle.addEventListener('change', (e) => {
+                const setting = e.target.id;
+                const enabled = e.target.checked;
+                this.handleSettingChange(setting, enabled);
+            });
+        });
+    }
+    
+    // Initialize navigation controls
+    initializeNavigationControls() {
+        // Refresh button
+        const refreshBtn = document.getElementById('refresh-btn');
+        if (refreshBtn) {
+            refreshBtn.addEventListener('click', () => {
+                this.refreshAllData();
+            });
+        }
+        
+        // Fullscreen button
+        const fullscreenBtn = document.getElementById('fullscreen-btn');
+        if (fullscreenBtn) {
+            fullscreenBtn.addEventListener('click', () => {
+                this.toggleFullscreen();
+            });
+        }
+    }
+    
+    // Initialize refresh buttons
+    initializeRefreshButtons() {
+        const weatherRefresh = document.getElementById('weather-refresh');
+        if (weatherRefresh) {
+            weatherRefresh.addEventListener('click', () => {
+                if (this.weatherAPI) {
+                    this.weatherAPI.fetchWeatherData();
+                }
+                if (this.enhancedFeatures) {
+                    this.enhancedFeatures.generateWeatherForecast();
+                }
+            });
+        }
+    }
+    
+    // Handle setting changes
+    handleSettingChange(setting, enabled) {
+        console.log(`Setting ${setting} changed to:`, enabled);
+        
+        switch (setting) {
+            case 'animations-toggle':
+                document.body.classList.toggle('reduced-motion', !enabled);
+                break;
+            case 'particles-toggle':
+                if (enabled) {
+                    this.createParticleSystem();
+                } else {
+                    this.removeParticleSystem();
+                }
+                break;
+            case '3d-effects-toggle':
+                document.body.classList.toggle('no-3d', !enabled);
+                break;
+            case 'weather-effects-toggle':
+                document.body.classList.toggle('no-weather-effects', !enabled);
+                break;
+            case 'dynamic-environment-toggle':
+                document.body.classList.toggle('static-environment', !enabled);
+                break;
+            case 'sounds-toggle':
+                // Handle ambient sounds if implemented
+                break;
+        }
+    }
+    
+    // Refresh all data
+    refreshAllData() {
+        try {
+            // Update time and date
+            this.updateClock();
+            this.updateDate();
+            
+            // Update weather
+            if (this.weatherAPI) {
+                this.weatherAPI.fetchWeatherData();
+            }
+            
+            // Update prayer times
+            if (this.enhancedFeatures) {
+                this.enhancedFeatures.updatePrayerTimes();
+            }
+            
+            // Update themes
+            if (this.themeManager) {
+                this.themeManager.updateTheme();
+            }
+            
+            // Show notification
+            if (this.enhancedFeatures) {
+                this.enhancedFeatures.showNotification(
+                    'بروزرسانی',
+                    'تمام اطلاعات با موفقیت بروزرسانی شد',
+                    'success'
+                );
+            }
+            
+        } catch (error) {
+            console.error('Error refreshing data:', error);
+        }
+    }
+    
+    // Toggle fullscreen
+    toggleFullscreen() {
+        try {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen();
+            } else {
+                document.exitFullscreen();
+            }
+        } catch (error) {
+            console.error('Error toggling fullscreen:', error);
+        }
+    }
+    
+    // Remove particle system
+    removeParticleSystem() {
+        const particleField = document.getElementById('particle-field');
+        if (particleField) {
+            particleField.innerHTML = '';
+        }
     }
 }
 
