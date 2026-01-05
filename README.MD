@@ -33,8 +33,9 @@ The bot responds with:
    
    Get a bot token from [@BotFather](https://t.me/BotFather) on Telegram.
    
-   ```bash
-   export TELEGRAM_BOT_TOKEN="your_bot_token_here"
+   Open `bot.py` and replace `YOUR_BOT_TOKEN_HERE` with your token:
+   ```python
+   BOT_TOKEN = "your_bot_token_here"
    ```
 
 4. **Run the bot**
@@ -115,12 +116,6 @@ BIN Info: CIRRUS - DEBIT - MASTERCARD
 - Python 3.10+
 - python-telegram-bot 21.7+
 - httpx 0.28+
-
-## Environment Variables
-
-| Variable | Description |
-|----------|-------------|
-| `TELEGRAM_BOT_TOKEN` | Your Telegram bot token from BotFather |
 
 ## License
 

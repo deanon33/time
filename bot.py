@@ -4,7 +4,6 @@ Telegram BIN Lookup & Card Generator Bot
 Uses python-telegram-bot library
 """
 
-import os
 import random
 import logging
 from datetime import datetime
@@ -21,8 +20,8 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
-# Bot token from environment variable
-BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN", "YOUR_BOT_TOKEN_HERE")
+# Bot token - Replace with your bot token from @BotFather
+BOT_TOKEN = "YOUR_BOT_TOKEN_HERE"
 
 # BIN API URL
 BIN_API_URL = "https://bin.hex-unit.com/{bin}"
@@ -235,7 +234,7 @@ async def error_handler(update: Update, context: ContextTypes.DEFAULT_TYPE) -> N
 def main() -> None:
     """Main function to run the bot."""
     if BOT_TOKEN == "YOUR_BOT_TOKEN_HERE":
-        logger.error("Please set TELEGRAM_BOT_TOKEN environment variable!")
+        logger.error("Please set your bot token in BOT_TOKEN variable!")
         return
     
     # Create application
