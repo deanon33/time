@@ -132,6 +132,7 @@ async def start_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> N
 🔹 /mbin - Multi BIN lookup
 🔹 /vcc - Filter valid CCs
 🔹 /adbin - Filter by BIN
+🔹 /rmbin - Remove by BIN
 🔹 /help - Show detailed help
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -201,16 +202,16 @@ Reply to a message or .txt file:
 <i>Filters valid CCs using Luhn validation.</i>
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━
-🎯 <b>BIN FILTER</b>
+🎯 <b>BIN FILTER / REMOVE</b>
 ━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 Reply to a message or .txt file:
-<code>/adbin [BIN]</code>
+<code>/adbin [BIN]</code> - Keep only this BIN
+<code>/rmbin [BIN]</code> - Remove this BIN
 
-<b>Example:</b>
+<b>Examples:</b>
 <code>/adbin 460827</code>
-
-<i>Filters cards matching a specific BIN.</i>
+<code>/rmbin 460827</code>
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━
 📋 <b>PARAMETERS</b>
@@ -909,6 +910,130 @@ Reply to a combo and send <code>/adbin 460827</code>
         )
 
 
+async def rmbin_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    """Handle /rmbin command - Remove specific BIN cards from a combo."""
+    reply_message = update.message.reply_to_message
+    
+    if not reply_message or len(context.args) < 1:
+        usage = """❌ <b>Invalid Usage</b>
+
+<b>Reply to a message or .txt file with /rmbin [BIN]</b>
+
+<b>Example:</b>
+Reply to a combo and send <code>/rmbin 460827</code>
+
+<i>Removes cards matching the specified BIN.</i>"""
+        await update.message.reply_text(usage, parse_mode='HTML')
+        return
+    
+    target_bin = context.args[0]
+    
+    # Validate BIN
+    if not target_bin.isdigit() or len(target_bin) < 6:
+        await update.message.reply_text(
+            "❌ <b>Invalid BIN!</b>\n\n<i>BIN must be at least 6 digits.</i>",
+            parse_mode='HTML'
+        )
+        return
+    
+    text_content = ""
+    
+    # Check if reply contains a document
+    if reply_message.document:
+        file_name = reply_message.document.file_name or ""
+        if file_name.endswith('.txt'):
+            try:
+                file = await reply_message.document.get_file()
+                file_bytes = await file.download_as_bytearray()
+                text_content = file_bytes.decode('utf-8')
+            except Exception as e:
+                logger.error(f"Error reading file: {e}")
+                await update.message.reply_text(
+                    "❌ <b>Error reading file!</b>",
+                    parse_mode='HTML'
+                )
+                return
+        else:
+            await update.message.reply_text(
+                "❌ <b>Please reply to a .txt file!</b>",
+                parse_mode='HTML'
+            )
+            return
+    elif reply_message.text:
+        text_content = reply_message.text
+    else:
+        await update.message.reply_text(
+            "❌ <b>No text or file found in the replied message!</b>",
+            parse_mode='HTML'
+        )
+        return
+    
+    # Filter cards NOT matching the BIN
+    remaining_cards = []
+    removed_count = 0
+    total_cards = 0
+    
+    lines = text_content.strip().split('\n')
+    for line in lines:
+        line = line.strip()
+        if not line:
+            continue
+        
+        # Extract card number
+        parts = line.split('|')
+        if len(parts) >= 1:
+            card_number = ''.join(filter(str.isdigit, parts[0]))
+            
+            if len(card_number) >= 13:
+                total_cards += 1
+                # Check if card starts with target BIN
+                if card_number.startswith(target_bin):
+                    removed_count += 1
+                else:
+                    remaining_cards.append(line)
+    
+    if total_cards == 0:
+        await update.message.reply_text(
+            "❌ <b>No card data found!</b>\n\n<i>Make sure the message contains valid card formats.</i>",
+            parse_mode='HTML'
+        )
+        return
+    
+    if len(remaining_cards) == 0:
+        response = f"""❌ 𝗥𝗲𝗺𝗼𝘃𝗲 𝗕𝗜𝗡
+━━━━━━━━━━━━━━━━━━
+𝗧𝗮𝗿𝗴𝗲𝘁 𝗕𝗜𝗡: <code>{target_bin}</code>
+𝗧𝗼𝘁𝗮𝗹 𝗖𝗮𝗿𝗱𝘀: {total_cards}
+🗑 𝗥𝗲𝗺𝗼𝘃𝗲𝗱: {removed_count}
+✅ 𝗥𝗲𝗺𝗮𝗶𝗻𝗶𝗻𝗴: 0
+━━━━━━━━━━━━━━━━━━
+<i>All cards were removed!</i>"""
+        await update.message.reply_text(
+            response,
+            parse_mode='HTML',
+            reply_to_message_id=update.message.message_id
+        )
+    else:
+        # Send as file
+        file_content = "\n".join(remaining_cards)
+        file_bytes = BytesIO(file_content.encode('utf-8'))
+        
+        response = f"""✅ 𝗥𝗲𝗺𝗼𝘃𝗲 𝗕𝗜𝗡
+━━━━━━━━━━━━━━━━━━
+𝗧𝗮𝗿𝗴𝗲𝘁 𝗕𝗜𝗡: <code>{target_bin}</code>
+𝗧𝗼𝘁𝗮𝗹 𝗖𝗮𝗿𝗱𝘀: {total_cards}
+🗑 𝗥𝗲𝗺𝗼𝘃𝗲𝗱: {removed_count}
+✅ 𝗥𝗲𝗺𝗮𝗶𝗻𝗶𝗻𝗴: {len(remaining_cards)}
+━━━━━━━━━━━━━━━━━━"""
+        
+        await update.message.reply_document(
+            document=InputFile(file_bytes, filename=f"Removed_{target_bin}_{len(remaining_cards)}_Cards.txt"),
+            caption=response,
+            parse_mode='HTML',
+            reply_to_message_id=update.message.message_id
+        )
+
+
 async def mbin_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     """Handle /mbin command - Multi BIN lookup."""
     reply_message = update.message.reply_to_message
@@ -1032,6 +1157,7 @@ def main() -> None:
     application.add_handler(CommandHandler("mbin", mbin_command))
     application.add_handler(CommandHandler("vcc", vcc_command))
     application.add_handler(CommandHandler("adbin", adbin_command))
+    application.add_handler(CommandHandler("rmbin", rmbin_command))
     application.add_handler(CallbackQueryHandler(regen_callback, pattern=r"^regen:"))
     application.add_error_handler(error_handler)
     
