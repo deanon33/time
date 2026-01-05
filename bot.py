@@ -72,12 +72,15 @@ def generate_cvv() -> str:
     return f"{random.randint(0, 999):03d}"
 
 
-def generate_cards(bin_prefix: str, amount: int) -> list:
+def generate_cards(bin_prefix: str, amount: int, fixed_month: str = None, fixed_year: str = None) -> list:
     """Generate a list of cards with the given BIN prefix."""
     cards = []
     for _ in range(amount):
         card_number = generate_card_number(bin_prefix)
-        expiry = generate_expiry()
+        if fixed_month and fixed_year:
+            expiry = f"{fixed_month}|{fixed_year}"
+        else:
+            expiry = generate_expiry()
         cvv = generate_cvv()
         cards.append(f"{card_number}|{expiry}|{cvv}")
     return cards
@@ -104,11 +107,12 @@ async def start_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> N
 
 <b>Available Commands:</b>
 • /gen &lt;BIN&gt; &lt;amount&gt; - Generate cards with BIN lookup
+• /bin &lt;BIN&gt; - Lookup BIN information only
 
-<b>Example:</b>
+<b>Examples:</b>
 <code>/gen 531462 10</code>
-
-<i>This will generate 10 cards with BIN 531462 and show BIN information.</i>"""
+<code>/gen 531462|10|29 100</code> (with fixed date)
+<code>/bin 531462</code>"""
     await update.message.reply_text(welcome_message, parse_mode='HTML')
 
 
@@ -116,15 +120,22 @@ async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> No
     """Handle /help command."""
     help_text = """📖 <b>Help</b>
 
-<b>Usage:</b>
+<b>Generate Cards:</b>
 <code>/gen &lt;BIN&gt; &lt;amount&gt;</code>
+<code>/gen &lt;BIN|MM|YY&gt; &lt;amount&gt;</code>
+
+<b>Lookup BIN:</b>
+<code>/bin &lt;BIN&gt;</code>
 
 <b>Parameters:</b>
-• <code>BIN</code> - 6-8 digit Bank Identification Number
-• <code>amount</code> - Number of cards to generate (1-1000)
+• <code>BIN</code> - 6+ digit Bank Identification Number
+• <code>MM|YY</code> - Optional fixed expiry date
+• <code>amount</code> - Number of cards (1-1000)
 
-<b>Example:</b>
-<code>/gen 419011000705 500</code>"""
+<b>Examples:</b>
+<code>/gen 419011000705 500</code>
+<code>/gen 440393|10|29 100</code>
+<code>/bin 531462</code>"""
     await update.message.reply_text(help_text, parse_mode='HTML')
 
 
@@ -133,12 +144,27 @@ async def gen_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> Non
     # Parse arguments
     if len(context.args) < 2:
         await update.message.reply_text(
-            "❌ <b>Usage:</b> <code>/gen &lt;BIN&gt; &lt;amount&gt;</code>\n<b>Example:</b> <code>/gen 531462 100</code>",
+            "❌ <b>Usage:</b> <code>/gen &lt;BIN&gt; &lt;amount&gt;</code>\n"
+            "<b>Examples:</b>\n"
+            "<code>/gen 531462 100</code>\n"
+            "<code>/gen 531462|10|29 100</code> (with fixed date MM|YY)",
             parse_mode='HTML'
         )
         return
     
-    bin_number = context.args[0]
+    bin_input = context.args[0]
+    fixed_month = None
+    fixed_year = None
+    
+    # Parse BIN with optional date format: BIN|MM|YY
+    if '|' in bin_input:
+        parts = bin_input.split('|')
+        bin_number = parts[0]
+        if len(parts) >= 3:
+            fixed_month = parts[1].zfill(2)  # Pad with zero if needed
+            fixed_year = parts[2].zfill(2)
+    else:
+        bin_number = bin_input
     
     # Validate BIN
     if not bin_number.isdigit() or len(bin_number) < 6:
@@ -175,7 +201,7 @@ async def gen_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> Non
         return
     
     # Generate cards
-    cards = generate_cards(bin_number, amount)
+    cards = generate_cards(bin_number, amount, fixed_month, fixed_year)
     
     # Create file content
     file_content = "\n".join(cards)
@@ -220,6 +246,58 @@ async def gen_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> Non
     )
 
 
+async def bin_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    """Handle /bin command - Lookup BIN info only."""
+    if len(context.args) < 1:
+        await update.message.reply_text(
+            "❌ <b>Usage:</b> <code>/bin &lt;BIN&gt;</code>\n<b>Example:</b> <code>/bin 531462</code>",
+            parse_mode='HTML'
+        )
+        return
+    
+    bin_number = context.args[0]
+    
+    # Validate BIN
+    if not bin_number.isdigit() or len(bin_number) < 6:
+        await update.message.reply_text(
+            "❌ <b>Invalid BIN!</b> BIN must be at least 6 digits.",
+            parse_mode='HTML'
+        )
+        return
+    
+    # Fetch BIN information
+    bin_info = await fetch_bin_info(bin_number[:6])
+    
+    if not bin_info:
+        await update.message.reply_text(
+            "❌ <b>Failed to fetch BIN information.</b> Please try again later.",
+            parse_mode='HTML'
+        )
+        return
+    
+    # Extract BIN info
+    brand = bin_info.get('brand', 'N/A')
+    bank = bin_info.get('bank', 'N/A')
+    country_name = bin_info.get('country_name', 'N/A')
+    country_flag = bin_info.get('country_flag', '🏳️')
+    country_code = bin_info.get('country', 'N/A')
+    level = bin_info.get('level', 'N/A')
+    card_type = bin_info.get('type', 'N/A')
+    
+    # Create response message
+    response_message = f"""🔍 <b>BIN Lookup Result</b>
+
+<b>BIN:</b> <code>{bin_number}</code>
+<b>Brand:</b> {brand}
+<b>Type:</b> {card_type}
+<b>Level:</b> {level}
+<b>Bank:</b> {bank}
+<b>Country:</b> {country_name} {country_flag}
+<b>Country Code:</b> {country_code}"""
+    
+    await update.message.reply_text(response_message, parse_mode='HTML')
+
+
 async def error_handler(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     """Handle errors."""
     logger.error(f"Update {update} caused error {context.error}")
@@ -238,6 +316,7 @@ def main() -> None:
     application.add_handler(CommandHandler("start", start_command))
     application.add_handler(CommandHandler("help", help_command))
     application.add_handler(CommandHandler("gen", gen_command))
+    application.add_handler(CommandHandler("bin", bin_command))
     
     # Add error handler
     application.add_error_handler(error_handler)
