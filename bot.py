@@ -134,6 +134,7 @@ async def start_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> N
 🔹 /adbin - Filter by BIN
 🔹 /rmbin - Remove by BIN
 🔹 /topbin - Top 20 BINs
+🔹 /fake - Random address
 🔹 /help - Show detailed help
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -222,6 +223,18 @@ Reply to a .txt file:
 <code>/topbin</code>
 
 <i>Shows top 20 most used BINs.</i>
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━
+🏠 <b>FAKE ADDRESS</b>
+━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+<code>/fake [Country]</code>
+
+<b>Examples:</b>
+<code>/fake US</code>
+<code>/fake Germany</code>
+
+<i>Generates random fake address.</i>
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━
 📋 <b>PARAMETERS</b>
@@ -1044,6 +1057,225 @@ Reply to a combo and send <code>/rmbin 460827</code>
         )
 
 
+# Country codes mapping for /fake command
+COUNTRY_CODES = {
+    'au': 'AU', 'australia': 'AU',
+    'br': 'BR', 'brazil': 'BR',
+    'ca': 'CA', 'canada': 'CA',
+    'ch': 'CH', 'switzerland': 'CH',
+    'de': 'DE', 'germany': 'DE',
+    'dk': 'DK', 'denmark': 'DK',
+    'es': 'ES', 'spain': 'ES',
+    'fi': 'FI', 'finland': 'FI',
+    'fr': 'FR', 'france': 'FR',
+    'gb': 'GB', 'uk': 'GB', 'united kingdom': 'GB', 'england': 'GB',
+    'ie': 'IE', 'ireland': 'IE',
+    'in': 'IN', 'india': 'IN',
+    'ir': 'IR', 'iran': 'IR',
+    'mx': 'MX', 'mexico': 'MX',
+    'nl': 'NL', 'netherlands': 'NL',
+    'no': 'NO', 'norway': 'NO',
+    'nz': 'NZ', 'new zealand': 'NZ',
+    'rs': 'RS', 'serbia': 'RS',
+    'tr': 'TR', 'turkey': 'TR',
+    'ua': 'UA', 'ukraine': 'UA',
+    'us': 'US', 'usa': 'US', 'united states': 'US', 'america': 'US',
+}
+
+
+async def fake_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    """Handle /fake command - Generate random fake address."""
+    if len(context.args) < 1:
+        usage = """🏠 𝗥𝗮𝗻𝗱𝗼𝗺 𝗔𝗱𝗱𝗿𝗲𝘀𝘀 𝗚𝗲𝗻𝗲𝗿𝗮𝘁𝗼𝗿
+━━━━━━━━━━━━━━━━━━
+
+<b>Usage:</b>
+<code>/fake [Country Code or Name]</code>
+
+<b>Examples:</b>
+<code>/fake US</code>
+<code>/fake United States</code>
+<code>/fake Germany</code>
+
+<b>Supported Countries:</b>
+🇺🇸 US | 🇬🇧 GB | 🇨🇦 CA | 🇦🇺 AU
+🇩🇪 DE | 🇫🇷 FR | 🇪🇸 ES | 🇮🇳 IN
+🇧🇷 BR | 🇲🇽 MX | 🇳🇱 NL | 🇮🇪 IE
+🇳🇴 NO | 🇫🇮 FI | 🇩🇰 DK | 🇨🇭 CH
+🇳🇿 NZ | 🇹🇷 TR | 🇺🇦 UA | 🇷🇸 RS"""
+        await update.message.reply_text(usage, parse_mode='HTML')
+        return
+    
+    # Get country input
+    country_input = ' '.join(context.args).lower().strip()
+    
+    # Find country code
+    country_code = COUNTRY_CODES.get(country_input)
+    
+    if not country_code:
+        await update.message.reply_text(
+            "❌ <b>Country not supported!</b>\n\n<i>Use /fake to see supported countries.</i>",
+            parse_mode='HTML'
+        )
+        return
+    
+    # Fetch random user data
+    try:
+        async with httpx.AsyncClient(timeout=10.0) as client:
+            response = await client.get(f"https://randomuser.me/api?nat={country_code}")
+            if response.status_code != 200:
+                await update.message.reply_text(
+                    "❌ <b>Failed to generate address!</b>\n\n<i>Please try again later.</i>",
+                    parse_mode='HTML'
+                )
+                return
+            data = response.json()
+    except Exception as e:
+        logger.error(f"Error fetching fake data: {e}")
+        await update.message.reply_text(
+            "❌ <b>Failed to generate address!</b>\n\n<i>Please try again later.</i>",
+            parse_mode='HTML'
+        )
+        return
+    
+    # Extract data
+    result = data['results'][0]
+    
+    # Name
+    title = result['name'].get('title', '')
+    first_name = result['name'].get('first', '')
+    last_name = result['name'].get('last', '')
+    full_name = f"{title} {first_name} {last_name}".strip()
+    
+    # Gender
+    gender = result.get('gender', 'Unknown').capitalize()
+    
+    # Location
+    location = result['location']
+    street_number = location['street'].get('number', '')
+    street_name = location['street'].get('name', '')
+    street = f"{street_number} {street_name}".strip()
+    city = location.get('city', 'N/A')
+    state = location.get('state', 'N/A')
+    postcode = location.get('postcode', 'N/A')
+    country = location.get('country', 'N/A')
+    
+    # Contact
+    phone = result.get('phone', 'N/A')
+    email = result.get('email', 'N/A')
+    
+    # DOB
+    dob = result['dob'].get('date', '')[:10] if result.get('dob') else 'N/A'
+    
+    # Build response
+    response = f"""🏠 𝗔𝗱𝗱𝗿𝗲𝘀𝘀 𝗳𝗼𝗿 {country}
+━━━━━━━━━━━━━━━━━━
+👤 𝗡𝗮𝗺𝗲: {full_name}
+⚧ 𝗚𝗲𝗻𝗱𝗲𝗿: {gender}
+🏠 𝗦𝘁𝗿𝗲𝗲𝘁: {street}
+🏙 𝗖𝗶𝘁𝘆: {city}
+🗺 𝗦𝘁𝗮𝘁𝗲: {state}
+📮 𝗣𝗼𝘀𝘁𝗮𝗹 𝗖𝗼𝗱𝗲: {postcode}
+📞 𝗣𝗵𝗼𝗻𝗲: {phone}
+📧 𝗘𝗺𝗮𝗶𝗹: {email}
+🎂 𝗗𝗢𝗕: {dob}
+🌍 𝗖𝗼𝘂𝗻𝘁𝗿𝘆: {country}"""
+    
+    # Re-generate button
+    callback_data = f"fake:{country_code}"
+    keyboard = InlineKeyboardMarkup([
+        [InlineKeyboardButton("🔄 Generate New", callback_data=callback_data)]
+    ])
+    
+    await update.message.reply_text(
+        response,
+        parse_mode='HTML',
+        reply_markup=keyboard,
+        reply_to_message_id=update.message.message_id
+    )
+
+
+async def fake_callback(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    """Handle fake address regenerate callback."""
+    query = update.callback_query
+    await query.answer()
+    
+    # Parse callback data
+    data = query.data.split(':')
+    if len(data) < 2:
+        return
+    
+    country_code = data[1]
+    
+    # Fetch random user data
+    try:
+        async with httpx.AsyncClient(timeout=10.0) as client:
+            response = await client.get(f"https://randomuser.me/api?nat={country_code}")
+            if response.status_code != 200:
+                await query.answer("Failed to generate!", show_alert=True)
+                return
+            data = response.json()
+    except Exception as e:
+        logger.error(f"Error fetching fake data: {e}")
+        await query.answer("Failed to generate!", show_alert=True)
+        return
+    
+    # Extract data
+    result = data['results'][0]
+    
+    # Name
+    title = result['name'].get('title', '')
+    first_name = result['name'].get('first', '')
+    last_name = result['name'].get('last', '')
+    full_name = f"{title} {first_name} {last_name}".strip()
+    
+    # Gender
+    gender = result.get('gender', 'Unknown').capitalize()
+    
+    # Location
+    location = result['location']
+    street_number = location['street'].get('number', '')
+    street_name = location['street'].get('name', '')
+    street = f"{street_number} {street_name}".strip()
+    city = location.get('city', 'N/A')
+    state = location.get('state', 'N/A')
+    postcode = location.get('postcode', 'N/A')
+    country = location.get('country', 'N/A')
+    
+    # Contact
+    phone = result.get('phone', 'N/A')
+    email = result.get('email', 'N/A')
+    
+    # DOB
+    dob = result['dob'].get('date', '')[:10] if result.get('dob') else 'N/A'
+    
+    # Build response
+    response_text = f"""🏠 𝗔𝗱𝗱𝗿𝗲𝘀𝘀 𝗳𝗼𝗿 {country}
+━━━━━━━━━━━━━━━━━━
+👤 𝗡𝗮𝗺𝗲: {full_name}
+⚧ 𝗚𝗲𝗻𝗱𝗲𝗿: {gender}
+🏠 𝗦𝘁𝗿𝗲𝗲𝘁: {street}
+🏙 𝗖𝗶𝘁𝘆: {city}
+🗺 𝗦𝘁𝗮𝘁𝗲: {state}
+📮 𝗣𝗼𝘀𝘁𝗮𝗹 𝗖𝗼𝗱𝗲: {postcode}
+📞 𝗣𝗵𝗼𝗻𝗲: {phone}
+📧 𝗘𝗺𝗮𝗶𝗹: {email}
+🎂 𝗗𝗢𝗕: {dob}
+🌍 𝗖𝗼𝘂𝗻𝘁𝗿𝘆: {country}"""
+    
+    # Keep the button
+    callback_data = f"fake:{country_code}"
+    keyboard = InlineKeyboardMarkup([
+        [InlineKeyboardButton("🔄 Generate New", callback_data=callback_data)]
+    ])
+    
+    await query.edit_message_text(
+        response_text,
+        parse_mode='HTML',
+        reply_markup=keyboard
+    )
+
+
 async def topbin_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     """Handle /topbin command - Find top 20 most used BINs from a combo."""
     reply_message = update.message.reply_to_message
@@ -1275,7 +1507,9 @@ def main() -> None:
     application.add_handler(CommandHandler("adbin", adbin_command))
     application.add_handler(CommandHandler("rmbin", rmbin_command))
     application.add_handler(CommandHandler("topbin", topbin_command))
+    application.add_handler(CommandHandler("fake", fake_command))
     application.add_handler(CallbackQueryHandler(regen_callback, pattern=r"^regen:"))
+    application.add_handler(CallbackQueryHandler(fake_callback, pattern=r"^fake:"))
     application.add_error_handler(error_handler)
     
     logger.info("Bot is starting...")
