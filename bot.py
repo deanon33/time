@@ -133,6 +133,7 @@ async def start_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> N
 🔹 /vcc - Filter valid CCs
 🔹 /adbin - Filter by BIN
 🔹 /rmbin - Remove by BIN
+🔹 /topbin - Top 20 BINs
 🔹 /help - Show detailed help
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -212,6 +213,15 @@ Reply to a message or .txt file:
 <b>Examples:</b>
 <code>/adbin 460827</code>
 <code>/rmbin 460827</code>
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━
+📊 <b>TOP BINS ANALYSIS</b>
+━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Reply to a .txt file:
+<code>/topbin</code>
+
+<i>Shows top 20 most used BINs.</i>
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━
 📋 <b>PARAMETERS</b>
@@ -1034,6 +1044,111 @@ Reply to a combo and send <code>/rmbin 460827</code>
         )
 
 
+async def topbin_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    """Handle /topbin command - Find top 20 most used BINs from a combo."""
+    reply_message = update.message.reply_to_message
+    
+    if not reply_message:
+        usage = """❌ <b>Invalid Usage</b>
+
+<b>Reply to a .txt file with /topbin</b>
+
+<b>Example:</b>
+Reply to a combo file and send <code>/topbin</code>
+
+<i>Finds the top 20 most used BINs.</i>"""
+        await update.message.reply_text(usage, parse_mode='HTML')
+        return
+    
+    text_content = ""
+    
+    # Check if reply contains a document
+    if reply_message.document:
+        file_name = reply_message.document.file_name or ""
+        if file_name.endswith('.txt'):
+            try:
+                file = await reply_message.document.get_file()
+                file_bytes = await file.download_as_bytearray()
+                text_content = file_bytes.decode('utf-8')
+            except Exception as e:
+                logger.error(f"Error reading file: {e}")
+                await update.message.reply_text(
+                    "❌ <b>Error reading file!</b>",
+                    parse_mode='HTML'
+                )
+                return
+        else:
+            await update.message.reply_text(
+                "❌ <b>Please reply to a .txt file!</b>",
+                parse_mode='HTML'
+            )
+            return
+    elif reply_message.text:
+        text_content = reply_message.text
+    else:
+        await update.message.reply_text(
+            "❌ <b>No text or file found in the replied message!</b>",
+            parse_mode='HTML'
+        )
+        return
+    
+    # Count BINs
+    bin_counts = {}
+    total_cards = 0
+    
+    lines = text_content.strip().split('\n')
+    for line in lines:
+        line = line.strip()
+        if not line:
+            continue
+        
+        # Extract card number
+        parts = line.split('|')
+        if len(parts) >= 1:
+            card_number = ''.join(filter(str.isdigit, parts[0]))
+            
+            if len(card_number) >= 6:
+                total_cards += 1
+                bin_6 = card_number[:6]
+                bin_counts[bin_6] = bin_counts.get(bin_6, 0) + 1
+    
+    if total_cards == 0:
+        await update.message.reply_text(
+            "❌ <b>No card data found!</b>\n\n<i>Make sure the file contains valid card formats.</i>",
+            parse_mode='HTML'
+        )
+        return
+    
+    # Sort by count and get top 20
+    sorted_bins = sorted(bin_counts.items(), key=lambda x: x[1], reverse=True)[:20]
+    
+    # Build response
+    bin_lines = []
+    for i, (bin_num, count) in enumerate(sorted_bins, 1):
+        bar_length = min(count, 10)
+        bar = "█" * bar_length
+        bin_lines.append(f"{i:02d}. <code>{bin_num}</code> ⇾ {count} cards {bar}")
+    
+    bins_text = "\n".join(bin_lines)
+    unique_bins = len(bin_counts)
+    
+    response = f"""📊 𝗧𝗼𝗽 𝗕𝗜𝗡𝘀 𝗔𝗻𝗮𝗹𝘆𝘀𝗶𝘀
+━━━━━━━━━━━━━━━━━━━━━━
+📁 𝗧𝗼𝘁𝗮𝗹 𝗖𝗮𝗿𝗱𝘀: {total_cards}
+🔢 𝗨𝗻𝗶𝗾𝘂𝗲 𝗕𝗜𝗡𝘀: {unique_bins}
+━━━━━━━━━━━━━━━━━━━━━━
+
+{bins_text}
+
+━━━━━━━━━━━━━━━━━━━━━━"""
+    
+    await update.message.reply_text(
+        response,
+        parse_mode='HTML',
+        reply_to_message_id=update.message.message_id
+    )
+
+
 async def mbin_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     """Handle /mbin command - Multi BIN lookup."""
     reply_message = update.message.reply_to_message
@@ -1158,6 +1273,7 @@ def main() -> None:
     application.add_handler(CommandHandler("vcc", vcc_command))
     application.add_handler(CommandHandler("adbin", adbin_command))
     application.add_handler(CommandHandler("rmbin", rmbin_command))
+    application.add_handler(CommandHandler("topbin", topbin_command))
     application.add_handler(CallbackQueryHandler(regen_callback, pattern=r"^regen:"))
     application.add_error_handler(error_handler)
     
