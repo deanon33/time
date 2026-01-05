@@ -127,8 +127,9 @@ async def start_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> N
 ━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 🔹 /gen - Generate credit cards
+🔹 /mgen - Multi BIN generate
 🔹 /bin - Lookup BIN information
-🔹 /mbin - Multi BIN lookup (up to 20)
+🔹 /mbin - Multi BIN lookup
 🔹 /help - Show detailed help
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -136,9 +137,8 @@ async def start_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> N
 ━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 <code>/gen 531462 10</code>
-<code>/gen 531462|05|28 100</code>
+<code>/mgen 531462,440393 10</code>
 <code>/bin 531462</code>
-Reply to message + <code>/mbin</code>
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━
 ✨ <i>Powered by Luhn Algorithm</i>
@@ -157,13 +157,18 @@ async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> No
 🎴 <b>GENERATE CARDS</b>
 ━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-<b>Format:</b>
+<b>Single BIN:</b>
 <code>/gen [BIN] [AMOUNT]</code>
 <code>/gen [BIN|MM|YY] [AMOUNT]</code>
 
+<b>Multiple BINs:</b>
+<code>/mgen [BIN1,BIN2] [AMOUNT]</code>
+<code>/mgen [BIN1|MM|YY,BIN2|MM|YY] [AMOUNT]</code>
+
 <b>Examples:</b>
 <code>/gen 531462 100</code>
-<code>/gen 440393|10|29 50</code>
+<code>/mgen 531462,440393 10</code>
+<code>/mgen 440393|10|29,518507|09|27 50</code>
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━
 🔍 <b>BIN LOOKUP</b>
@@ -393,6 +398,134 @@ def extract_bins_from_text(text: str) -> list:
     return bins[:20]  # Limit to 20 BINs
 
 
+async def mgen_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    """Handle /mgen command - Generate cards from multiple BINs."""
+    if len(context.args) < 2:
+        usage = """❌ <b>Invalid Usage</b>
+
+<b>Format:</b>
+<code>/mgen [BINs] [AMOUNT]</code>
+
+<b>Examples:</b>
+<code>/mgen 460827,537637 10</code>
+<code>/mgen 44039344|10|29,518507|09|27 10</code>
+
+<i>Generates cards from multiple BINs at once.</i>"""
+        await update.message.reply_text(usage, parse_mode='HTML')
+        return
+    
+    bins_input = context.args[0]
+    
+    # Validate amount
+    try:
+        amount = int(context.args[1])
+        if amount < 1 or amount > 1000:
+            raise ValueError()
+    except ValueError:
+        await update.message.reply_text(
+            "❌ <b>Invalid Amount!</b>\n\n<i>Enter a number between 1-1000.</i>",
+            parse_mode='HTML'
+        )
+        return
+    
+    # Parse multiple BINs (separated by comma)
+    bin_entries = bins_input.split(',')
+    
+    if len(bin_entries) > 10:
+        await update.message.reply_text(
+            "❌ <b>Too many BINs!</b>\n\n<i>Maximum 10 BINs allowed.</i>",
+            parse_mode='HTML'
+        )
+        return
+    
+    # Get user info
+    user = update.effective_user
+    user_link = f'<a href="tg://user?id={user.id}">{user.first_name or "User"}</a>'
+    
+    all_cards = []
+    bin_infos = []
+    
+    for entry in bin_entries:
+        entry = entry.strip()
+        if not entry:
+            continue
+        
+        fixed_month = None
+        fixed_year = None
+        
+        # Parse BIN|MM|YY format
+        if '|' in entry:
+            parts = entry.split('|')
+            bin_number = parts[0]
+            if len(parts) >= 3:
+                fixed_month = parts[1].zfill(2)
+                fixed_year = parts[2].zfill(2)
+        else:
+            bin_number = entry
+        
+        # Validate BIN
+        if not bin_number.isdigit() or len(bin_number) < 6:
+            continue
+        
+        # Fetch BIN info
+        bin_info = await fetch_bin_info(bin_number[:6])
+        
+        if bin_info:
+            # Generate cards for this BIN
+            cards = generate_cards(bin_number, amount, fixed_month, fixed_year)
+            all_cards.extend(cards)
+            
+            brand = bin_info.get('brand', 'N/A')
+            bank = bin_info.get('bank', 'N/A')
+            country_name = bin_info.get('country_name', 'N/A')
+            country_flag = bin_info.get('country_flag', '🏳️')
+            level = bin_info.get('level', 'N/A')
+            card_type = bin_info.get('type', 'N/A')
+            
+            bin_infos.append({
+                'bin': bin_number,
+                'brand': brand,
+                'bank': bank,
+                'country': f"{country_name} {country_flag}",
+                'info': f"{level} - {card_type} - {brand}",
+                'count': amount
+            })
+    
+    if not all_cards:
+        await update.message.reply_text(
+            "❌ <b>No valid BINs found!</b>\n\n<i>Could not generate cards.</i>",
+            parse_mode='HTML'
+        )
+        return
+    
+    # Create file
+    file_content = "\n".join(all_cards)
+    file_bytes = BytesIO(file_content.encode('utf-8'))
+    
+    # Build response
+    total_cards = len(all_cards)
+    total_bins = len(bin_infos)
+    
+    bins_summary = "\n".join([f"• <code>{b['bin']}</code> - {b['info']}" for b in bin_infos])
+    
+    response = f"""𝗠𝘂𝗹𝘁𝗶 𝗚𝗲𝗻𝗲𝗿𝗮𝘁𝗲 ✅
+━━━━━━━━━━━━━━━━━━
+𝗧𝗼𝘁𝗮𝗹 𝗕𝗜𝗡𝘀: {total_bins}
+𝗧𝗼𝘁𝗮𝗹 𝗖𝗮𝗿𝗱𝘀: {total_cards}
+𝗔𝗺𝗼𝘂𝗻𝘁 𝗣𝗲𝗿 𝗕𝗜𝗡: {amount}
+━━━━━━━━━━━━━━━━━━
+{bins_summary}
+━━━━━━━━━━━━━━━━━━
+𝗚𝗲𝗻𝗲𝗿𝗮𝘁𝗲 𝗕𝘆: {user_link}"""
+    
+    await update.message.reply_document(
+        document=InputFile(file_bytes, filename=f"MultiGen x {total_cards} Cards.txt"),
+        caption=response,
+        parse_mode='HTML',
+        reply_to_message_id=update.message.message_id
+    )
+
+
 async def mbin_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     """Handle /mbin command - Multi BIN lookup."""
     reply_message = update.message.reply_to_message
@@ -511,6 +644,7 @@ def main() -> None:
     application.add_handler(CommandHandler("start", start_command))
     application.add_handler(CommandHandler("help", help_command))
     application.add_handler(CommandHandler("gen", gen_command))
+    application.add_handler(CommandHandler("mgen", mgen_command))
     application.add_handler(CommandHandler("bin", bin_command))
     application.add_handler(CommandHandler("mbin", mbin_command))
     application.add_error_handler(error_handler)
