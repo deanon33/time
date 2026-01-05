@@ -130,6 +130,7 @@ async def start_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> N
 🔹 /mgen - Multi BIN generate
 🔹 /bin - Lookup BIN information
 🔹 /mbin - Multi BIN lookup
+🔹 /vcc - Filter valid CCs
 🔹 /help - Show detailed help
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -188,6 +189,15 @@ Reply to a message or .txt file:
 <code>/mbin</code>
 
 <i>Checks up to 20 unique BINs at once.</i>
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━
+✅ <b>VALID CC FILTER</b>
+━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Reply to a message or .txt file:
+<code>/vcc</code>
+
+<i>Filters valid CCs using Luhn validation.</i>
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━
 📋 <b>PARAMETERS</b>
@@ -623,6 +633,134 @@ async def mgen_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> No
     )
 
 
+async def vcc_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    """Handle /vcc command - Filter valid CCs from text or file."""
+    reply_message = update.message.reply_to_message
+    
+    if not reply_message:
+        usage = """❌ <b>Invalid Usage</b>
+
+<b>Reply to a message or .txt file with /vcc</b>
+
+<b>Example:</b>
+Reply to a message containing cards and send <code>/vcc</code>
+
+<i>Filters and extracts valid CC data using Luhn validation.</i>"""
+        await update.message.reply_text(usage, parse_mode='HTML')
+        return
+    
+    text_content = ""
+    
+    # Check if reply contains a document
+    if reply_message.document:
+        file_name = reply_message.document.file_name or ""
+        if file_name.endswith('.txt'):
+            try:
+                file = await reply_message.document.get_file()
+                file_bytes = await file.download_as_bytearray()
+                text_content = file_bytes.decode('utf-8')
+            except Exception as e:
+                logger.error(f"Error reading file: {e}")
+                await update.message.reply_text(
+                    "❌ <b>Error reading file!</b>",
+                    parse_mode='HTML'
+                )
+                return
+        else:
+            await update.message.reply_text(
+                "❌ <b>Please reply to a .txt file!</b>",
+                parse_mode='HTML'
+            )
+            return
+    elif reply_message.text:
+        text_content = reply_message.text
+    else:
+        await update.message.reply_text(
+            "❌ <b>No text or file found in the replied message!</b>",
+            parse_mode='HTML'
+        )
+        return
+    
+    # Extract and validate cards
+    valid_cards = []
+    invalid_cards = []
+    
+    lines = text_content.strip().split('\n')
+    for line in lines:
+        line = line.strip()
+        if not line:
+            continue
+        
+        # Try to parse card format: card|mm|yy|cvv or similar
+        parts = line.split('|')
+        if len(parts) >= 1:
+            card_number = ''.join(filter(str.isdigit, parts[0]))
+            
+            if len(card_number) >= 13 and len(card_number) <= 19:
+                if validate_luhn(card_number):
+                    valid_cards.append(line)
+                else:
+                    invalid_cards.append(line)
+    
+    total_checked = len(valid_cards) + len(invalid_cards)
+    
+    if total_checked == 0:
+        await update.message.reply_text(
+            "❌ <b>No card data found!</b>\n\n<i>Make sure the message contains valid card formats.</i>",
+            parse_mode='HTML'
+        )
+        return
+    
+    # Build response
+    if len(valid_cards) == 0:
+        response = f"""❌ 𝗩𝗮𝗹𝗶𝗱 𝗖𝗖 𝗙𝗶𝗹𝘁𝗲𝗿
+━━━━━━━━━━━━━━━━━━
+𝗧𝗼𝘁𝗮𝗹 𝗖𝗵𝗲𝗰𝗸𝗲𝗱: {total_checked}
+✅ 𝗩𝗮𝗹𝗶𝗱: 0
+❌ 𝗜𝗻𝘃𝗮𝗹𝗶𝗱: {len(invalid_cards)}
+━━━━━━━━━━━━━━━━━━
+<i>No valid cards found!</i>"""
+        await update.message.reply_text(
+            response,
+            parse_mode='HTML',
+            reply_to_message_id=update.message.message_id
+        )
+    elif len(valid_cards) <= 15:
+        # Show in message
+        cards_text = "\n".join(valid_cards)
+        response = f"""✅ 𝗩𝗮𝗹𝗶𝗱 𝗖𝗖 𝗙𝗶𝗹𝘁𝗲𝗿
+━━━━━━━━━━━━━━━━━━
+𝗧𝗼𝘁𝗮𝗹 𝗖𝗵𝗲𝗰𝗸𝗲𝗱: {total_checked}
+✅ 𝗩𝗮𝗹𝗶𝗱: {len(valid_cards)}
+❌ 𝗜𝗻𝘃𝗮𝗹𝗶𝗱: {len(invalid_cards)}
+━━━━━━━━━━━━━━━━━━
+
+<code>{cards_text}</code>"""
+        await update.message.reply_text(
+            response,
+            parse_mode='HTML',
+            reply_to_message_id=update.message.message_id
+        )
+    else:
+        # Send as file
+        file_content = "\n".join(valid_cards)
+        file_bytes = BytesIO(file_content.encode('utf-8'))
+        
+        response = f"""✅ 𝗩𝗮𝗹𝗶𝗱 𝗖𝗖 𝗙𝗶𝗹𝘁𝗲𝗿
+━━━━━━━━━━━━━━━━━━
+𝗧𝗼𝘁𝗮𝗹 𝗖𝗵𝗲𝗰𝗸𝗲𝗱: {total_checked}
+✅ 𝗩𝗮𝗹𝗶𝗱: {len(valid_cards)}
+❌ 𝗜𝗻𝘃𝗮𝗹𝗶𝗱: {len(invalid_cards)}
+━━━━━━━━━━━━━━━━━━"""
+        
+        await update.message.reply_document(
+            document=InputFile(file_bytes, filename=f"Valid_Cards_{len(valid_cards)}.txt"),
+            caption=response,
+            parse_mode='HTML',
+            reply_to_message_id=update.message.message_id
+        )
+
+
 async def mbin_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     """Handle /mbin command - Multi BIN lookup."""
     reply_message = update.message.reply_to_message
@@ -744,6 +882,7 @@ def main() -> None:
     application.add_handler(CommandHandler("mgen", mgen_command))
     application.add_handler(CommandHandler("bin", bin_command))
     application.add_handler(CommandHandler("mbin", mbin_command))
+    application.add_handler(CommandHandler("vcc", vcc_command))
     application.add_handler(CallbackQueryHandler(regen_callback, pattern=r"^regen:"))
     application.add_error_handler(error_handler)
     
