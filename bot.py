@@ -291,23 +291,38 @@ async def bin_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> Non
         usage = """
 ❌ <b>Invalid Usage</b>
 
-<b>Format:</b> <code>/bin [BIN]</code>
-<b>Example:</b> <code>/bin 531462</code>
+<b>Format:</b> <code>/bin [BIN or CARD]</code>
+<b>Examples:</b>
+<code>/bin 531462</code>
+<code>/bin 4390930039505670|04|28|846</code>
 """
         await update.message.reply_text(usage, parse_mode='HTML')
         return
     
-    bin_number = context.args[0]
+    input_value = context.args[0]
     
-    if not bin_number.isdigit() or len(bin_number) < 6:
+    # Extract BIN from various formats (card|mm|yy|cvv or just BIN)
+    if '|' in input_value:
+        bin_number = input_value.split('|')[0]
+    else:
+        bin_number = input_value
+    
+    # Extract first 6 digits for BIN lookup
+    bin_number = ''.join(filter(str.isdigit, bin_number))
+    
+    if len(bin_number) < 6:
         await update.message.reply_text(
             "❌ <b>Invalid BIN!</b>\n\n<i>BIN must be at least 6 digits.</i>",
             parse_mode='HTML'
         )
         return
     
+    # Use first 6 digits for API lookup, but display full input
+    bin_lookup = bin_number[:6]
+    bin_display = bin_number[:8] if len(bin_number) >= 8 else bin_number[:6]
+    
     # Fetch BIN info
-    bin_info = await fetch_bin_info(bin_number[:6])
+    bin_info = await fetch_bin_info(bin_lookup)
     
     if not bin_info:
         await update.message.reply_text(
@@ -326,7 +341,7 @@ async def bin_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> Non
     
     response = f"""🔍 𝗕𝗜𝗡 𝗗𝗲𝘁𝗮𝗶𝗹𝘀 📋
 ━━━━━━━━━━━━━━━━━━
-• 𝗕𝗜𝗡: <code>{bin_number}</code>
+• 𝗕𝗜𝗡: <code>{bin_display}</code>
 • 𝗜𝗡𝗙𝗢: {level} - {card_type} - {brand}
 • 𝗕𝗔𝗡𝗞: {bank}
 • 𝗖𝗢𝗨𝗡𝗧𝗥𝗬: {country_name} {country_flag}"""
