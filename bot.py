@@ -6,7 +6,6 @@ Uses python-telegram-bot library
 
 import random
 import logging
-from datetime import datetime
 from io import BytesIO
 
 import httpx
@@ -28,74 +27,111 @@ BIN_API_URL = "https://bin.hex-unit.com/{bin}"
 
 
 def luhn_checksum(card_number: str) -> int:
-    """Calculate Luhn checksum digit."""
-    def digits_of(n):
-        return [int(d) for d in str(n)]
+    """Calculate Luhn checksum using the Luhn algorithm."""
+    total = 0
+    reverse_digits = card_number[::-1]
     
-    digits = digits_of(card_number)
-    odd_digits = digits[-1::-2]
-    even_digits = digits[-2::-2]
+    for i, digit in enumerate(reverse_digits):
+        n = int(digit)
+        if i % 2 == 1:
+            n *= 2
+            if n > 9:
+                n -= 9
+        total += n
     
-    checksum = sum(odd_digits)
-    for d in even_digits:
-        checksum += sum(digits_of(d * 2))
-    
-    return checksum % 10
+    return total % 10
 
 
-def generate_card_number(bin_prefix: str) -> str:
-    """Generate a valid card number with Luhn checksum."""
-    # Card number is typically 16 digits
-    # BIN is 6-8 digits, we need to generate the rest
-    remaining_length = 15 - len(bin_prefix)
+def generate_luhn_card(bin_prefix: str) -> str:
+    """Generate a valid 16-digit card number using Luhn algorithm."""
+    # Ensure we generate a 16-digit card
+    remaining = 15 - len(bin_prefix)
     
-    # Generate random middle digits
-    middle = ''.join([str(random.randint(0, 9)) for _ in range(remaining_length)])
-    partial_card = bin_prefix + middle
+    # Generate random digits for the middle part
+    middle = ''.join([str(random.randint(0, 9)) for _ in range(remaining)])
+    partial = bin_prefix + middle
     
-    # Calculate Luhn check digit
-    checksum = luhn_checksum(partial_card + '0')
-    check_digit = (10 - checksum) % 10
+    # Calculate check digit using Luhn
+    total = 0
+    for i, digit in enumerate(partial[::-1]):
+        n = int(digit)
+        if i % 2 == 0:
+            n *= 2
+            if n > 9:
+                n -= 9
+        total += n
     
-    return partial_card + str(check_digit)
+    check_digit = (10 - (total % 10)) % 10
+    return partial + str(check_digit)
+
+
+def validate_luhn(card_number: str) -> bool:
+    """Validate card number using Luhn algorithm."""
+    return luhn_checksum(card_number) == 0
 
 
 def generate_expiry() -> str:
-    """Generate a random expiry date (MM/YY format)."""
+    """Generate random expiry MM|YY."""
     month = random.randint(1, 12)
-    year = random.randint(25, 30)  # 2025-2030
+    year = random.randint(25, 30)
     return f"{month:02d}|{year:02d}"
 
 
 def generate_cvv() -> str:
-    """Generate a random 3-digit CVV."""
+    """Generate random 3-digit CVV."""
     return f"{random.randint(0, 999):03d}"
 
 
 def generate_cards(bin_prefix: str, amount: int, fixed_month: str = None, fixed_year: str = None) -> list:
-    """Generate a list of cards with the given BIN prefix."""
+    """Generate cards with valid Luhn checksums."""
     cards = []
     for _ in range(amount):
-        card_number = generate_card_number(bin_prefix)
+        card_number = generate_luhn_card(bin_prefix)
+        
         if fixed_month and fixed_year:
             expiry = f"{fixed_month}|{fixed_year}"
         else:
             expiry = generate_expiry()
+        
         cvv = generate_cvv()
         cards.append(f"{card_number}|{expiry}|{cvv}")
+    
     return cards
 
 
+def get_brand_emoji(brand: str) -> str:
+    """Get emoji for card brand."""
+    brand_emojis = {
+        'VISA': '💳',
+        'MASTERCARD': '💳',
+        'AMEX': '💳',
+        'AMERICAN EXPRESS': '💳',
+        'DISCOVER': '💳',
+        'JCB': '💳',
+        'DINERS': '💳',
+        'UNIONPAY': '💳',
+    }
+    return brand_emojis.get(brand.upper(), '💳') if brand else '💳'
+
+
+def format_file_size(size_bytes: int) -> str:
+    """Format file size in human readable format."""
+    if size_bytes >= 1024 * 1024:
+        return f"{size_bytes / (1024 * 1024):.1f} MB"
+    elif size_bytes >= 1024:
+        return f"{size_bytes / 1024:.1f} KB"
+    else:
+        return f"{size_bytes} B"
+
+
 async def fetch_bin_info(bin_number: str) -> dict | None:
-    """Fetch BIN information from the API."""
+    """Fetch BIN information from API."""
     try:
         async with httpx.AsyncClient(timeout=10.0) as client:
             response = await client.get(BIN_API_URL.format(bin=bin_number))
             if response.status_code == 200:
                 return response.json()
-            else:
-                logger.error(f"BIN API returned status {response.status_code}")
-                return None
+            return None
     except Exception as e:
         logger.error(f"Error fetching BIN info: {e}")
         return None
@@ -103,65 +139,107 @@ async def fetch_bin_info(bin_number: str) -> dict | None:
 
 async def start_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     """Handle /start command."""
-    welcome_message = """🎴 <b>BIN Lookup & Card Generator Bot</b>
+    user = update.effective_user
+    welcome = f"""
+╔══════════════════════════════════╗
+       🎴 <b>CC GENERATOR BOT</b> 🎴
+╚══════════════════════════════════╝
 
-<b>Available Commands:</b>
-• /gen &lt;BIN&gt; &lt;amount&gt; - Generate cards with BIN lookup
-• /bin &lt;BIN&gt; - Lookup BIN information only
+👋 <b>Welcome, {user.first_name}!</b>
 
-<b>Examples:</b>
+━━━━━━━━━━━━━━━━━━━━━━━━━━
+📌 <b>AVAILABLE COMMANDS</b>
+━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🔹 /gen - Generate credit cards
+🔹 /bin - Lookup BIN information
+🔹 /help - Show detailed help
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━
+⚡ <b>QUICK EXAMPLES</b>
+━━━━━━━━━━━━━━━━━━━━━━━━━━
+
 <code>/gen 531462 10</code>
-<code>/gen 531462|10|29 100</code> (with fixed date)
-<code>/bin 531462</code>"""
-    await update.message.reply_text(welcome_message, parse_mode='HTML')
+<code>/gen 531462|05|28 100</code>
+<code>/bin 531462</code>
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━
+✨ <i>Powered by Luhn Algorithm</i>
+"""
+    await update.message.reply_text(welcome, parse_mode='HTML')
 
 
 async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     """Handle /help command."""
-    help_text = """📖 <b>Help</b>
+    help_text = """
+╔══════════════════════════════════╗
+          📖 <b>HELP MENU</b> 📖
+╚══════════════════════════════════╝
 
-<b>Generate Cards:</b>
-<code>/gen &lt;BIN&gt; &lt;amount&gt;</code>
-<code>/gen &lt;BIN|MM|YY&gt; &lt;amount&gt;</code>
+━━━━━━━━━━━━━━━━━━━━━━━━━━
+🎴 <b>GENERATE CARDS</b>
+━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-<b>Lookup BIN:</b>
-<code>/bin &lt;BIN&gt;</code>
-
-<b>Parameters:</b>
-• <code>BIN</code> - 6+ digit Bank Identification Number
-• <code>MM|YY</code> - Optional fixed expiry date
-• <code>amount</code> - Number of cards (1-1000)
+<b>Format:</b>
+<code>/gen [BIN] [AMOUNT]</code>
+<code>/gen [BIN|MM|YY] [AMOUNT]</code>
 
 <b>Examples:</b>
-<code>/gen 419011000705 500</code>
-<code>/gen 440393|10|29 100</code>
-<code>/bin 531462</code>"""
+<code>/gen 531462 100</code>
+<code>/gen 440393|10|29 50</code>
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━
+🔍 <b>BIN LOOKUP</b>
+━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+<b>Format:</b>
+<code>/bin [BIN]</code>
+
+<b>Example:</b>
+<code>/bin 531462</code>
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━
+📋 <b>PARAMETERS</b>
+━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+• <b>BIN</b> - 6-16 digit Bank ID Number
+• <b>MM</b> - Expiry Month (01-12)
+• <b>YY</b> - Expiry Year (25-30)
+• <b>AMOUNT</b> - Cards count (1-1000)
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━
+✅ <i>All cards pass Luhn validation</i>
+"""
     await update.message.reply_text(help_text, parse_mode='HTML')
 
 
 async def gen_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-    """Handle /gen command - Generate cards and lookup BIN info."""
-    # Parse arguments
+    """Handle /gen command."""
     if len(context.args) < 2:
-        await update.message.reply_text(
-            "❌ <b>Usage:</b> <code>/gen &lt;BIN&gt; &lt;amount&gt;</code>\n"
-            "<b>Examples:</b>\n"
-            "<code>/gen 531462 100</code>\n"
-            "<code>/gen 531462|10|29 100</code> (with fixed date MM|YY)",
-            parse_mode='HTML'
-        )
+        usage = """
+❌ <b>Invalid Usage</b>
+
+<b>Correct Format:</b>
+<code>/gen [BIN] [AMOUNT]</code>
+<code>/gen [BIN|MM|YY] [AMOUNT]</code>
+
+<b>Examples:</b>
+<code>/gen 531462 100</code>
+<code>/gen 440393|10|29 50</code>
+"""
+        await update.message.reply_text(usage, parse_mode='HTML')
         return
     
     bin_input = context.args[0]
     fixed_month = None
     fixed_year = None
     
-    # Parse BIN with optional date format: BIN|MM|YY
+    # Parse BIN|MM|YY format
     if '|' in bin_input:
         parts = bin_input.split('|')
         bin_number = parts[0]
         if len(parts) >= 3:
-            fixed_month = parts[1].zfill(2)  # Pad with zero if needed
+            fixed_month = parts[1].zfill(2)
             fixed_year = parts[2].zfill(2)
     else:
         bin_number = bin_input
@@ -169,7 +247,7 @@ async def gen_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> Non
     # Validate BIN
     if not bin_number.isdigit() or len(bin_number) < 6:
         await update.message.reply_text(
-            "❌ <b>Invalid BIN!</b> BIN must be at least 6 digits.",
+            "❌ <b>Invalid BIN!</b>\n\n<i>BIN must be at least 6 digits.</i>",
             parse_mode='HTML'
         )
         return
@@ -178,24 +256,24 @@ async def gen_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> Non
     try:
         amount = int(context.args[1])
         if amount < 1 or amount > 1000:
-            raise ValueError("Amount out of range")
+            raise ValueError()
     except ValueError:
         await update.message.reply_text(
-            "❌ <b>Invalid amount!</b> Please enter a number between 1 and 1000.",
+            "❌ <b>Invalid Amount!</b>\n\n<i>Enter a number between 1-1000.</i>",
             parse_mode='HTML'
         )
         return
     
     # Get user info
     user = update.effective_user
-    username = user.username or user.first_name or "User"
+    username = user.first_name or "User"
     
-    # Fetch BIN information
-    bin_info = await fetch_bin_info(bin_number[:6])  # API typically uses first 6 digits
+    # Fetch BIN info
+    bin_info = await fetch_bin_info(bin_number[:6])
     
     if not bin_info:
         await update.message.reply_text(
-            "❌ <b>Failed to fetch BIN information.</b> Please try again later.",
+            "❌ <b>BIN Not Found!</b>\n\n<i>Could not fetch BIN information.</i>",
             parse_mode='HTML'
         )
         return
@@ -203,12 +281,12 @@ async def gen_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> Non
     # Generate cards
     cards = generate_cards(bin_number, amount, fixed_month, fixed_year)
     
-    # Create file content
+    # Create file
     file_content = "\n".join(cards)
     file_bytes = BytesIO(file_content.encode('utf-8'))
-    file_bytes.name = f"{bin_number} x Cards.txt"
+    file_size = format_file_size(len(file_content.encode('utf-8')))
     
-    # Extract BIN info
+    # Extract info
     brand = bin_info.get('brand', 'N/A')
     bank = bin_info.get('bank', 'N/A')
     country_name = bin_info.get('country_name', 'N/A')
@@ -216,66 +294,70 @@ async def gen_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> Non
     level = bin_info.get('level', 'N/A')
     card_type = bin_info.get('type', 'N/A')
     
-    # Format BIN info string
-    bin_info_str = f"{level} - {card_type} - {brand}"
-    
-    # Calculate file size
-    file_size = len(file_content.encode('utf-8'))
-    if file_size >= 1024:
-        size_str = f"{file_size / 1024:.1f} KB"
-    else:
-        size_str = f"{file_size} B"
-    
-    # Create response message (using HTML to avoid markdown issues)
-    response_message = f"""⬇️ <b>{bin_number} x Cards.txt</b>
-{size_str}
+    # Build response
+    response = f"""
+╔══════════════════════════════════╗
+     ⬇️ <b>CARDS GENERATED</b> ⬇️
+╚══════════════════════════════════╝
 
-<b>BIN:</b> <code>{bin_number}</code>
-<b>Amount:</b> <code>{amount}</code>
-<b>Bank:</b> {bank}
-<b>Country:</b> {country_name} {country_flag}
-<b>BIN Info:</b> {bin_info_str}
+📁 <b>{bin_number} x Cards.txt</b>
+📊 <b>Size:</b> {file_size}
 
-🎴 <b>Generate By:</b> {username}"""
+━━━━━━━━━━━━━━━━━━━━━━━━━━
+💳 <b>BIN INFORMATION</b>
+━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🔢 <b>BIN:</b> <code>{bin_number}</code>
+🔢 <b>Amount:</b> <code>{amount}</code>
+🏦 <b>Bank:</b> {bank}
+🌍 <b>Country:</b> {country_name} {country_flag}
+💎 <b>Info:</b> {level} - {card_type} - {brand}
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━
+👤 <b>Generated By:</b> {username}
+✅ <b>Luhn:</b> Valid
+━━━━━━━━━━━━━━━━━━━━━━━━━━
+"""
     
-    # Send the file with caption
     await update.message.reply_document(
         document=InputFile(file_bytes, filename=f"{bin_number} x Cards.txt"),
-        caption=response_message,
+        caption=response,
         parse_mode='HTML'
     )
 
 
 async def bin_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-    """Handle /bin command - Lookup BIN info only."""
+    """Handle /bin command."""
     if len(context.args) < 1:
-        await update.message.reply_text(
-            "❌ <b>Usage:</b> <code>/bin &lt;BIN&gt;</code>\n<b>Example:</b> <code>/bin 531462</code>",
-            parse_mode='HTML'
-        )
+        usage = """
+❌ <b>Invalid Usage</b>
+
+<b>Format:</b> <code>/bin [BIN]</code>
+<b>Example:</b> <code>/bin 531462</code>
+"""
+        await update.message.reply_text(usage, parse_mode='HTML')
         return
     
     bin_number = context.args[0]
     
-    # Validate BIN
     if not bin_number.isdigit() or len(bin_number) < 6:
         await update.message.reply_text(
-            "❌ <b>Invalid BIN!</b> BIN must be at least 6 digits.",
+            "❌ <b>Invalid BIN!</b>\n\n<i>BIN must be at least 6 digits.</i>",
             parse_mode='HTML'
         )
         return
     
-    # Fetch BIN information
+    # Fetch BIN info
     bin_info = await fetch_bin_info(bin_number[:6])
     
     if not bin_info:
         await update.message.reply_text(
-            "❌ <b>Failed to fetch BIN information.</b> Please try again later.",
+            "❌ <b>BIN Not Found!</b>\n\n<i>Could not fetch BIN information.</i>",
             parse_mode='HTML'
         )
         return
     
-    # Extract BIN info
+    # Extract info
     brand = bin_info.get('brand', 'N/A')
     bank = bin_info.get('bank', 'N/A')
     country_name = bin_info.get('country_name', 'N/A')
@@ -283,19 +365,36 @@ async def bin_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> Non
     country_code = bin_info.get('country', 'N/A')
     level = bin_info.get('level', 'N/A')
     card_type = bin_info.get('type', 'N/A')
+    currencies = bin_info.get('country_currencies', [])
+    currency_str = ', '.join(currencies) if currencies else 'N/A'
     
-    # Create response message
-    response_message = f"""🔍 <b>BIN Lookup Result</b>
+    response = f"""
+╔══════════════════════════════════╗
+        🔍 <b>BIN LOOKUP</b> 🔍
+╚══════════════════════════════════╝
 
-<b>BIN:</b> <code>{bin_number}</code>
-<b>Brand:</b> {brand}
-<b>Type:</b> {card_type}
-<b>Level:</b> {level}
-<b>Bank:</b> {bank}
-<b>Country:</b> {country_name} {country_flag}
-<b>Country Code:</b> {country_code}"""
+━━━━━━━━━━━━━━━━━━━━━━━━━━
+📋 <b>CARD DETAILS</b>
+━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🔢 <b>BIN:</b> <code>{bin_number}</code>
+💳 <b>Brand:</b> {brand}
+📊 <b>Type:</b> {card_type}
+💎 <b>Level:</b> {level}
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━
+🏦 <b>BANK DETAILS</b>
+━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🏛️ <b>Bank:</b> {bank}
+🌍 <b>Country:</b> {country_name} {country_flag}
+🔤 <b>Code:</b> {country_code}
+💵 <b>Currency:</b> {currency_str}
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━
+"""
     
-    await update.message.reply_text(response_message, parse_mode='HTML')
+    await update.message.reply_text(response, parse_mode='HTML')
 
 
 async def error_handler(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
@@ -304,24 +403,19 @@ async def error_handler(update: Update, context: ContextTypes.DEFAULT_TYPE) -> N
 
 
 def main() -> None:
-    """Main function to run the bot."""
+    """Main function."""
     if BOT_TOKEN == "YOUR_BOT_TOKEN_HERE":
         logger.error("Please set your bot token in BOT_TOKEN variable!")
         return
     
-    # Create application
     application = Application.builder().token(BOT_TOKEN).build()
     
-    # Add handlers
     application.add_handler(CommandHandler("start", start_command))
     application.add_handler(CommandHandler("help", help_command))
     application.add_handler(CommandHandler("gen", gen_command))
     application.add_handler(CommandHandler("bin", bin_command))
-    
-    # Add error handler
     application.add_error_handler(error_handler)
     
-    # Run the bot
     logger.info("Bot is starting...")
     application.run_polling(allowed_updates=Update.ALL_TYPES)
 
