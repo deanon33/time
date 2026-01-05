@@ -280,7 +280,8 @@ async def gen_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> Non
     await update.message.reply_document(
         document=InputFile(file_bytes, filename=f"{bin_number} x Cards.txt"),
         caption=response,
-        parse_mode='HTML'
+        parse_mode='HTML',
+        reply_to_message_id=update.message.message_id
     )
 
 
@@ -330,7 +331,11 @@ async def bin_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> Non
 • 𝗕𝗔𝗡𝗞: {bank}
 • 𝗖𝗢𝗨𝗡𝗧𝗥𝗬: {country_name} {country_flag}"""
     
-    await update.message.reply_text(response, parse_mode='HTML')
+    await update.message.reply_text(
+        response,
+        parse_mode='HTML',
+        reply_to_message_id=update.message.message_id
+    )
 
 
 async def error_handler(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
