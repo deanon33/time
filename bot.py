@@ -1124,23 +1124,24 @@ Reply to a combo file and send <code>/topbin</code>
     
     # Build response
     bin_lines = []
+    medals = ["🥇", "🥈", "🥉"]
+    
     for i, (bin_num, count) in enumerate(sorted_bins, 1):
-        bar_length = min(count, 10)
-        bar = "█" * bar_length
-        bin_lines.append(f"{i:02d}. <code>{bin_num}</code> ⇾ {count} cards {bar}")
+        if i <= 3:
+            prefix = medals[i-1]
+        else:
+            prefix = f"{i:02d}."
+        bin_lines.append(f"{prefix} <code>{bin_num}</code> → <b>{count}</b>")
     
     bins_text = "\n".join(bin_lines)
     unique_bins = len(bin_counts)
     
-    response = f"""📊 𝗧𝗼𝗽 𝗕𝗜𝗡𝘀 𝗔𝗻𝗮𝗹𝘆𝘀𝗶𝘀
-━━━━━━━━━━━━━━━━━━━━━━
-📁 𝗧𝗼𝘁𝗮𝗹 𝗖𝗮𝗿𝗱𝘀: {total_cards}
-🔢 𝗨𝗻𝗶𝗾𝘂𝗲 𝗕𝗜𝗡𝘀: {unique_bins}
-━━━━━━━━━━━━━━━━━━━━━━
+    response = f"""📊 𝗧𝗼𝗽 𝗕𝗜𝗡 𝗔𝗻𝗮𝗹𝘆𝘀𝗶𝘀
+━━━━━━━━━━━━━━━━━━
+📁 𝗖𝗮𝗿𝗱𝘀: {total_cards} | 🔢 𝗕𝗜𝗡𝘀: {unique_bins}
+━━━━━━━━━━━━━━━━━━
 
-{bins_text}
-
-━━━━━━━━━━━━━━━━━━━━━━"""
+{bins_text}"""
     
     await update.message.reply_text(
         response,
