@@ -100,36 +100,32 @@ async def fetch_bin_info(bin_number: str) -> dict | None:
 
 async def start_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     """Handle /start command."""
-    welcome_message = """
-🎴 *BIN Lookup & Card Generator Bot*
+    welcome_message = """🎴 <b>BIN Lookup & Card Generator Bot</b>
 
-*Available Commands:*
-• `/gen <BIN> <amount>` - Generate cards with BIN lookup
+<b>Available Commands:</b>
+• /gen &lt;BIN&gt; &lt;amount&gt; - Generate cards with BIN lookup
 
-*Example:*
-`/gen 531462 10`
+<b>Example:</b>
+<code>/gen 531462 10</code>
 
-_This will generate 10 cards with BIN 531462 and show BIN information._
-    """
-    await update.message.reply_text(welcome_message, parse_mode='Markdown')
+<i>This will generate 10 cards with BIN 531462 and show BIN information.</i>"""
+    await update.message.reply_text(welcome_message, parse_mode='HTML')
 
 
 async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     """Handle /help command."""
-    help_text = """
-📖 *Help*
+    help_text = """📖 <b>Help</b>
 
-*Usage:*
-`/gen <BIN> <amount>`
+<b>Usage:</b>
+<code>/gen &lt;BIN&gt; &lt;amount&gt;</code>
 
-*Parameters:*
-• `BIN` - 6-8 digit Bank Identification Number
-• `amount` - Number of cards to generate (1-1000)
+<b>Parameters:</b>
+• <code>BIN</code> - 6-8 digit Bank Identification Number
+• <code>amount</code> - Number of cards to generate (1-1000)
 
-*Example:*
-`/gen 419011000705 500`
-    """
-    await update.message.reply_text(help_text, parse_mode='Markdown')
+<b>Example:</b>
+<code>/gen 419011000705 500</code>"""
+    await update.message.reply_text(help_text, parse_mode='HTML')
 
 
 async def gen_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
@@ -137,8 +133,8 @@ async def gen_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> Non
     # Parse arguments
     if len(context.args) < 2:
         await update.message.reply_text(
-            "❌ *Usage:* `/gen <BIN> <amount>`\n*Example:* `/gen 531462 100`",
-            parse_mode='Markdown'
+            "❌ <b>Usage:</b> <code>/gen &lt;BIN&gt; &lt;amount&gt;</code>\n<b>Example:</b> <code>/gen 531462 100</code>",
+            parse_mode='HTML'
         )
         return
     
@@ -147,8 +143,8 @@ async def gen_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> Non
     # Validate BIN
     if not bin_number.isdigit() or len(bin_number) < 6:
         await update.message.reply_text(
-            "❌ *Invalid BIN!* BIN must be at least 6 digits.",
-            parse_mode='Markdown'
+            "❌ <b>Invalid BIN!</b> BIN must be at least 6 digits.",
+            parse_mode='HTML'
         )
         return
     
@@ -159,8 +155,8 @@ async def gen_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> Non
             raise ValueError("Amount out of range")
     except ValueError:
         await update.message.reply_text(
-            "❌ *Invalid amount!* Please enter a number between 1 and 1000.",
-            parse_mode='Markdown'
+            "❌ <b>Invalid amount!</b> Please enter a number between 1 and 1000.",
+            parse_mode='HTML'
         )
         return
     
@@ -173,8 +169,8 @@ async def gen_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> Non
     
     if not bin_info:
         await update.message.reply_text(
-            "❌ *Failed to fetch BIN information.* Please try again later.",
-            parse_mode='Markdown'
+            "❌ <b>Failed to fetch BIN information.</b> Please try again later.",
+            parse_mode='HTML'
         )
         return
     
@@ -204,25 +200,23 @@ async def gen_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> Non
     else:
         size_str = f"{file_size} B"
     
-    # Create response message
-    response_message = f"""
-⬇️ *{bin_number} x Cards.txt*
+    # Create response message (using HTML to avoid markdown issues)
+    response_message = f"""⬇️ <b>{bin_number} x Cards.txt</b>
 {size_str}
 
-*BIN:* `{bin_number}`
-*Amount:* `{amount}`
-*Bank:* {bank}
-*Country:* {country_name} {country_flag}
-*BIN Info:* {bin_info_str}
+<b>BIN:</b> <code>{bin_number}</code>
+<b>Amount:</b> <code>{amount}</code>
+<b>Bank:</b> {bank}
+<b>Country:</b> {country_name} {country_flag}
+<b>BIN Info:</b> {bin_info_str}
 
-🎴 *Generate By:* {username}
-    """
+🎴 <b>Generate By:</b> {username}"""
     
     # Send the file with caption
     await update.message.reply_document(
         document=InputFile(file_bytes, filename=f"{bin_number} x Cards.txt"),
         caption=response_message,
-        parse_mode='Markdown'
+        parse_mode='HTML'
     )
 
 
