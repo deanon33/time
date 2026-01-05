@@ -9,8 +9,8 @@ import logging
 from io import BytesIO
 
 import httpx
-from telegram import Update, InputFile
-from telegram.ext import Application, CommandHandler, ContextTypes
+from telegram import Update, InputFile, InlineKeyboardButton, InlineKeyboardMarkup
+from telegram.ext import Application, CommandHandler, CallbackQueryHandler, ContextTypes
 
 # Configure logging
 logging.basicConfig(
@@ -158,17 +158,17 @@ async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> No
 ━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 <b>Single BIN:</b>
+<code>/gen [BIN]</code> - Default 10 cards
 <code>/gen [BIN] [AMOUNT]</code>
 <code>/gen [BIN|MM|YY] [AMOUNT]</code>
 
 <b>Multiple BINs:</b>
 <code>/mgen [BIN1,BIN2] [AMOUNT]</code>
-<code>/mgen [BIN1|MM|YY,BIN2|MM|YY] [AMOUNT]</code>
 
 <b>Examples:</b>
+<code>/gen 531462</code>
 <code>/gen 531462 100</code>
 <code>/mgen 531462,440393 10</code>
-<code>/mgen 440393|10|29,518507|09|27 50</code>
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━
 🔍 <b>BIN LOOKUP</b>
@@ -206,18 +206,18 @@ Reply to a message or .txt file:
 
 async def gen_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     """Handle /gen command."""
-    if len(context.args) < 2:
-        usage = """
-❌ <b>Invalid Usage</b>
+    if len(context.args) < 1:
+        usage = """❌ <b>Invalid Usage</b>
 
-<b>Correct Format:</b>
+<b>Format:</b>
+<code>/gen [BIN]</code> - Generate 10 cards
 <code>/gen [BIN] [AMOUNT]</code>
 <code>/gen [BIN|MM|YY] [AMOUNT]</code>
 
 <b>Examples:</b>
+<code>/gen 531462</code>
 <code>/gen 531462 100</code>
-<code>/gen 440393|10|29 50</code>
-"""
+<code>/gen 440393|10|29 50</code>"""
         await update.message.reply_text(usage, parse_mode='HTML')
         return
     
@@ -243,21 +243,20 @@ async def gen_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> Non
         )
         return
     
-    # Validate amount
-    try:
-        amount = int(context.args[1])
-        if amount < 1 or amount > 1000:
-            raise ValueError()
-    except ValueError:
-        await update.message.reply_text(
-            "❌ <b>Invalid Amount!</b>\n\n<i>Enter a number between 1-1000.</i>",
-            parse_mode='HTML'
-        )
-        return
-    
-    # Get user info with profile link
-    user = update.effective_user
-    user_link = f'<a href="tg://user?id={user.id}">{user.first_name or "User"}</a>'
+    # Get amount (default to 10 if not provided)
+    if len(context.args) >= 2:
+        try:
+            amount = int(context.args[1])
+            if amount < 1 or amount > 1000:
+                raise ValueError()
+        except ValueError:
+            await update.message.reply_text(
+                "❌ <b>Invalid Amount!</b>\n\n<i>Enter a number between 1-1000.</i>",
+                parse_mode='HTML'
+            )
+            return
+    else:
+        amount = 10  # Default amount
     
     # Fetch BIN info
     bin_info = await fetch_bin_info(bin_number[:6])
@@ -272,9 +271,100 @@ async def gen_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> Non
     # Generate cards
     cards = generate_cards(bin_number, amount, fixed_month, fixed_year)
     
-    # Create file
-    file_content = "\n".join(cards)
-    file_bytes = BytesIO(file_content.encode('utf-8'))
+    # Extract info
+    brand = bin_info.get('brand', 'N/A')
+    bank = bin_info.get('bank', 'N/A')
+    country_name = bin_info.get('country_name', 'N/A')
+    country_flag = bin_info.get('country_flag', '🏳️')
+    level = bin_info.get('level', 'N/A')
+    card_type = bin_info.get('type', 'N/A')
+    
+    # Get user info with profile link
+    user = update.effective_user
+    user_link = f'<a href="tg://user?id={user.id}">{user.first_name or "User"}</a>'
+    
+    # Decide: show in message or send as file
+    if amount <= 10:
+        # Show cards in message
+        cards_text = "\n".join(cards)
+        
+        response = f"""𝗕𝗜𝗡 ⇾ <code>{bin_number}</code>
+𝗔𝗺𝗼𝘂𝗻𝘁 ⇾ {amount}
+
+<code>{cards_text}</code>
+
+𝗕𝗮𝗻𝗸: {bank}
+𝗖𝗼𝘂𝗻𝘁𝗿𝘆: {country_name} {country_flag}
+𝗕𝗜𝗡 𝗜𝗻𝗳𝗼: {level} - {card_type} - {brand}"""
+        
+        # Create Re-Generate button with callback data
+        callback_data = f"regen:{bin_input}:{amount}"
+        keyboard = InlineKeyboardMarkup([
+            [InlineKeyboardButton("Re-Generate", callback_data=callback_data)]
+        ])
+        
+        await update.message.reply_text(
+            response,
+            parse_mode='HTML',
+            reply_markup=keyboard,
+            reply_to_message_id=update.message.message_id
+        )
+    else:
+        # Send as file for larger amounts
+        file_content = "\n".join(cards)
+        file_bytes = BytesIO(file_content.encode('utf-8'))
+        
+        response = f"""𝗕𝗜𝗡: <code>{bin_number}</code>
+𝗔𝗺𝗼𝘂𝗻𝘁: {amount}
+𝗕𝗮𝗻𝗸: {bank}
+𝗖𝗼𝘂𝗻𝘁𝗿𝘆: {country_name} {country_flag}
+𝗕𝗜𝗡 𝗜𝗻𝗳𝗼: {level} - {card_type} - {brand}
+━━━━━━━━━━━━━━━━━━
+𝗚𝗲𝗻𝗲𝗿𝗮𝘁𝗲 𝗕𝘆: {user_link}"""
+        
+        await update.message.reply_document(
+            document=InputFile(file_bytes, filename=f"{bin_number} x Cards.txt"),
+            caption=response,
+            parse_mode='HTML',
+            reply_to_message_id=update.message.message_id
+        )
+
+
+async def regen_callback(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    """Handle Re-Generate button callback."""
+    query = update.callback_query
+    await query.answer()
+    
+    # Parse callback data: regen:bin_input:amount
+    data = query.data.split(':')
+    if len(data) < 3:
+        return
+    
+    bin_input = data[1]
+    amount = int(data[2])
+    
+    fixed_month = None
+    fixed_year = None
+    
+    # Parse BIN|MM|YY format
+    if '|' in bin_input:
+        parts = bin_input.split('|')
+        bin_number = parts[0]
+        if len(parts) >= 3:
+            fixed_month = parts[1].zfill(2)
+            fixed_year = parts[2].zfill(2)
+    else:
+        bin_number = bin_input
+    
+    # Fetch BIN info
+    bin_info = await fetch_bin_info(bin_number[:6])
+    
+    if not bin_info:
+        await query.answer("BIN Not Found!", show_alert=True)
+        return
+    
+    # Generate new cards
+    cards = generate_cards(bin_number, amount, fixed_month, fixed_year)
     
     # Extract info
     brand = bin_info.get('brand', 'N/A')
@@ -284,20 +374,27 @@ async def gen_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> Non
     level = bin_info.get('level', 'N/A')
     card_type = bin_info.get('type', 'N/A')
     
-    # Build response
-    response = f"""𝗕𝗜𝗡: <code>{bin_number}</code>
-𝗔𝗺𝗼𝘂𝗻𝘁: {amount}
+    cards_text = "\n".join(cards)
+    
+    response = f"""𝗕𝗜𝗡 ⇾ <code>{bin_number}</code>
+𝗔𝗺𝗼𝘂𝗻𝘁 ⇾ {amount}
+
+<code>{cards_text}</code>
+
 𝗕𝗮𝗻𝗸: {bank}
 𝗖𝗼𝘂𝗻𝘁𝗿𝘆: {country_name} {country_flag}
-𝗕𝗜𝗡 𝗜𝗻𝗳𝗼: {level} - {card_type} - {brand}
-━━━━━━━━━━━━━━━━━━
-𝗚𝗲𝗻𝗲𝗿𝗮𝘁𝗲 𝗕𝘆: {user_link}"""
+𝗕𝗜𝗡 𝗜𝗻𝗳𝗼: {level} - {card_type} - {brand}"""
     
-    await update.message.reply_document(
-        document=InputFile(file_bytes, filename=f"{bin_number} x Cards.txt"),
-        caption=response,
+    # Keep the same button
+    callback_data = f"regen:{bin_input}:{amount}"
+    keyboard = InlineKeyboardMarkup([
+        [InlineKeyboardButton("Re-Generate", callback_data=callback_data)]
+    ])
+    
+    await query.edit_message_text(
+        response,
         parse_mode='HTML',
-        reply_to_message_id=update.message.message_id
+        reply_markup=keyboard
     )
 
 
@@ -647,6 +744,7 @@ def main() -> None:
     application.add_handler(CommandHandler("mgen", mgen_command))
     application.add_handler(CommandHandler("bin", bin_command))
     application.add_handler(CommandHandler("mbin", mbin_command))
+    application.add_handler(CallbackQueryHandler(regen_callback, pattern=r"^regen:"))
     application.add_error_handler(error_handler)
     
     logger.info("Bot is starting...")
