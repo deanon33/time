@@ -738,7 +738,7 @@ Reply to a message containing cards and send <code>/vcc</code>
             parse_mode='HTML',
             reply_to_message_id=update.message.message_id
         )
-    elif len(valid_cards) <= 15:
+    elif len(valid_cards) <= 10:
         # Show in message
         cards_text = "\n".join(valid_cards)
         response = f"""✅ 𝗩𝗮𝗹𝗶𝗱 𝗖𝗖 𝗙𝗶𝗹𝘁𝗲𝗿
@@ -873,7 +873,7 @@ Reply to a combo and send <code>/adbin 460827</code>
             parse_mode='HTML',
             reply_to_message_id=update.message.message_id
         )
-    elif len(matched_cards) <= 15:
+    elif len(matched_cards) <= 10:
         # Show in message
         cards_text = "\n".join(matched_cards)
         response = f"""✅ 𝗕𝗜𝗡 𝗙𝗶𝗹𝘁𝗲𝗿
