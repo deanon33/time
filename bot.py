@@ -205,7 +205,9 @@ Generate CC details using the following commands:
 
 ➢ <code>/mgen [BINs] [Amount]</code> - Generate from multiple BINs.
    • Example: <code>/mgen 460827,537637 10</code>
+   • Example: <code>/mgen 460827|10|29,537637|09|27 10</code>
    • Generates 10 cards from each BIN
+   • Supports fixed expiry dates per BIN
 
 <b>NOTE:</b>
 ✅ All cards are Luhn-valid
