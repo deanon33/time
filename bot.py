@@ -144,18 +144,15 @@ async def mainmenu_callback(update: Update, context: ContextTypes.DEFAULT_TYPE) 
     
     keyboard = InlineKeyboardMarkup([
         [
-            InlineKeyboardButton("🔍 BIN Check", callback_data="menu:bin"),
-            InlineKeyboardButton("🎴 Card Gen", callback_data="menu:gen")
+            InlineKeyboardButton("🏦 BIN Check", callback_data="menu:bin"),
+            InlineKeyboardButton("🧾 Card Generate", callback_data="menu:gen")
         ],
         [
-            InlineKeyboardButton("✅ CC Filter", callback_data="menu:filter"),
-            InlineKeyboardButton("📊 Top BINs", callback_data="menu:topbin")
+            InlineKeyboardButton("💳 CC Filter", callback_data="menu:filter"),
+            InlineKeyboardButton("🏠 Random Address", callback_data="menu:fake")
         ],
         [
-            InlineKeyboardButton("🏠 Fake Address", callback_data="menu:fake"),
-            InlineKeyboardButton("📖 Help", callback_data="menu:help")
-        ],
-        [
+            InlineKeyboardButton("📖 All Commands", callback_data="menu:help"),
             InlineKeyboardButton("❌ Close", callback_data="menu:close")
         ]
     ])
@@ -175,93 +172,120 @@ async def menu_callback(update: Update, context: ContextTypes.DEFAULT_TYPE) -> N
     action = query.data.split(':')[1]
     
     back_button = InlineKeyboardMarkup([
-        [InlineKeyboardButton("⬅️ Back to Menu", callback_data="mainmenu")]
+        [InlineKeyboardButton("⬅️ Back", callback_data="mainmenu")]
     ])
     
     if action == "bin":
-        text = """🔍 𝗕𝗜𝗡 𝗖𝗵𝗲𝗰𝗸 𝗖𝗼𝗺𝗺𝗮𝗻𝗱𝘀
-━━━━━━━━━━━━━━━━━━
+        text = """🏦 𝗕𝗜𝗡 𝗖𝗵𝗲𝗰𝗸 𝗧𝗼𝗼𝗹𝘀
+━━━━━━━━━━━━━━━━━━━━━━
+<b>USAGE:</b>
+Check and analyze BIN information using the following commands:
 
-<code>/bin [BIN]</code> - Single BIN lookup
-<code>/mbin</code> - Multi BIN lookup (reply to file)
+➢ <code>/bin [BIN]</code> - Check and validate BIN details.
+   • Example: <code>/bin 460827</code>
+   • Returns issuer, country, and card type details
 
-𝗘𝘅𝗮𝗺𝗽𝗹𝗲𝘀:
-<code>/bin 531462</code>
-<code>/bin 4390930039505670|04|28|846</code>"""
+➢ <code>/mbin</code> - Check up to 20 BINs at once.
+   • Reply to a message or .txt file and use /mbin
+   • Extracts and checks unique BINs automatically
+
+━━━━━━━━━━━━━━━━━━━━━━"""
         await query.edit_message_text(text, parse_mode='HTML', reply_markup=back_button)
     
     elif action == "gen":
-        text = """🎴 𝗖𝗮𝗿𝗱 𝗚𝗲𝗻𝗲𝗿𝗮𝘁𝗲 𝗖𝗼𝗺𝗺𝗮𝗻𝗱𝘀
-━━━━━━━━━━━━━━━━━━
+        text = """🧾 𝗖𝗮𝗿𝗱 𝗚𝗲𝗻𝗲𝗿𝗮𝘁𝗶𝗼𝗻 𝗧𝗼𝗼𝗹𝘀
+━━━━━━━━━━━━━━━━━━━━━━
+<b>USAGE:</b>
+Generate CC details using the following commands:
 
-<code>/gen [BIN]</code> - Generate 10 cards
-<code>/gen [BIN] [AMT]</code> - Generate cards
-<code>/gen [BIN|MM|YY] [AMT]</code> - With date
-<code>/mgen [BIN1,BIN2] [AMT]</code> - Multi BIN
+➢ <code>/gen [BIN] [Amount]</code> - Generate credit card details.
+   • Example: <code>/gen 460827</code> (Generates 10 by default)
+   • Example: <code>/gen 460827 100</code> (Generates 100 CCs)
+   • Example: <code>/gen 460827|10|29 50</code> (With fixed expiry)
 
-𝗘𝘅𝗮𝗺𝗽𝗹𝗲𝘀:
-<code>/gen 531462</code>
-<code>/gen 440393|10|29 100</code>
-<code>/mgen 531462,440393 50</code>"""
+➢ <code>/mgen [BINs] [Amount]</code> - Generate from multiple BINs.
+   • Example: <code>/mgen 460827,537637 10</code>
+   • Generates 10 cards from each BIN
+
+<b>NOTE:</b>
+✅ All cards are Luhn-valid
+✅ Supports custom expiry dates (MM|YY format)
+
+━━━━━━━━━━━━━━━━━━━━━━"""
         await query.edit_message_text(text, parse_mode='HTML', reply_markup=back_button)
     
     elif action == "filter":
-        text = """✅ 𝗖𝗖 𝗙𝗶𝗹𝘁𝗲𝗿 𝗖𝗼𝗺𝗺𝗮𝗻𝗱𝘀
-━━━━━━━━━━━━━━━━━━
+        text = """💳 𝗖𝗖 𝗙𝗶𝗹𝘁𝗲𝗿𝗶𝗻𝗴 𝗧𝗼𝗼𝗹𝘀
+━━━━━━━━━━━━━━━━━━━━━━
+<b>USAGE:</b>
+Perform credit card filtering and BIN-based extraction:
 
-<code>/vcc</code> - Filter valid CCs (Luhn)
-<code>/adbin [BIN]</code> - Keep specific BIN
-<code>/rmbin [BIN]</code> - Remove specific BIN
+➢ <code>/vcc</code> - Filter valid CCs from text or file.
+   • Reply to a message or .txt file with /vcc
+   • Extracts only Luhn-valid card numbers
 
-<i>Reply to a message or .txt file</i>
+➢ <code>/adbin [BIN]</code> - Filter specific BIN cards.
+   • Example: <code>/adbin 460827</code>
+   • Keeps only cards matching the BIN
 
-𝗘𝘅𝗮𝗺𝗽𝗹𝗲𝘀:
-Reply + <code>/vcc</code>
-Reply + <code>/adbin 460827</code>
-Reply + <code>/rmbin 460827</code>"""
-        await query.edit_message_text(text, parse_mode='HTML', reply_markup=back_button)
-    
-    elif action == "topbin":
-        text = """📊 𝗧𝗼𝗽 𝗕𝗜𝗡𝘀 𝗖𝗼𝗺𝗺𝗮𝗻𝗱
-━━━━━━━━━━━━━━━━━━
+➢ <code>/rmbin [BIN]</code> - Remove specific BIN cards.
+   • Example: <code>/rmbin 460827</code>
+   • Removes cards matching the BIN
 
-<code>/topbin</code> - Find top 20 BINs
+➢ <code>/topbin</code> - Find top 20 most used BINs.
+   • Reply to a .txt file with /topbin
+   • Shows BIN frequency analysis
 
-<i>Reply to a .txt file with /topbin</i>
-
-Shows the most frequently used BINs in a combo file."""
+━━━━━━━━━━━━━━━━━━━━━━"""
         await query.edit_message_text(text, parse_mode='HTML', reply_markup=back_button)
     
     elif action == "fake":
-        text = """🏠 𝗙𝗮𝗸𝗲 𝗔𝗱𝗱𝗿𝗲𝘀𝘀 𝗖𝗼𝗺𝗺𝗮𝗻𝗱
-━━━━━━━━━━━━━━━━━━
+        text = """🏠 𝗥𝗮𝗻𝗱𝗼𝗺 𝗔𝗱𝗱𝗿𝗲𝘀𝘀 𝗚𝗲𝗻𝗲𝗿𝗮𝘁𝗼𝗿
+━━━━━━━━━━━━━━━━━━━━━━
+<b>USAGE:</b>
+Generate random fake addresses for specific countries:
 
-<code>/fake [Country]</code>
+➢ <code>/fake [Country Code or Name]</code>
+   • Example: <code>/fake US</code> or <code>/fake United States</code>
+   • Example: <code>/fake DE</code> or <code>/fake Germany</code>
 
-𝗘𝘅𝗮𝗺𝗽𝗹𝗲𝘀:
-<code>/fake US</code>
-<code>/fake Germany</code>
-<code>/fake United Kingdom</code>
-
-𝗦𝘂𝗽𝗽𝗼𝗿𝘁𝗲𝗱:
+<b>SUPPORTED COUNTRIES:</b>
 🇺🇸 US | 🇬🇧 GB | 🇨🇦 CA | 🇦🇺 AU | 🇩🇪 DE
-🇫🇷 FR | 🇪🇸 ES | 🇮🇳 IN | 🇧🇷 BR | 🇲🇽 MX"""
+🇫🇷 FR | 🇪🇸 ES | 🇮🇳 IN | 🇧🇷 BR | 🇲🇽 MX
+🇳🇱 NL | 🇮🇪 IE | 🇳🇴 NO | 🇫🇮 FI | 🇩🇰 DK
+🇨🇭 CH | 🇳🇿 NZ | 🇹🇷 TR | 🇺🇦 UA | 🇷🇸 RS
+
+<b>NOTE:</b>
+1️⃣ Use country code (US) or full name (United States)
+2️⃣ Includes name, address, phone, email, DOB
+
+━━━━━━━━━━━━━━━━━━━━━━"""
         await query.edit_message_text(text, parse_mode='HTML', reply_markup=back_button)
     
     elif action == "help":
-        text = """📖 𝗛𝗲𝗹𝗽 & 𝗖𝗼𝗺𝗺𝗮𝗻𝗱𝘀
-━━━━━━━━━━━━━━━━━━
+        text = """📖 𝗔𝗹𝗹 𝗖𝗼𝗺𝗺𝗮𝗻𝗱𝘀
+━━━━━━━━━━━━━━━━━━━━━━
 
-🔹 /gen - Generate credit cards
-🔹 /mgen - Multi BIN generate
-🔹 /bin - BIN lookup
-🔹 /mbin - Multi BIN lookup
-🔹 /vcc - Filter valid CCs
-🔹 /adbin - Filter by BIN
-🔹 /rmbin - Remove by BIN
-🔹 /topbin - Top 20 BINs
-🔹 /fake - Random address
-🔹 /help - Detailed help"""
+<b>🧾 GENERATION:</b>
+• /gen - Generate credit cards
+• /mgen - Multi BIN generate
+
+<b>🏦 BIN CHECK:</b>
+• /bin - Single BIN lookup
+• /mbin - Multi BIN lookup
+
+<b>💳 CC FILTER:</b>
+• /vcc - Filter valid CCs
+• /adbin - Filter by BIN
+• /rmbin - Remove by BIN
+• /topbin - Top 20 BINs
+
+<b>🏠 OTHER:</b>
+• /fake - Random address
+• /start - Welcome message
+• /help - This help menu
+
+━━━━━━━━━━━━━━━━━━━━━━"""
         await query.edit_message_text(text, parse_mode='HTML', reply_markup=back_button)
     
     elif action == "close":
