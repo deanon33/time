@@ -115,40 +115,157 @@ async def fetch_bin_info(bin_number: str) -> dict | None:
 async def start_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     """Handle /start command."""
     user = update.effective_user
-    welcome = f"""
-╔══════════════════════════════════╗
-       🎴 <b>CC GENERATOR BOT</b> 🎴
-╚══════════════════════════════════╝
+    welcome = f"""👋 𝗛𝗶 {user.first_name}! 𝗪𝗲𝗹𝗰𝗼𝗺𝗲 𝘁𝗼 𝘁𝗵𝗶𝘀 𝗯𝗼𝘁
+━━━━━━━━━━━━━━━━━━━━━━
 
-👋 <b>Welcome, {user.first_name}!</b>
+💳 <b>XCardsΞBot &lt;/&gt;</b> is your all-in-one Telegram toolkit for BIN checking, CC filtering and card generation.
 
-━━━━━━━━━━━━━━━━━━━━━━━━━━
-📌 <b>AVAILABLE COMMANDS</b>
-━━━━━━━━━━━━━━━━━━━━━━━━━━
+✨ Fast, reliable and easy to use!
+
+━━━━━━━━━━━━━━━━━━━━━━"""
+    
+    keyboard = InlineKeyboardMarkup([
+        [InlineKeyboardButton("⚙️ Main Menu", callback_data="mainmenu")]
+    ])
+    
+    await update.message.reply_text(
+        welcome,
+        parse_mode='HTML',
+        reply_markup=keyboard
+    )
+
+
+async def mainmenu_callback(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    """Handle Main Menu button callback."""
+    query = update.callback_query
+    await query.answer()
+    
+    menu_text = """𝗛𝗲𝗿𝗲 𝗮𝗿𝗲 𝘁𝗵𝗲 𝗫𝗖𝗮𝗿𝗱𝘀-𝗕𝗼𝘁 𝗢𝗽𝘁𝗶𝗼𝗻𝘀: 👇"""
+    
+    keyboard = InlineKeyboardMarkup([
+        [
+            InlineKeyboardButton("🔍 BIN Check", callback_data="menu:bin"),
+            InlineKeyboardButton("🎴 Card Gen", callback_data="menu:gen")
+        ],
+        [
+            InlineKeyboardButton("✅ CC Filter", callback_data="menu:filter"),
+            InlineKeyboardButton("📊 Top BINs", callback_data="menu:topbin")
+        ],
+        [
+            InlineKeyboardButton("🏠 Fake Address", callback_data="menu:fake"),
+            InlineKeyboardButton("📖 Help", callback_data="menu:help")
+        ],
+        [
+            InlineKeyboardButton("❌ Close", callback_data="menu:close")
+        ]
+    ])
+    
+    await query.edit_message_text(
+        menu_text,
+        parse_mode='HTML',
+        reply_markup=keyboard
+    )
+
+
+async def menu_callback(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    """Handle menu option callbacks."""
+    query = update.callback_query
+    await query.answer()
+    
+    action = query.data.split(':')[1]
+    
+    back_button = InlineKeyboardMarkup([
+        [InlineKeyboardButton("⬅️ Back to Menu", callback_data="mainmenu")]
+    ])
+    
+    if action == "bin":
+        text = """🔍 𝗕𝗜𝗡 𝗖𝗵𝗲𝗰𝗸 𝗖𝗼𝗺𝗺𝗮𝗻𝗱𝘀
+━━━━━━━━━━━━━━━━━━
+
+<code>/bin [BIN]</code> - Single BIN lookup
+<code>/mbin</code> - Multi BIN lookup (reply to file)
+
+𝗘𝘅𝗮𝗺𝗽𝗹𝗲𝘀:
+<code>/bin 531462</code>
+<code>/bin 4390930039505670|04|28|846</code>"""
+        await query.edit_message_text(text, parse_mode='HTML', reply_markup=back_button)
+    
+    elif action == "gen":
+        text = """🎴 𝗖𝗮𝗿𝗱 𝗚𝗲𝗻𝗲𝗿𝗮𝘁𝗲 𝗖𝗼𝗺𝗺𝗮𝗻𝗱𝘀
+━━━━━━━━━━━━━━━━━━
+
+<code>/gen [BIN]</code> - Generate 10 cards
+<code>/gen [BIN] [AMT]</code> - Generate cards
+<code>/gen [BIN|MM|YY] [AMT]</code> - With date
+<code>/mgen [BIN1,BIN2] [AMT]</code> - Multi BIN
+
+𝗘𝘅𝗮𝗺𝗽𝗹𝗲𝘀:
+<code>/gen 531462</code>
+<code>/gen 440393|10|29 100</code>
+<code>/mgen 531462,440393 50</code>"""
+        await query.edit_message_text(text, parse_mode='HTML', reply_markup=back_button)
+    
+    elif action == "filter":
+        text = """✅ 𝗖𝗖 𝗙𝗶𝗹𝘁𝗲𝗿 𝗖𝗼𝗺𝗺𝗮𝗻𝗱𝘀
+━━━━━━━━━━━━━━━━━━
+
+<code>/vcc</code> - Filter valid CCs (Luhn)
+<code>/adbin [BIN]</code> - Keep specific BIN
+<code>/rmbin [BIN]</code> - Remove specific BIN
+
+<i>Reply to a message or .txt file</i>
+
+𝗘𝘅𝗮𝗺𝗽𝗹𝗲𝘀:
+Reply + <code>/vcc</code>
+Reply + <code>/adbin 460827</code>
+Reply + <code>/rmbin 460827</code>"""
+        await query.edit_message_text(text, parse_mode='HTML', reply_markup=back_button)
+    
+    elif action == "topbin":
+        text = """📊 𝗧𝗼𝗽 𝗕𝗜𝗡𝘀 𝗖𝗼𝗺𝗺𝗮𝗻𝗱
+━━━━━━━━━━━━━━━━━━
+
+<code>/topbin</code> - Find top 20 BINs
+
+<i>Reply to a .txt file with /topbin</i>
+
+Shows the most frequently used BINs in a combo file."""
+        await query.edit_message_text(text, parse_mode='HTML', reply_markup=back_button)
+    
+    elif action == "fake":
+        text = """🏠 𝗙𝗮𝗸𝗲 𝗔𝗱𝗱𝗿𝗲𝘀𝘀 𝗖𝗼𝗺𝗺𝗮𝗻𝗱
+━━━━━━━━━━━━━━━━━━
+
+<code>/fake [Country]</code>
+
+𝗘𝘅𝗮𝗺𝗽𝗹𝗲𝘀:
+<code>/fake US</code>
+<code>/fake Germany</code>
+<code>/fake United Kingdom</code>
+
+𝗦𝘂𝗽𝗽𝗼𝗿𝘁𝗲𝗱:
+🇺🇸 US | 🇬🇧 GB | 🇨🇦 CA | 🇦🇺 AU | 🇩🇪 DE
+🇫🇷 FR | 🇪🇸 ES | 🇮🇳 IN | 🇧🇷 BR | 🇲🇽 MX"""
+        await query.edit_message_text(text, parse_mode='HTML', reply_markup=back_button)
+    
+    elif action == "help":
+        text = """📖 𝗛𝗲𝗹𝗽 & 𝗖𝗼𝗺𝗺𝗮𝗻𝗱𝘀
+━━━━━━━━━━━━━━━━━━
 
 🔹 /gen - Generate credit cards
 🔹 /mgen - Multi BIN generate
-🔹 /bin - Lookup BIN information
+🔹 /bin - BIN lookup
 🔹 /mbin - Multi BIN lookup
 🔹 /vcc - Filter valid CCs
 🔹 /adbin - Filter by BIN
 🔹 /rmbin - Remove by BIN
 🔹 /topbin - Top 20 BINs
 🔹 /fake - Random address
-🔹 /help - Show detailed help
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━
-⚡ <b>QUICK EXAMPLES</b>
-━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-<code>/gen 531462 10</code>
-<code>/mgen 531462,440393 10</code>
-<code>/bin 531462</code>
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━
-✨ <i>Powered by Luhn Algorithm</i>
-"""
-    await update.message.reply_text(welcome, parse_mode='HTML')
+🔹 /help - Detailed help"""
+        await query.edit_message_text(text, parse_mode='HTML', reply_markup=back_button)
+    
+    elif action == "close":
+        await query.delete_message()
 
 
 async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
@@ -1510,6 +1627,8 @@ def main() -> None:
     application.add_handler(CommandHandler("fake", fake_command))
     application.add_handler(CallbackQueryHandler(regen_callback, pattern=r"^regen:"))
     application.add_handler(CallbackQueryHandler(fake_callback, pattern=r"^fake:"))
+    application.add_handler(CallbackQueryHandler(mainmenu_callback, pattern=r"^mainmenu$"))
+    application.add_handler(CallbackQueryHandler(menu_callback, pattern=r"^menu:"))
     application.add_error_handler(error_handler)
     
     logger.info("Bot is starting...")
